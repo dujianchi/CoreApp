@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 apply plugin: 'com.github.dcendents.android-maven'
-group='cn.dujc.core'
+group='com.github.dujianchi'
 
 android {
     compileSdkVersion 26
