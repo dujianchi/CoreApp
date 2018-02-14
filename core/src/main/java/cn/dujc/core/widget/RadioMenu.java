@@ -3,6 +3,7 @@ package cn.dujc.core.widget;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -16,13 +17,17 @@ import java.util.List;
 public class RadioMenu extends LinearLayout {
 
     public interface Item {
-        public View getView();
+        Item initView();
 
-        public void onDefault();
+        Item onDefault(View itemView);
 
-        public void onSelected();
+        Item onSelected(View itemView);
 
-        public boolean isSelected();
+        Item setSelected(boolean isSelected);
+
+        boolean isSelected();
+
+        View getView();
     }
 
     private final List<Item> mItems = new ArrayList<>();
@@ -40,13 +45,25 @@ public class RadioMenu extends LinearLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public RadioMenu addItem(Item item) {
-        return addItem(item, false);
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        final float rawX = ev.getRawX();
+        final float rawY = ev.getRawY();
+        for (Item item : mItems) {
+            final int[] lIS = new int[2];//location in screen，在屏幕中的位置
+            final View view = item.getView();
+            view.getLocationOnScreen(lIS);
+            if (rawX >= lIS[0] && rawX <= lIS[0] + view.getWidth() && rawY >= lIS[1] && rawY <= lIS[1] + view.getHeight()) {
+                selectItem(item);
+                break;
+            }
+        }
+        return super.dispatchTouchEvent(ev);
     }
 
-    public RadioMenu addItem(Item item, boolean isSelected) {
+    public RadioMenu addItem(Item item) {
         mItems.add(item);
-        addItemChild(item, isSelected);
+        addItemChild(item, item.isSelected());
         return this;
     }
 
@@ -69,19 +86,25 @@ public class RadioMenu extends LinearLayout {
     }
 
     private void addItemChild(Item item, boolean isSelected) {
-        addView(item.getView());
+        item.initView();
+        final View itemView = item.getView();
         if (isSelected) {
             selectItem(item);
+        } else {
+            item.onDefault(itemView);
         }
+        addView(itemView);
     }
 
     private void selectItem(Item item) {
-        item.getView().setSelected(true);
-        item.onSelected();
+        if (item == mLastItem) return;
         if (mLastItem != null) {
-            mLastItem.getView().setSelected(false);
-            mLastItem.onDefault();
+            mLastItem.setSelected(false);
+            mLastItem.onDefault(item.getView());
         }
+        item.setSelected(true);
+        item.onSelected(item.getView());
         mLastItem = item;
     }
+
 }

@@ -136,6 +136,10 @@ public abstract class BaseListActivity extends BaseActivity {
         return new LinearLayoutManager(mActivity);
     }
 
+    public BaseQuickAdapter getAdapter() {
+        return mQuickAdapter;
+    }
+
     @Nullable protected abstract BaseQuickAdapter initAdapter();
 
     protected abstract void onItemClick(int position);
