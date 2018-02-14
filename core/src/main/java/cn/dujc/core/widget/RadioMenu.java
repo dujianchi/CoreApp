@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -30,8 +31,17 @@ public class RadioMenu extends LinearLayout {
         View getView();
     }
 
+    public interface OnItemSelectedChangeListener {
+        void onItemSelected(Item item);
+
+        void onItemUnselected(Item item);
+    }
+
+    private final LayoutParams mDefaultLayoutParams
+            = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1);
     private final List<Item> mItems = new ArrayList<>();
     private Item mLastItem = null;
+    private OnItemSelectedChangeListener mOnItemSelectedChangeListener = null;
 
     public RadioMenu(Context context) {
         this(context, null, 0);
@@ -61,6 +71,38 @@ public class RadioMenu extends LinearLayout {
         return super.dispatchTouchEvent(ev);
     }
 
+    public void setOnItemSelectedChangeListener(OnItemSelectedChangeListener onItemSelectedChangeListener) {
+        mOnItemSelectedChangeListener = onItemSelectedChangeListener;
+    }
+
+    private void addItemChild(Item item, boolean isSelected) {
+        item.initView();
+        final View itemView = item.getView();
+        if (isSelected) {
+            selectItem(item);
+        } else {
+            item.onDefault(itemView);
+        }
+        addView(itemView, mDefaultLayoutParams);
+    }
+
+    private void selectItem(Item item) {
+        if (item == mLastItem) return;
+        if (mLastItem != null) {
+            mLastItem.setSelected(false);
+            mLastItem.onDefault(item.getView());
+            if (mOnItemSelectedChangeListener != null) {
+                mOnItemSelectedChangeListener.onItemUnselected(mLastItem);
+            }
+        }
+        item.setSelected(true);
+        item.onSelected(item.getView());
+        if (mOnItemSelectedChangeListener != null) {
+            mOnItemSelectedChangeListener.onItemSelected(item);
+        }
+        mLastItem = item;
+    }
+
     public RadioMenu addItem(Item item) {
         mItems.add(item);
         addItemChild(item, item.isSelected());
@@ -83,28 +125,6 @@ public class RadioMenu extends LinearLayout {
         mItems.clear();
         removeAllViews();
         return this;
-    }
-
-    private void addItemChild(Item item, boolean isSelected) {
-        item.initView();
-        final View itemView = item.getView();
-        if (isSelected) {
-            selectItem(item);
-        } else {
-            item.onDefault(itemView);
-        }
-        addView(itemView);
-    }
-
-    private void selectItem(Item item) {
-        if (item == mLastItem) return;
-        if (mLastItem != null) {
-            mLastItem.setSelected(false);
-            mLastItem.onDefault(item.getView());
-        }
-        item.setSelected(true);
-        item.onSelected(item.getView());
-        mLastItem = item;
     }
 
 }
