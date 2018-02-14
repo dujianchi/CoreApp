@@ -12,7 +12,7 @@ public abstract class BaseRefreshableFragment extends BaseFragment implements Sw
     private SwipeRefreshLayout mSrlLoader;
 
     @Override
-    protected View createRootView(View rootView) {
+    public View createRootView(View rootView) {
         return createRefreshRootView(super.createRootView(rootView));
     }
 

@@ -24,12 +24,12 @@ import cn.dujc.core.util.LogUtil;
  * 基本的Activity。所有Activity必须继承于此类。“所有”！
  * Created by lucky on 2017/9/19.
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements IBaseUI {
 
     protected Activity mActivity;
     protected Toolbar mToolbar = null;
     protected TitleCompat mTitleCompat = null;
-    //private View mContentLayout = null;//内容的View，即不包含toolbar的布局
+    protected View mRootView = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,24 +46,17 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         initAnimEnter();
         final int vid = getViewId();
-        final View rootView = getRootView();
+        mRootView = getViewV();
 
         super.onCreate(savedInstanceState);
         ActivityStackUtil.getInstance().addActivity(this);
 
-        if (vid != 0 || rootView != null) {
-            View contentView = vid == 0 ? rootView : getLayoutInflater().inflate(vid, null);
-            setContentView(createRootView(contentView));
+        if (vid != 0 || mRootView != null) {
+            mRootView = vid == 0 ? mRootView : getLayoutInflater().inflate(vid, null);
+            setContentView(createRootView(mRootView));
             mTitleCompat = initTransStatusBar();//这句一定要放在setcontent之后，initbasic之前，否则一些沉浸效果无法显现（改逻辑除外）
             initBasic(savedInstanceState);
-            if (mToolbar != null) {
-                setSupportActionBar(mToolbar);
-                ActionBar actionBar = getSupportActionBar();
-                if (actionBar != null) {
-                    actionBar.setDisplayShowHomeEnabled(false);
-                    actionBar.setDisplayShowTitleEnabled(false);
-                }
-            }
+            setupToolbar();
         }
     }
 
@@ -95,17 +88,59 @@ public abstract class BaseActivity extends AppCompatActivity {
         ActivityStackUtil.getInstance().addFragment(this, fragment);
     }
 
-    protected View createRootView(View contentView) {
+    @Override
+    public View createRootView(View contentView) {
         return linearRootView(contentView);
     }
 
-    protected TitleCompat initTransStatusBar() {
+    @Override
+    public TitleCompat initTransStatusBar() {
         TitleCompat titleCompat = TitleCompat.setStatusBar(mActivity, true, true);
         return titleCompat;
     }
 
-    protected Toolbar initToolbar(ViewGroup parent) {
+    @Override
+    public Toolbar initToolbar(ViewGroup parent) {
         return null;
+    }
+
+    @Override
+    public int go(Class<? extends Activity> activity) {
+        return go(activity, null);
+    }
+
+    @Override
+    public int go(Class<? extends Activity> activity, Bundle args) {
+        Intent intent = new Intent(this, activity);
+        if (args != null) {
+            intent.putExtras(args);
+        }
+        int requestCode = _INCREMENT_REQUEST_CODE[0]++;
+        if (requestCode >= 0xffff) {
+            requestCode = _INCREMENT_REQUEST_CODE[0] = 1;
+        }
+        LogUtil.d("------------ request code = " + requestCode);
+        startActivityForResult(intent, requestCode);
+        return requestCode;
+    }
+
+    /**
+     * 关联主界面 **只有在使用自定义View时使用**
+     */
+    @Override
+    public View getViewV() {
+        return null;
+    }
+
+    protected void setupToolbar() {
+        if (mToolbar != null) {
+            setSupportActionBar(mToolbar);
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayShowHomeEnabled(false);
+                actionBar.setDisplayShowTitleEnabled(false);
+            }
+        }
     }
 
     /**
@@ -173,62 +208,4 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    ///**
-    // * 设置内容（即不包含toolbar的布局）的布局，如果在修改了显示方式之后，需要调用此方法
-    // */
-    //protected final void setContentLayout(View contentLayout) {
-    //    mContentLayout = contentLayout;
-    //}
-
-    ///**
-    // * 设置内容的View是否可用，可用在进行一个接口请求过程中，把整个界面设置为不可用，来防止点击或操作
-    // * 此方法与{@link #createRootView(int)}的实现有关，如果没有使用默认的onCreate或者以上适配的
-    // * 两种{@link #linearRootView(int)}或{@link #frameRootView(int)}方法，需要另外再设置{@link #setContentLayout(View)}
-    // *
-    // * @param enable 是否可用
-    // */
-    //protected final void setContentLayoutEnable(boolean enable) {
-    //    if (mContentLayout != null) mContentLayout.setEnabled(enable);
-    //}
-
-    /**
-     * 自增的request code，每个跳转都是forresult的跳转，那么，今后只要记住跳转方法{@link #go(Class)}或{@link #go(Class, Bundle)}返回的int值
-     * ，即为本次跳转产生的request code，从此不再管理request code，且不会再重复，因为不管在什么界面跳转，每次跳转都用了不同的request code（当然，崩溃重启的情况例外）
-     */
-    private static final int[] _INCREMENT_REQUEST_CODE = {1};
-
-    public int go(Class<? extends Activity> activity) {
-        return go(activity, null);
-    }
-
-    public int go(Class<? extends Activity> activity, Bundle args) {
-        Intent intent = new Intent(this, activity);
-        if (args != null) {
-            intent.putExtras(args);
-        }
-        int requestCode = _INCREMENT_REQUEST_CODE[0]++;
-        if (requestCode >= 0xffff) {
-            requestCode = _INCREMENT_REQUEST_CODE[0] = 1;
-        }
-        LogUtil.d("------------ request code = " + requestCode);
-        startActivityForResult(intent, requestCode);
-        return requestCode;
-    }
-
-    /**
-     * 关联主界面 **只有在使用自定义View时使用**
-     */
-    public View getRootView() {
-        return null;
-    }
-
-    /**
-     * 关联主界面
-     */
-    public abstract int getViewId();
-
-    /**
-     * 基础初始化
-     */
-    public abstract void initBasic(Bundle savedInstanceState);
 }

@@ -12,7 +12,7 @@ public abstract class BaseRefreshableActivity extends BaseActivity implements Sw
     private SwipeRefreshLayout mSrlLoader;
 
     @Override
-    protected View createRootView(View contentView) {
+    public View createRootView(View contentView) {
         return createRefreshRootView(super.createRootView(contentView));
     }
 
