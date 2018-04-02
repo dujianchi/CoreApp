@@ -35,5 +35,6 @@ public class Activity3 extends BaseActivity{
         });
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) ToastUtil.showToast(mActivity, bundle.getString("123"));
+        setResult(RESULT_OK);
     }
 }

@@ -1,8 +1,11 @@
 package cn.dujc.coreapp
 
+import android.content.Intent
 import android.os.Bundle
 import cn.dujc.core.ui.BaseActivity
 import cn.dujc.core.ui.BaseWebFragment
+import cn.dujc.core.util.LogUtil
+import cn.dujc.core.util.ToastUtil
 import cn.dujc.core.widget.NormalMainCreator
 
 class MainActivity : BaseActivity() {
@@ -25,6 +28,14 @@ class MainActivity : BaseActivity() {
                 .add(first, Fragment0())
                 .add(second, Fragment1())
                 .into(this);
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (starter().getRequestCode(Activity3::class.java) == requestCode){
+            ToastUtil.showToast(mActivity, "return activity")
+            LogUtil.d("return activity")
+        }
     }
 
 }

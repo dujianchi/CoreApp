@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
  */
 public abstract class BaseFragment extends Fragment implements IBaseUI {
 
+    private Starter mStarter = null;
     private boolean mLoaded = false;//是否已经载入
     protected Toolbar mToolbar;
     protected View mRootView;
@@ -101,7 +102,8 @@ public abstract class BaseFragment extends Fragment implements IBaseUI {
 
     @Override
     public Starter starter() {
-        return new StarterImpl(mActivity);
+        if (mStarter == null) mStarter = new StarterFragmentImpl(this);
+        return mStarter;
     }
 
     /**

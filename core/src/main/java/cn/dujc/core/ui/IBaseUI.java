@@ -6,6 +6,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.Fragment;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.Toolbar;
 import android.util.Size;
 import android.util.SizeF;
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Map;
 
 import cn.dujc.core.util.LogUtil;
 
@@ -44,6 +47,9 @@ public interface IBaseUI {
     void initBasic(Bundle savedInstanceState);
 
     public interface Starter {
+
+        int getRequestCode(Class<? extends Activity> activityForward);
+
         int go(Class<? extends Activity> activity);
 
         Starter clear();
@@ -97,28 +103,15 @@ public interface IBaseUI {
         Starter with(String key, Bundle param);
     }
 
-    public static class StarterImpl implements Starter {
+    public static abstract class StarterImpl implements Starter {
 
-        private final Activity mActivity;
-        private Bundle mBundle = new Bundle();
-
-        public StarterImpl(Activity activity) {
-            mActivity = activity;
-        }
+        Bundle mBundle = new Bundle();
+        Map<Class<? extends Activity>, Integer> mRequestCodes = new ArrayMap<>();
 
         @Override
-        public int go(Class<? extends Activity> activity) {
-            Intent intent = new Intent(mActivity, activity);
-            if (mBundle != null && mBundle.size() > 0) {
-                intent.putExtras(mBundle);
-            }
-            int requestCode = _INCREMENT_REQUEST_CODE[0]++;
-            if (requestCode >= 0xffff) {
-                requestCode = _INCREMENT_REQUEST_CODE[0] = 1;
-            }
-            LogUtil.d("------------ request code = " + requestCode);
-            mActivity.startActivityForResult(intent, requestCode);
-            return requestCode;
+        public int getRequestCode(Class<? extends Activity> activityForward) {
+            final Integer integer = mRequestCodes.get(activityForward);
+            return integer == null ? -1 : integer;
         }
 
         @Override
@@ -265,6 +258,54 @@ public interface IBaseUI {
         public Starter with(String key, Bundle param) {
             mBundle.putBundle(key, param);
             return this;
+        }
+    }
+
+    public static class StarterActivityImpl extends StarterImpl {
+        private final Activity mActivity;
+
+        public StarterActivityImpl(Activity activity) {
+            mActivity = activity;
+        }
+
+        @Override
+        public int go(Class<? extends Activity> activity) {
+            Intent intent = new Intent(mActivity, activity);
+            if (mBundle != null && mBundle.size() > 0) {
+                intent.putExtras(mBundle);
+            }
+            int requestCode = _INCREMENT_REQUEST_CODE[0]++;
+            if (requestCode >= 0xffff) {
+                requestCode = _INCREMENT_REQUEST_CODE[0] = 1;
+            }
+            LogUtil.d("------------ request code = " + requestCode);
+            mRequestCodes.put(activity, requestCode);
+            mActivity.startActivityForResult(intent, requestCode);
+            return requestCode;
+        }
+    }
+
+    public static class StarterFragmentImpl extends StarterImpl {
+        private final Fragment mFragment;
+
+        public StarterFragmentImpl(Fragment fragment) {
+            mFragment = fragment;
+        }
+
+        @Override
+        public int go(Class<? extends Activity> activity) {
+            Intent intent = new Intent(mFragment.getContext(), activity);
+            if (mBundle != null && mBundle.size() > 0) {
+                intent.putExtras(mBundle);
+            }
+            int requestCode = _INCREMENT_REQUEST_CODE[0]++;
+            if (requestCode >= 0xffff) {
+                requestCode = _INCREMENT_REQUEST_CODE[0] = 1;
+            }
+            LogUtil.d("------------ request code = " + requestCode);
+            mRequestCodes.put(activity, requestCode);
+            mFragment.startActivityForResult(intent, requestCode);
+            return requestCode;
         }
     }
 }
