@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.widget.TextView;
@@ -37,24 +38,14 @@ public class Fragment0 extends BaseFragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public void initBasic(Bundle savedInstanceState) {
         final Downloader downloader = new Downloader("http://cdn1.miaomubao.com/version/miaoke/miaoke-phone-debug-180307.apk"
-                , new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "download.apk")/*, new OnDownloadListener() {
-            @Override
-            public void onDownloadFailure(String message) {
-                System.out.println("download failure because: " + message);
-            }
-
-            @Override
-            public void onUpdateProgress(long downloaded, long total) {
-                System.out.println("downloading " + downloaded + "/" + total);
-            }
-
-            @Override
-            public void onDownloadSuccess(File saved) {
-                System.out.println("downloaded at " + saved.getAbsolutePath());
-            }
-        }*/);
+                , new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "download.apk"));
         mTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

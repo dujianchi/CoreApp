@@ -3,11 +3,14 @@ package cn.dujc.core.downloader;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
+import cn.dujc.core.BuildConfig;
 import cn.dujc.core.util.ToastUtil;
 
 /**
@@ -15,6 +18,8 @@ import cn.dujc.core.util.ToastUtil;
  * Created by lucky on 2018/3/8.
  */
 public abstract class DownloadNotification implements OnDownloadListener {
+
+    public static final String ON_NOTIFICATION_CLICK_BROADCAST = BuildConfig.APPLICATION_ID+".UPDATE_DOWNLOADER";
 
     private static final String CHANNEL_ID = "downloader";
     private final int mId = 123;
@@ -28,12 +33,12 @@ public abstract class DownloadNotification implements OnDownloadListener {
         mContext = context;
         mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "更新通知", NotificationManager.IMPORTANCE_DEFAULT);
             notificationChannel.setDescription("更新通知");
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.RED);
-            notificationChannel.setVibrationPattern(new long[]{0,1000,500,1000});
+            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
             notificationChannel.enableVibration(true);
             mNotificationManager.createNotificationChannel(notificationChannel);
         }
@@ -48,6 +53,10 @@ public abstract class DownloadNotification implements OnDownloadListener {
                 .setSmallIcon(notificationIcon)
                 .setContentTitle("更新")
                 .setContentText("下载更新");
+
+        Intent intent = new Intent(ON_NOTIFICATION_CLICK_BROADCAST);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mNotification.setContentIntent(pendingIntent);
     }
 
     @Override
