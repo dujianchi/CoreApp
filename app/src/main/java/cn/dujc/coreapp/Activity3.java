@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import cn.dujc.core.ui.BaseActivity;
+import cn.dujc.core.util.ToastUtil;
 
 /**
  * Created by du on 2018/2/14.
@@ -28,9 +29,11 @@ public class Activity3 extends BaseActivity{
         mRootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int go = go(Activity4.class);
+                final int go = starter().go(Activity4.class);
                 System.out.println("3 go = " + go);
             }
         });
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) ToastUtil.showToast(mActivity, bundle.getString("123"));
     }
 }

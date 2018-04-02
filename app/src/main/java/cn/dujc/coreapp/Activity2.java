@@ -28,7 +28,7 @@ public class Activity2 extends BaseActivity{
         mRootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int go = go(Activity3.class);
+                final int go = starter().with("123", "123").go(Activity3.class);
                 System.out.println("2 go = " + go);
             }
         });

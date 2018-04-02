@@ -1,7 +1,6 @@
 package cn.dujc.core.ui;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,7 +17,6 @@ import android.widget.LinearLayout;
 
 import cn.dujc.core.R;
 import cn.dujc.core.bridge.ActivityStackUtil;
-import cn.dujc.core.util.LogUtil;
 
 /**
  * 基本的Activity。所有Activity必须继承于此类。“所有”！
@@ -105,23 +103,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI 
     }
 
     @Override
-    public int go(Class<? extends Activity> activity) {
-        return go(activity, null);
-    }
-
-    @Override
-    public int go(Class<? extends Activity> activity, Bundle args) {
-        Intent intent = new Intent(this, activity);
-        if (args != null) {
-            intent.putExtras(args);
-        }
-        int requestCode = _INCREMENT_REQUEST_CODE[0]++;
-        if (requestCode >= 0xffff) {
-            requestCode = _INCREMENT_REQUEST_CODE[0] = 1;
-        }
-        LogUtil.d("------------ request code = " + requestCode);
-        startActivityForResult(intent, requestCode);
-        return requestCode;
+    public Starter starter() {
+        return new StarterImpl(mActivity);
     }
 
     /**

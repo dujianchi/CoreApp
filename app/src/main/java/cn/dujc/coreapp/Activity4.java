@@ -48,7 +48,7 @@ public class Activity4 extends BaseRefreshableActivity {
             mRootView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final int go = go(Activity2.class);
+                    final int go = starter().go(Activity2.class);
                     System.out.println("4 go = " + go);
                 }
             });
