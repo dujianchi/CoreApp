@@ -1,6 +1,7 @@
 package cn.dujc.core.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,7 +39,7 @@ public interface IBaseUI {
 
     View createRootView(View contentView);
 
-    Starter starter();
+    IStarter starter();
 
     View getViewV();
 
@@ -46,67 +47,118 @@ public interface IBaseUI {
 
     void initBasic(Bundle savedInstanceState);
 
-    public interface Starter {
+    interface IContextCompat {
+        void startActivityForResult(Intent intent, int requestCode);
+
+        Context context();
+    }
+
+    public interface IStarter {
 
         int getRequestCode(Class<? extends Activity> activityForward);
 
         int go(Class<? extends Activity> activity);
 
-        Starter clear();
+        IStarter clear();
 
-        Starter putAll(Bundle bundle);
+        IStarter putAll(Bundle bundle);
 
-        Starter with(String key, String param);
+        IStarter with(String key, String param);
 
-        Starter with(String key, byte param);
+        IStarter with(String key, byte param);
 
-        Starter with(String key, char param);
+        IStarter with(String key, char param);
 
-        Starter with(String key, short param);
+        IStarter with(String key, short param);
 
-        Starter with(String key, float param);
+        IStarter with(String key, float param);
 
-        Starter with(String key, CharSequence param);
+        IStarter with(String key, CharSequence param);
 
-        Starter with(String key, Parcelable param);
-
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-        Starter with(String key, Size param);
+        IStarter with(String key, Parcelable param);
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-        Starter with(String key, SizeF param);
+        IStarter with(String key, Size param);
 
-        Starter with(String key, Parcelable[] param);
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        IStarter with(String key, SizeF param);
 
-        Starter withParcelableArrayList(String key, ArrayList<? extends Parcelable> param);
+        IStarter with(String key, Parcelable[] param);
 
-        Starter with(String key, SparseArray<? extends Parcelable> param);
+        IStarter withParcelableArrayList(String key, ArrayList<? extends Parcelable> param);
 
-        Starter withIntegerArrayList(String key, ArrayList<Integer> param);
+        IStarter with(String key, SparseArray<? extends Parcelable> param);
 
-        Starter withStringArrayList(String key, ArrayList<String> param);
+        IStarter withIntegerArrayList(String key, ArrayList<Integer> param);
 
-        Starter withCharSequenceArrayList(String key, ArrayList<CharSequence> param);
+        IStarter withStringArrayList(String key, ArrayList<String> param);
 
-        Starter with(String key, Serializable param);
+        IStarter withCharSequenceArrayList(String key, ArrayList<CharSequence> param);
 
-        Starter with(String key, byte[] param);
+        IStarter with(String key, Serializable param);
 
-        Starter with(String key, short[] param);
+        IStarter with(String key, byte[] param);
 
-        Starter with(String key, char[] param);
+        IStarter with(String key, short[] param);
 
-        Starter with(String key, float[] param);
+        IStarter with(String key, char[] param);
 
-        Starter with(String key, CharSequence[] param);
+        IStarter with(String key, float[] param);
 
-        Starter with(String key, Bundle param);
+        IStarter with(String key, CharSequence[] param);
+
+        IStarter with(String key, Bundle param);
     }
 
-    public static abstract class StarterImpl implements Starter {
+    static class IContextCompatActivityImpl implements IContextCompat {
+        private final Activity mActivity;
+
+        public IContextCompatActivityImpl(Activity activity) {
+            mActivity = activity;
+        }
+
+        @Override
+        public void startActivityForResult(Intent intent, int requestCode) {
+            mActivity.startActivityForResult(intent, requestCode);
+        }
+
+        @Override
+        public Context context() {
+            return mActivity;
+        }
+    }
+
+    static class IContextCompatFragmentImpl implements IContextCompat {
+        private final Fragment mFragment;
+
+        public IContextCompatFragmentImpl(Fragment fragment) {
+            mFragment = fragment;
+        }
+
+        @Override
+        public void startActivityForResult(Intent intent, int requestCode) {
+
+        }
+
+        @Override
+        public Context context() {
+            return mFragment.getContext();
+        }
+    }
+
+    public static class IStarterImpl implements IStarter {
 
         Bundle mBundle = new Bundle();
         Map<Class<? extends Activity>, Integer> mRequestCodes = new ArrayMap<>();
+        private IContextCompat mContext;
+
+        public IStarterImpl(Activity activity) {
+            mContext = new IContextCompatActivityImpl(activity);
+        }
+
+        public IStarterImpl(Fragment fragment) {
+            mContext = new IContextCompatFragmentImpl(fragment);
+        }
 
         @Override
         public int getRequestCode(Class<? extends Activity> activityForward) {
@@ -115,197 +167,166 @@ public interface IBaseUI {
         }
 
         @Override
-        public Starter clear() {
+        public int go(Class<? extends Activity> activity) {
+            Intent intent = new Intent(mContext.context(), activity);
+            if (mBundle != null && mBundle.size() > 0) {
+                intent.putExtras(mBundle);
+            }
+            int requestCode = _INCREMENT_REQUEST_CODE[0]++;
+            if (requestCode >= 0xffff) {
+                requestCode = _INCREMENT_REQUEST_CODE[0] = 1;
+            }
+            LogUtil.d("------------ request code = " + requestCode);
+            mRequestCodes.put(activity, requestCode);
+            mContext.startActivityForResult(intent, requestCode);
+            return requestCode;
+        }
+
+        @Override
+        public IStarter clear() {
             mBundle.clear();
             return this;
         }
 
         @Override
-        public Starter putAll(Bundle bundle) {
+        public IStarter putAll(Bundle bundle) {
             bundle.putAll(bundle);
             return this;
         }
 
         @Override
-        public Starter with(String key, String param) {
+        public IStarter with(String key, String param) {
             mBundle.putString(key, param);
             return this;
         }
 
         @Override
-        public Starter with(String key, byte param) {
+        public IStarter with(String key, byte param) {
             mBundle.putByte(key, param);
             return this;
         }
 
         @Override
-        public Starter with(String key, char param) {
+        public IStarter with(String key, char param) {
             mBundle.putChar(key, param);
             return this;
         }
 
         @Override
-        public Starter with(String key, short param) {
+        public IStarter with(String key, short param) {
             mBundle.putShort(key, param);
             return this;
         }
 
         @Override
-        public Starter with(String key, float param) {
+        public IStarter with(String key, float param) {
             mBundle.putFloat(key, param);
             return this;
         }
 
         @Override
-        public Starter with(String key, CharSequence param) {
+        public IStarter with(String key, CharSequence param) {
             mBundle.putCharSequence(key, param);
             return this;
         }
 
         @Override
-        public Starter with(String key, Parcelable param) {
+        public IStarter with(String key, Parcelable param) {
             mBundle.putParcelable(key, param);
             return this;
         }
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
-        public Starter with(String key, Size param) {
+        public IStarter with(String key, Size param) {
             mBundle.putSize(key, param);
             return this;
         }
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
-        public Starter with(String key, SizeF param) {
+        public IStarter with(String key, SizeF param) {
             mBundle.putSizeF(key, param);
             return this;
         }
 
         @Override
-        public Starter with(String key, Parcelable[] param) {
+        public IStarter with(String key, Parcelable[] param) {
             mBundle.putParcelableArray(key, param);
             return this;
         }
 
         @Override
-        public Starter withParcelableArrayList(String key, ArrayList<? extends Parcelable> param) {
+        public IStarter withParcelableArrayList(String key, ArrayList<? extends Parcelable> param) {
             mBundle.putParcelableArrayList(key, param);
             return this;
         }
 
         @Override
-        public Starter with(String key, SparseArray<? extends Parcelable> param) {
+        public IStarter with(String key, SparseArray<? extends Parcelable> param) {
             mBundle.putSparseParcelableArray(key, param);
             return this;
         }
 
         @Override
-        public Starter withIntegerArrayList(String key, ArrayList<Integer> param) {
+        public IStarter withIntegerArrayList(String key, ArrayList<Integer> param) {
             mBundle.putIntegerArrayList(key, param);
             return this;
         }
 
         @Override
-        public Starter withStringArrayList(String key, ArrayList<String> param) {
+        public IStarter withStringArrayList(String key, ArrayList<String> param) {
             mBundle.putStringArrayList(key, param);
             return this;
         }
 
         @Override
-        public Starter withCharSequenceArrayList(String key, ArrayList<CharSequence> param) {
+        public IStarter withCharSequenceArrayList(String key, ArrayList<CharSequence> param) {
             mBundle.putCharSequenceArrayList(key, param);
             return this;
         }
 
         @Override
-        public Starter with(String key, Serializable param) {
+        public IStarter with(String key, Serializable param) {
             mBundle.putSerializable(key, param);
             return this;
         }
 
         @Override
-        public Starter with(String key, byte[] param) {
+        public IStarter with(String key, byte[] param) {
             mBundle.putByteArray(key, param);
             return this;
         }
 
         @Override
-        public Starter with(String key, short[] param) {
+        public IStarter with(String key, short[] param) {
             mBundle.putShortArray(key, param);
             return this;
         }
 
         @Override
-        public Starter with(String key, char[] param) {
+        public IStarter with(String key, char[] param) {
             mBundle.putCharArray(key, param);
             return this;
         }
 
         @Override
-        public Starter with(String key, float[] param) {
+        public IStarter with(String key, float[] param) {
             mBundle.putFloatArray(key, param);
             return this;
         }
 
         @Override
-        public Starter with(String key, CharSequence[] param) {
+        public IStarter with(String key, CharSequence[] param) {
             mBundle.putCharSequenceArray(key, param);
             return this;
         }
 
         @Override
-        public Starter with(String key, Bundle param) {
+        public IStarter with(String key, Bundle param) {
             mBundle.putBundle(key, param);
             return this;
         }
     }
 
-    public static class StarterActivityImpl extends StarterImpl {
-        private final Activity mActivity;
-
-        public StarterActivityImpl(Activity activity) {
-            mActivity = activity;
-        }
-
-        @Override
-        public int go(Class<? extends Activity> activity) {
-            Intent intent = new Intent(mActivity, activity);
-            if (mBundle != null && mBundle.size() > 0) {
-                intent.putExtras(mBundle);
-            }
-            int requestCode = _INCREMENT_REQUEST_CODE[0]++;
-            if (requestCode >= 0xffff) {
-                requestCode = _INCREMENT_REQUEST_CODE[0] = 1;
-            }
-            LogUtil.d("------------ request code = " + requestCode);
-            mRequestCodes.put(activity, requestCode);
-            mActivity.startActivityForResult(intent, requestCode);
-            return requestCode;
-        }
-    }
-
-    public static class StarterFragmentImpl extends StarterImpl {
-        private final Fragment mFragment;
-
-        public StarterFragmentImpl(Fragment fragment) {
-            mFragment = fragment;
-        }
-
-        @Override
-        public int go(Class<? extends Activity> activity) {
-            Intent intent = new Intent(mFragment.getContext(), activity);
-            if (mBundle != null && mBundle.size() > 0) {
-                intent.putExtras(mBundle);
-            }
-            int requestCode = _INCREMENT_REQUEST_CODE[0]++;
-            if (requestCode >= 0xffff) {
-                requestCode = _INCREMENT_REQUEST_CODE[0] = 1;
-            }
-            LogUtil.d("------------ request code = " + requestCode);
-            mRequestCodes.put(activity, requestCode);
-            mFragment.startActivityForResult(intent, requestCode);
-            return requestCode;
-        }
-    }
 }

@@ -24,7 +24,7 @@ import cn.dujc.core.bridge.ActivityStackUtil;
  */
 public abstract class BaseActivity extends AppCompatActivity implements IBaseUI {
 
-    private Starter mStarter = null;
+    private IStarter mStarter = null;
 
     protected Activity mActivity;
     protected Toolbar mToolbar = null;
@@ -105,8 +105,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI 
     }
 
     @Override
-    public Starter starter() {
-        if (mStarter == null) mStarter = new StarterActivityImpl(this);
+    public IStarter starter() {
+        if (mStarter == null) mStarter = new IStarterImpl(this);
         return mStarter;
     }
 
