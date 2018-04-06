@@ -114,6 +114,7 @@ public abstract class BaseListActivity extends BaseActivity {
         }
     }
 
+    @Nullable
     protected final <T> T getItem(int position) {
         return mQuickAdapter != null ? (T) mQuickAdapter.getItem(position) : null;
     }
@@ -132,10 +133,12 @@ public abstract class BaseListActivity extends BaseActivity {
      *
      * @return LinearLayoutManager
      */
+    @Nullable
     protected RecyclerView.LayoutManager initLayoutManager() {
         return new LinearLayoutManager(mActivity);
     }
 
+    @Nullable
     public BaseQuickAdapter getAdapter() {
         return mQuickAdapter;
     }

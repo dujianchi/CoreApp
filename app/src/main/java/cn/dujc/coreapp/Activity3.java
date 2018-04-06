@@ -33,8 +33,8 @@ public class Activity3 extends BaseActivity{
                 System.out.println("3 go = " + go);
             }
         });
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) ToastUtil.showToast(mActivity, bundle.getString("123"));
+        String string = extras().get("123",null, String.class);
+        if (string != null) ToastUtil.showToast(mActivity, string);
         setResult(RESULT_OK);
     }
 }

@@ -112,6 +112,7 @@ public abstract class BaseListFragment extends BaseFragment {
         }
     }
 
+    @Nullable
     protected final <T> T getItem(int position) {
         return mQuickAdapter != null ? (T) mQuickAdapter.getItem(position) : null;
     }
@@ -130,10 +131,12 @@ public abstract class BaseListFragment extends BaseFragment {
      * 默认的RecyclerView.LayoutManager是LinearLayoutManager
      * @return LinearLayoutManager
      */
+    @Nullable
     protected RecyclerView.LayoutManager initLayoutManager(){
         return new LinearLayoutManager(mActivity);
     }
 
+    @Nullable
     public BaseQuickAdapter getAdapter() {
         return mQuickAdapter;
     }

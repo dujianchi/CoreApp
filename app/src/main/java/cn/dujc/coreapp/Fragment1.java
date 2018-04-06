@@ -21,7 +21,7 @@ public class Fragment1 extends BaseFragment implements View.OnClickListener {
     @Override
     public View getViewV() {
         TextView textView = new TextView(mActivity);
-        textView.setText("1");
+        textView.setText("10000000");
         textView.setOnClickListener(this);
         return textView;
     }

@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 public abstract class BaseFragment extends Fragment implements IBaseUI {
 
     private IStarter mStarter = null;
+    private IParams mParams = null;
     private boolean mLoaded = false;//是否已经载入
     protected Toolbar mToolbar;
     protected View mRootView;
@@ -90,11 +91,13 @@ public abstract class BaseFragment extends Fragment implements IBaseUI {
     }
 
     @Override
+    @Nullable
     public Toolbar initToolbar(ViewGroup parent) {
         return null;
     }
 
     @Override
+    @Nullable
     public TitleCompat initTransStatusBar() {
         TitleCompat titleCompat = TitleCompat.setStatusBar(mActivity, true, true);
         return titleCompat;
@@ -106,14 +109,22 @@ public abstract class BaseFragment extends Fragment implements IBaseUI {
         return mStarter;
     }
 
+    @Override
+    public IParams extras() {
+        if (mParams == null) mParams = new IParamsImpl(mActivity);
+        return mParams;
+    }
+
     /**
      * 关联主界面 **只有在使用自定义View时使用**
      */
     @Override
+    @Nullable
     public View getViewV() {
         return null;
     }
 
+    @Nullable
     public final View findViewById(int resId) {
         return mRootView != null ? mRootView.findViewById(resId) : null;
     }

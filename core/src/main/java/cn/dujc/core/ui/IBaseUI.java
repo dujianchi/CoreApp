@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
@@ -40,6 +41,8 @@ public interface IBaseUI {
     View createRootView(View contentView);
 
     IStarter starter();
+
+    IParams extras();
 
     View getViewV();
 
@@ -108,6 +111,14 @@ public interface IBaseUI {
         IStarter with(String key, CharSequence[] param);
 
         IStarter with(String key, Bundle param);
+    }
+
+    public interface IParams {
+        public <T> T get(String key, T defaultValues, Class<T> clazz);
+
+        public <T> T get(String key, Class<T> clazz);
+
+        public <T> T get(String key);
     }
 
     static class IContextCompatActivityImpl implements IContextCompat {
@@ -329,4 +340,38 @@ public interface IBaseUI {
         }
     }
 
+    public static class IParamsImpl implements IParams {
+
+        private final Bundle mBundle;
+
+        public IParamsImpl(Activity activity) {
+            mBundle = activity != null && activity.getIntent() != null ? activity.getIntent().getExtras() : null;
+        }
+
+        @Override
+        @Nullable
+        public <T> T get(String key, T defaultValues, Class<T> clazz) {
+            if (mBundle != null && key != null) {
+                final Object obj = mBundle.get(key);
+                if (clazz != null && clazz.isInstance(obj)) {
+                    return clazz.cast(obj);
+                } else if (obj != null) {
+                    return (T) obj;
+                }
+            }
+            return defaultValues;
+        }
+
+        @Override
+        @Nullable
+        public <T> T get(String key, Class<T> clazz) {
+            return get(key, null, clazz);
+        }
+
+        @Override
+        @Nullable
+        public <T> T get(String key) {
+            return get(key, null, null);
+        }
+    }
 }

@@ -25,6 +25,7 @@ import cn.dujc.core.bridge.ActivityStackUtil;
 public abstract class BaseActivity extends AppCompatActivity implements IBaseUI {
 
     private IStarter mStarter = null;
+    private IParams mParams = null;
 
     protected Activity mActivity;
     protected Toolbar mToolbar = null;
@@ -89,17 +90,20 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI 
     }
 
     @Override
+    @Nullable
     public View createRootView(View contentView) {
         return linearRootView(contentView);
     }
 
     @Override
+    @Nullable
     public TitleCompat initTransStatusBar() {
         TitleCompat titleCompat = TitleCompat.setStatusBar(mActivity, true, true);
         return titleCompat;
     }
 
     @Override
+    @Nullable
     public Toolbar initToolbar(ViewGroup parent) {
         return null;
     }
@@ -110,10 +114,17 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI 
         return mStarter;
     }
 
+    @Override
+    public IParams extras() {
+        if (mParams == null) mParams = new IParamsImpl(this);
+        return mParams;
+    }
+
     /**
      * 关联主界面 **只有在使用自定义View时使用**
      */
     @Override
+    @Nullable
     public View getViewV() {
         return null;
     }

@@ -13,9 +13,7 @@ import android.widget.TextView;
 
 import java.io.File;
 
-import cn.dujc.core.downloader.DownloadNotification;
 import cn.dujc.core.downloader.Downloader;
-import cn.dujc.core.downloader.OnDownloadListener;
 import cn.dujc.core.ui.BaseFragment;
 
 /**
@@ -33,7 +31,7 @@ public class Fragment0 extends BaseFragment {
     @Override
     public View getViewV() {
         mTextView = new TextView(mActivity);
-        mTextView.setText("0");
+        mTextView.setText("00000000");
         return mTextView;
     }
 
@@ -49,12 +47,13 @@ public class Fragment0 extends BaseFragment {
         mTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DownloadNotification(mActivity, R.mipmap.ic_launcher) {
-                    @Override
-                    public void onDownloadSuccess(File saved) {
-                        install(mActivity, saved);
-                    }
-                }.startDownload(downloader, false);
+                starter().with("123","678-2").go(Activity3.class);
+                //new DownloadNotification(mActivity, R.mipmap.ic_launcher) {
+                //    @Override
+                //    public void onDownloadSuccess(File saved) {
+                //        install(mActivity, saved);
+                //    }
+                //}.startDownload(downloader, false);
             }
         });
     }
