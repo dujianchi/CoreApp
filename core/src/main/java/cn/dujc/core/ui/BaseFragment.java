@@ -106,6 +106,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI {
     @Override
     public IStarter starter() {
         if (mStarter == null) mStarter = new IStarterImpl(this);
+        else mStarter.clear();//为什么要clear呢？想了想，实际上我用的一直是同一个starter，那么，如果一直界面往不同界面都传了值，它就会一直累加……
         return mStarter;
     }
 
