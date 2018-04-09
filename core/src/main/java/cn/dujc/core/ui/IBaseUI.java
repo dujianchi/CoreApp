@@ -356,7 +356,11 @@ public interface IBaseUI {
                 if (clazz != null && clazz.isInstance(obj)) {
                     return clazz.cast(obj);
                 } else if (obj != null) {
-                    return (T) obj;
+                    try {
+                        return (T) obj;
+                    } catch (ClassCastException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             return defaultValues;
