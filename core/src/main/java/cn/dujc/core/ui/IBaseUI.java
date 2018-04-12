@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.Toolbar;
 import android.util.Size;
@@ -54,6 +55,8 @@ public interface IBaseUI {
         void startActivityForResult(Intent intent, int requestCode);
 
         Context context();
+
+        void finish();
     }
 
     public interface IStarter {
@@ -61,6 +64,8 @@ public interface IBaseUI {
         int getRequestCode(Class<? extends Activity> activityForward);
 
         int go(Class<? extends Activity> activity);
+
+        IStarter finishThen();
 
         IStarter clear();
 
@@ -137,6 +142,11 @@ public interface IBaseUI {
         public Context context() {
             return mActivity;
         }
+
+        @Override
+        public void finish() {
+            mActivity.finish();
+        }
     }
 
     static class IContextCompatFragmentImpl implements IContextCompat {
@@ -155,6 +165,12 @@ public interface IBaseUI {
         public Context context() {
             return mFragment.getContext();
         }
+
+        @Override
+        public void finish() {
+            final FragmentActivity activity = mFragment.getActivity();
+            if (activity != null && !activity.isFinishing())activity.finish();
+        }
     }
 
     public static class IStarterImpl implements IStarter {
@@ -162,6 +178,7 @@ public interface IBaseUI {
         Bundle mBundle = new Bundle();
         Map<Class<? extends Activity>, Integer> mRequestCodes = new ArrayMap<>();
         private IContextCompat mContext;
+        private boolean mFinishThenGo = false;//跳转完是否关闭，默认false。跳转完或获取starter后恢复默认
 
         public IStarterImpl(Activity activity) {
             mContext = new IContextCompatActivityImpl(activity);
@@ -190,12 +207,23 @@ public interface IBaseUI {
             LogUtil.d("------------ request code = " + requestCode);
             mRequestCodes.put(activity, requestCode);
             mContext.startActivityForResult(intent, requestCode);
+            if (mFinishThenGo) {
+                mContext.finish();
+                mFinishThenGo = false;
+            }
             return requestCode;
+        }
+
+        @Override
+        public IStarter finishThen() {
+            mFinishThenGo = true;
+            return this;
         }
 
         @Override
         public IStarter clear() {
             mBundle.clear();
+            mFinishThenGo = false;
             return this;
         }
 
