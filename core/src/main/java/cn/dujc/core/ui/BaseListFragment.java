@@ -103,9 +103,9 @@ public abstract class BaseListFragment extends BaseFragment {
     protected final void notifyDataSetChanged(boolean done) {
         loadingDone();
         if (mQuickAdapter != null) {
-            if (done){
+            if (done) {
                 mQuickAdapter.loadMoreEnd(true);
-            }else{
+            } else {
                 mQuickAdapter.loadMoreComplete();
             }
             mQuickAdapter.notifyDataSetChanged();
@@ -129,10 +129,11 @@ public abstract class BaseListFragment extends BaseFragment {
 
     /**
      * 默认的RecyclerView.LayoutManager是LinearLayoutManager
+     *
      * @return LinearLayoutManager
      */
     @Nullable
-    protected RecyclerView.LayoutManager initLayoutManager(){
+    protected RecyclerView.LayoutManager initLayoutManager() {
         return new LinearLayoutManager(mActivity);
     }
 
@@ -141,7 +142,25 @@ public abstract class BaseListFragment extends BaseFragment {
         return mQuickAdapter;
     }
 
-    @Nullable protected abstract BaseQuickAdapter initAdapter();
+    @Nullable
+    protected final SwipeRefreshLayout getSwipeRefreshLayout() {
+        return mSrlLoader;
+    }
+
+    protected final void showRefreshing() {
+        if (mSrlLoader != null) {
+            mSrlLoader.setRefreshing(true);
+        }
+    }
+
+    protected final void refreshEnable(boolean enable) {
+        if (mSrlLoader != null) {
+            mSrlLoader.setEnabled(enable);
+        }
+    }
+
+    @Nullable
+    protected abstract BaseQuickAdapter initAdapter();
 
     protected abstract void onItemClick(int position);
 

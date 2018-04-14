@@ -143,7 +143,25 @@ public abstract class BaseListActivity extends BaseActivity {
         return mQuickAdapter;
     }
 
-    @Nullable protected abstract BaseQuickAdapter initAdapter();
+    @Nullable
+    protected abstract BaseQuickAdapter initAdapter();
+
+    @Nullable
+    protected final SwipeRefreshLayout getSwipeRefreshLayout() {
+        return mSrlLoader;
+    }
+
+    protected final void showRefreshing() {
+        if (mSrlLoader != null) {
+            mSrlLoader.setRefreshing(true);
+        }
+    }
+
+    protected final void refreshEnable(boolean enable) {
+        if (mSrlLoader != null) {
+            mSrlLoader.setEnabled(enable);
+        }
+    }
 
     protected abstract void onItemClick(int position);
 
