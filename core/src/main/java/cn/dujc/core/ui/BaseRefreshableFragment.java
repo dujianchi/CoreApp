@@ -27,9 +27,19 @@ public abstract class BaseRefreshableFragment extends BaseFragment implements Sw
         return mSrlLoader;
     }
 
+    protected final SwipeRefreshLayout getSwipeRefreshLayout() {
+        return mSrlLoader;
+    }
+
     protected final void refreshDone() {
         if (mSrlLoader != null) {
             mSrlLoader.setRefreshing(false);
+        }
+    }
+
+    protected final void showRefreshing() {
+        if (mSrlLoader != null) {
+            mSrlLoader.setRefreshing(true);
         }
     }
 
