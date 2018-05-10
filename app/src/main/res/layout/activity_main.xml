@@ -8,13 +8,22 @@
     android:orientation="vertical"
     tools:context="cn.dujc.coreapp.MainActivity">
 
-    <cn.dujc.core.widget.RadioMenu
-        android:id="@+id/rm_menu"
+    <Button
+        android:text="沉浸开关"
+        android:onClick="translateSwitch"
         android:layout_width="match_parent"
-        android:layout_height="50dp"/>
+        android:layout_height="wrap_content" />
 
-    <FrameLayout
-        android:id="@+id/fl_container"
+    <Button
+        android:text="明暗开关"
+        android:onClick="lightSwitch"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:text="内容开关"
+        android:onClick="fitSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>

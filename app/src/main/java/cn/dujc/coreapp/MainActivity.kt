@@ -1,41 +1,49 @@
 package cn.dujc.coreapp
 
-import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.Toolbar
+import android.view.View
+import android.view.ViewGroup
 import cn.dujc.core.ui.BaseActivity
-import cn.dujc.core.ui.BaseWebFragment
-import cn.dujc.core.util.LogUtil
+import cn.dujc.core.ui.TitleCompat
 import cn.dujc.core.util.ToastUtil
-import cn.dujc.core.widget.NormalMainCreator
 
 class MainActivity : BaseActivity() {
 
     override fun getViewId() = R.layout.activity_main
 
+    override fun initToolbar(parent: ViewGroup?): Toolbar? {
+        val toolbar = layoutInflater.inflate(R.layout.toolbar, parent, false)
+        val toolbar1 = toolbar as? Toolbar
+        return toolbar1
+    }
+
     override fun initBasic(savedInstanceState: Bundle?) {
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.fl_container, BaseWebFragment()).commit()
 
-        //val go = go(Activity2::class.java)
-        //println("main go = $go")
-
-        val first = ItemView(mActivity, "aaa").setSelected(true)
-        val second = ItemView(mActivity, "bbb")
-        //rm_menu.addItem(first)
-        //rm_menu.addItem(second)
-
-        NormalMainCreator.create(R.id.fl_container, R.id.rm_menu)
-                .add(first, Fragment0())
-                .add(second, Fragment1())
-                .into(this);
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (starter().getRequestCode(Activity3::class.java) == requestCode){
-            ToastUtil.showToast(mActivity, "return activity")
-            LogUtil.d("return activity")
-        }
+    override fun initTransStatusBar(): TitleCompat? {
+        return TitleCompat.setStatusBar(mActivity, tOn, fOn)//.setFakeStatusBarColorId(R.color.colorPrimaryDark)
     }
 
+
+
+    private var tOn = true
+    private var fOn = false
+    private var lOn = false
+
+    fun translateSwitch(v: View) {
+        tOn = !tOn
+        mTitleCompat?.setTranslucentStatus(tOn)
+    }
+
+    fun lightSwitch(v: View) {
+        lOn = !lOn
+        ToastUtil.showToast(mActivity, lOn)
+        mTitleCompat?.setStatusBarMode(lOn)
+    }
+    fun fitSwitch(v: View) {
+        fOn = !fOn
+        mTitleCompat?.setContentFits(fOn)
+    }
 }
