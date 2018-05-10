@@ -5,6 +5,8 @@ import android.view.View;
 
 import java.util.List;
 
+import cn.dujc.core.ui.IBaseUI;
+
 /**
  * 使用BaseViewHolder的adapter，默认使用都是这个
  * Created by du on 2018/1/26.
@@ -26,5 +28,11 @@ public abstract class BaseAdapter<T> extends BaseQuickAdapter<T, BaseViewHolder>
     @Override
     public BaseViewHolder createBaseViewHolder(View view) {
         return new BaseViewHolder(view);
+    }
+
+    @Nullable
+    public IBaseUI.IStarter starter() {//todo 未知是否有效
+        if (mContext instanceof IBaseUI) return ((IBaseUI) mContext).starter();
+        return null;
     }
 }
