@@ -30,20 +30,20 @@ class MainActivity : BaseActivity() {
 
     private var tOn = true
     private var fOn = false
-    private var lOn = false
+    private var lOn = true
 
     fun translateSwitch(v: View) {
         tOn = !tOn
-        mTitleCompat?.setTranslucentStatus(tOn)
+        titleCompat?.setTranslucentStatus(tOn)
     }
 
     fun lightSwitch(v: View) {
         lOn = !lOn
         ToastUtil.showToast(mActivity, lOn)
-        mTitleCompat?.setStatusBarMode(lOn)
+        titleCompat?.setStatusBarMode(lOn)
     }
     fun fitSwitch(v: View) {
         fOn = !fOn
-        mTitleCompat?.setContentFits(fOn)
+        titleCompat?.setContentFits(fOn)
     }
 }

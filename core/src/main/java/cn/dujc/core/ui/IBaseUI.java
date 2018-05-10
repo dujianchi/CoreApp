@@ -37,7 +37,7 @@ public interface IBaseUI {
 
     Toolbar initToolbar(ViewGroup parent);
 
-    TitleCompat initTransStatusBar();
+    TitleCompat getTitleCompat();
 
     View createRootView(View contentView);
 

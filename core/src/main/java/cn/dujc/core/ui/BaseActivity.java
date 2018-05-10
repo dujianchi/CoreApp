@@ -29,7 +29,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI 
 
     protected Activity mActivity;
     protected Toolbar mToolbar = null;
-    protected TitleCompat mTitleCompat = null;
+    private TitleCompat mTitleCompat = null;
     protected View mRootView = null;
 
     @Override
@@ -95,11 +95,15 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI 
         return linearRootView(contentView);
     }
 
-    @Override
     @Nullable
     public TitleCompat initTransStatusBar() {
-        TitleCompat titleCompat = TitleCompat.setStatusBar(mActivity, true, true);
-        return titleCompat;
+        if (mTitleCompat == null) mTitleCompat = TitleCompat.setStatusBar(mActivity, true, true);
+        return mTitleCompat;
+    }
+
+    @Override
+    public TitleCompat getTitleCompat() {
+        return mTitleCompat;
     }
 
     @Override

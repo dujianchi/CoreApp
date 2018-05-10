@@ -23,7 +23,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI {
     private boolean mLoaded = false;//是否已经载入
     protected Toolbar mToolbar;
     protected View mRootView;
-    protected TitleCompat mTitleCompat = null;
+    private TitleCompat mTitleCompat = null;
     protected Activity mActivity;
 
     @Nullable
@@ -34,7 +34,6 @@ public abstract class BaseFragment extends Fragment implements IBaseUI {
         final View rootView = getViewV();
         Context context = container != null ? container.getContext() : null;
 
-        mTitleCompat = initTransStatusBar();
         if (mRootView == null && (vid != 0 || rootView != null) && context != null) {
             if (rootView == null) {
                 mRootView = createRootView(inflater.inflate(vid, container, false));
@@ -98,9 +97,11 @@ public abstract class BaseFragment extends Fragment implements IBaseUI {
 
     @Override
     @Nullable
-    public TitleCompat initTransStatusBar() {
-        TitleCompat titleCompat = TitleCompat.setStatusBar(mActivity, true, true);
-        return titleCompat;
+    public TitleCompat getTitleCompat() {
+        if (getActivity() instanceof BaseActivity) {
+            mTitleCompat = ((BaseActivity) getActivity()).getTitleCompat();
+        }
+        return mTitleCompat;
     }
 
     @Override
