@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
@@ -8,22 +7,34 @@
     android:orientation="vertical"
     tools:context="cn.dujc.coreapp.MainActivity">
 
+    <cn.dujc.core.ui.StatusBarPlaceholder
+        android:id="@+id/sbp_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent" />
+
     <Button
-        android:text="沉浸开关"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:onClick="translateSwitch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:text="沉浸开关" />
 
     <Button
-        android:text="明暗开关"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:onClick="lightSwitch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:text="明暗开关" />
 
     <Button
-        android:text="内容开关"
-        android:onClick="fitSwitch"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:onClick="fitSwitch"
+        android:text="内容开关" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="placeholderSwitch"
+        android:text="占位开关" />
 
 </LinearLayout>
