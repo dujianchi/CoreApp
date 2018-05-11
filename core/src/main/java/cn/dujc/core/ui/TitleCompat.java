@@ -167,7 +167,7 @@ public class TitleCompat {
             Window win = mActivity.getWindow();
             final View decorView = win.getDecorView();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                //win.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                win.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 if (on) {
                     decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
                     win.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -186,14 +186,16 @@ public class TitleCompat {
                 }
             }
 
-            ViewGroup decorViewGroup = (ViewGroup) decorView;
-            mFakeStatusBarView = new View(mActivity);
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, mStatusBarHeight);
-            params.gravity = Gravity.TOP;
-            mFakeStatusBarView.setLayoutParams(params);
-            mFakeStatusBarView.setBackgroundColor(DEFAULT_TINT_COLOR);
-            mFakeStatusBarView.setVisibility(View.GONE);
-            decorViewGroup.addView(mFakeStatusBarView);
+            if (mFakeStatusBarView == null) {
+                ViewGroup decorViewGroup = (ViewGroup) decorView;
+                mFakeStatusBarView = new View(mActivity);
+                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, mStatusBarHeight);
+                params.gravity = Gravity.TOP;
+                mFakeStatusBarView.setLayoutParams(params);
+                mFakeStatusBarView.setBackgroundColor(DEFAULT_TINT_COLOR);
+                mFakeStatusBarView.setVisibility(View.GONE);
+                decorViewGroup.addView(mFakeStatusBarView);
+            }
         }
         return this;
     }
