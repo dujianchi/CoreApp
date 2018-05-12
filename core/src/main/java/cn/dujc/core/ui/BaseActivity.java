@@ -10,17 +10,20 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.List;
 
 import cn.dujc.core.R;
 import cn.dujc.core.bridge.ActivityStackUtil;
+import cn.dujc.core.toolbar.IToolbarHandler;
 
 /**
  * 基本的Activity。所有Activity必须继承于此类。“所有”！
@@ -36,6 +39,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI,
     protected Toolbar mToolbar = null;
     private TitleCompat mTitleCompat = null;
     protected View mRootView = null;
+
+    private String mToolbarClass = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,7 +119,21 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI,
     @Override
     @Nullable
     public Toolbar initToolbar(ViewGroup parent) {
-        return null;
+        Toolbar toolbar = mToolbar;
+        if (toolbar == null && TextUtils.isEmpty(mToolbarClass)) {
+            mToolbarClass = getString(R.string.toolbar_normal_class);
+            toolbar = IToolbarHandler.handleByClassname(this, parent, mToolbarClass);
+        }
+        return toolbar;
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        super.setTitle(title);
+        if (mToolbar != null) {
+            final View textMaybe = mToolbar.findViewById(R.id.toolbar_title_id);
+            if (textMaybe instanceof TextView) ((TextView) textMaybe).setText(title);
+        }
     }
 
     @Override

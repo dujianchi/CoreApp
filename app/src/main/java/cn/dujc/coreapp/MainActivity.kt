@@ -14,6 +14,7 @@ class MainActivity : BaseActivity() {
     override fun getViewId() = R.layout.activity_main_fragment//activity_main
 
     override fun initBasic(savedInstanceState: Bundle?) {
+        setTitle("asdf")
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, MainFragment())
                 .commit()
