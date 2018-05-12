@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="cn.dujc.coreapp.MainActivity">
+    android:background="#7fac"
+    android:orientation="vertical">
 
     <cn.dujc.core.ui.StatusBarPlaceholder
         android:id="@+id/sbp_placeholder"
@@ -14,39 +13,39 @@
         android:background="@color/colorAccent" />
 
     <Button
+        android:id="@+id/translateSwitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="translateSwitch"
         android:text="沉浸开关" />
 
     <Button
+        android:id="@+id/lightSwitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="lightSwitch"
         android:text="明暗开关" />
 
     <Button
+        android:id="@+id/fitSwitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="fitSwitch"
         android:text="内容开关" />
 
     <Button
+        android:id="@+id/placeholderSwitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="placeholderSwitch"
         android:text="占位开关" />
 
     <Button
+        android:id="@+id/permissionSwitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="permissionSwitch"
         android:text="权限开关" />
 
     <Button
+        android:id="@+id/settingsSwitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="settingsSwitch"
         android:text="去设置" />
 
 </LinearLayout>

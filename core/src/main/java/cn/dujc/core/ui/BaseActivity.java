@@ -1,8 +1,10 @@
 package cn.dujc.core.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -15,6 +17,8 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import java.util.List;
+
 import cn.dujc.core.R;
 import cn.dujc.core.bridge.ActivityStackUtil;
 
@@ -22,10 +26,11 @@ import cn.dujc.core.bridge.ActivityStackUtil;
  * 基本的Activity。所有Activity必须继承于此类。“所有”！
  * Created by lucky on 2017/9/19.
  */
-public abstract class BaseActivity extends AppCompatActivity implements IBaseUI {
+public abstract class BaseActivity extends AppCompatActivity implements IBaseUI, IBaseUI.IPermissionKeeperCallback {
 
     private IStarter mStarter = null;
     private IParams mParams = null;
+    private IPermissionKeeper mPermissionKeeper = null;
 
     protected Activity mActivity;
     protected Toolbar mToolbar = null;
@@ -124,6 +129,34 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI 
         if (mParams == null) mParams = new IParamsImpl(this);
         return mParams;
     }
+
+    @Override
+    public IPermissionKeeper permissionKeeper() {
+        if (mPermissionKeeper == null) mPermissionKeeper = new IPermissionKeeperImpl(this, this);
+        return mPermissionKeeper;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (mPermissionKeeper != null) {
+            mPermissionKeeper.handOnActivityResult(requestCode);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (mPermissionKeeper != null) {
+            mPermissionKeeper.handOnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    @Override
+    public void onGranted(int requestCode, List<String> permissions) { }
+
+    @Override
+    public void onDenied(int requestCode, List<String> permissions) { }
 
     /**
      * 关联主界面 **只有在使用自定义View时使用**

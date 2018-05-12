@@ -3,15 +3,20 @@ package cn.dujc.core.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.annotation.StringRes;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Size;
 import android.util.SizeF;
 import android.util.SparseArray;
@@ -20,8 +25,11 @@ import android.view.ViewGroup;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import cn.dujc.core.permission.AppSettingsDialog;
 import cn.dujc.core.util.LogUtil;
 
 /**
@@ -45,6 +53,8 @@ public interface IBaseUI {
 
     IParams extras();
 
+    IPermissionKeeper permissionKeeper();
+
     View getViewV();
 
     int getViewId();
@@ -57,15 +67,23 @@ public interface IBaseUI {
         Context context();
 
         void finish();
+
+        int checkSelfPermission(String permission);
+
+        boolean shouldShowRequestPermissionRationale(String permission);
+
+        void requestPermissions(String[] permissions, int requestCode);
     }
 
     public interface IStarter {
 
         int getRequestCode(Class<? extends Activity> activityForward);
 
+        int newRequestCode(Class<? extends Activity> activity);
+
         int go(Class<? extends Activity> activity);
 
-        IStarter finishThen();
+        int go(Class<? extends Activity> activity, boolean finishThen);
 
         IStarter clear();
 
@@ -126,6 +144,25 @@ public interface IBaseUI {
         public <T> T get(String key);
     }
 
+    public interface IPermissionKeeper {
+
+        void requestPermissions(int requestCode, @StringRes int title, @StringRes int message, String... permission);
+
+        void requestPermissions(int requestCode, String title, String message, String... permission);
+
+        boolean hasPermission(String... permissions);
+
+        void handOnActivityResult(int requestCode);
+
+        void handOnRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
+    }
+
+    public interface IPermissionKeeperCallback {
+        void onGranted(int requestCode, List<String> permissions);
+
+        void onDenied(int requestCode, List<String> permissions);
+    }
+
     static class IContextCompatActivityImpl implements IContextCompat {
         private final Activity mActivity;
 
@@ -146,6 +183,21 @@ public interface IBaseUI {
         @Override
         public void finish() {
             mActivity.finish();
+        }
+
+        @Override
+        public int checkSelfPermission(String permission) {
+            return ActivityCompat.checkSelfPermission(context(), permission);
+        }
+
+        @Override
+        public boolean shouldShowRequestPermissionRationale(String permission) {
+            return ActivityCompat.shouldShowRequestPermissionRationale(mActivity, permission);
+        }
+
+        @Override
+        public void requestPermissions(String[] permissions, int requestCode) {
+            ActivityCompat.requestPermissions(mActivity, permissions, requestCode);
         }
     }
 
@@ -169,7 +221,22 @@ public interface IBaseUI {
         @Override
         public void finish() {
             final FragmentActivity activity = mFragment.getActivity();
-            if (activity != null && !activity.isFinishing())activity.finish();
+            if (activity != null && !activity.isFinishing()) activity.finish();
+        }
+
+        @Override
+        public int checkSelfPermission(String permission) {
+            return ActivityCompat.checkSelfPermission(context(), permission);
+        }
+
+        @Override
+        public boolean shouldShowRequestPermissionRationale(String permission) {
+            return mFragment.shouldShowRequestPermissionRationale(permission);
+        }
+
+        @Override
+        public void requestPermissions(String[] permissions, int requestCode) {
+            mFragment.requestPermissions(permissions, requestCode);
         }
     }
 
@@ -177,8 +244,7 @@ public interface IBaseUI {
 
         Bundle mBundle = new Bundle();
         Map<Class<? extends Activity>, Integer> mRequestCodes = new ArrayMap<>();
-        private IContextCompat mContext;
-        private boolean mFinishThenGo = false;//跳转完是否关闭，默认false。跳转完或获取starter后恢复默认
+        private final IContextCompat mContext;
 
         public IStarterImpl(Activity activity) {
             mContext = new IContextCompatActivityImpl(activity);
@@ -195,35 +261,38 @@ public interface IBaseUI {
         }
 
         @Override
-        public int go(Class<? extends Activity> activity) {
-            Intent intent = new Intent(mContext.context(), activity);
-            if (mBundle != null && mBundle.size() > 0) {
-                intent.putExtras(mBundle);
-            }
+        public int newRequestCode(Class<? extends Activity> activity) {
             int requestCode = _INCREMENT_REQUEST_CODE[0]++;
             if (requestCode >= 0xffff) {
                 requestCode = _INCREMENT_REQUEST_CODE[0] = 1;
             }
             LogUtil.d("------------ request code = " + requestCode);
             mRequestCodes.put(activity, requestCode);
+            return requestCode;
+        }
+
+        @Override
+        public int go(Class<? extends Activity> activity) {
+            return go(activity, false);
+        }
+
+        @Override
+        public int go(Class<? extends Activity> activity, boolean finishThen) {
+            Intent intent = new Intent(mContext.context(), activity);
+            if (mBundle != null && mBundle.size() > 0) {
+                intent.putExtras(mBundle);
+            }
+            int requestCode = newRequestCode(activity);
             mContext.startActivityForResult(intent, requestCode);
-            if (mFinishThenGo) {
+            if (finishThen) {
                 mContext.finish();
-                mFinishThenGo = false;
             }
             return requestCode;
         }
 
         @Override
-        public IStarter finishThen() {
-            mFinishThenGo = true;
-            return this;
-        }
-
-        @Override
         public IStarter clear() {
             mBundle.clear();
-            mFinishThenGo = false;
             return this;
         }
 
@@ -404,6 +473,114 @@ public interface IBaseUI {
         @Nullable
         public <T> T get(String key) {
             return get(key, null, null);
+        }
+    }
+
+    public static class IPermissionKeeperImpl implements IPermissionKeeper {
+
+        private final IContextCompat mContext;
+        private final IPermissionKeeperCallback mCallback;
+        private String[] mLastRequestedPermissions = null;
+
+        public IPermissionKeeperImpl(Activity activity, IPermissionKeeperCallback callback) {
+            mContext = new IContextCompatActivityImpl(activity);
+            mCallback = callback;
+        }
+
+        public IPermissionKeeperImpl(Fragment fragment, IPermissionKeeperCallback callback) {
+            mContext = new IContextCompatFragmentImpl(fragment);
+            mCallback = callback;
+        }
+
+        @Override
+        public void requestPermissions(int requestCode, @StringRes int title, @StringRes int message, String... permission) {
+            final String titleStr = title != 0 ? mContext.context().getString(title) : "";
+            final String messageStr = message != 0 ? mContext.context().getString(message) : "";
+            requestPermissions(requestCode, titleStr, messageStr, permission);
+        }
+
+        @Override
+        public void requestPermissions(int requestCode, String title, String message, String... permissions) {
+            mLastRequestedPermissions = null;
+            if (permissions == null) return;
+            mLastRequestedPermissions = permissions;
+            if (hasPermission(permissions)) {
+                if (mCallback != null) mCallback.onGranted(requestCode, Arrays.asList(permissions));
+            } else {
+                boolean showHint = false;
+                for (String permission : permissions) {
+                    showHint = showHint || mContext.shouldShowRequestPermissionRationale(permission);
+                }
+                if (showHint) {
+                    final AppSettingsDialog.Builder builder = new AppSettingsDialog.Builder(mContext);
+                    if (!TextUtils.isEmpty(title)) builder.setTitle(title);
+                    if (!TextUtils.isEmpty(message)) builder.setRationale(message);
+                    builder.build().show();
+                } else {
+                    mContext.requestPermissions(permissions, requestCode);
+                }
+            }
+        }
+
+        @Override
+        public boolean hasPermission(String... permissions) {
+            boolean has = permissions != null && permissions.length > 0;
+            if (has) {
+                for (String permission : permissions) {
+                    has = has && mContext.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+                }
+            }
+            return has;
+        }
+
+        @Override
+        public void handOnActivityResult(int requestCode) {
+            if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE
+                    && mLastRequestedPermissions != null) {
+                final List<String> granted = new ArrayList<>();
+                final List<String> denied = new ArrayList<>();
+
+                for (String perm : mLastRequestedPermissions) {
+                    if (hasPermission(perm)) {
+                        granted.add(perm);
+                    } else {
+                        denied.add(perm);
+                    }
+                }
+
+                if (!granted.isEmpty()) {
+                    mCallback.onGranted(requestCode, granted);
+                }
+
+                if (!denied.isEmpty()) {
+                    mCallback.onDenied(requestCode, denied);
+                }
+            }
+        }
+
+        @Override
+        public void handOnRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+            if (mCallback != null) {
+                final List<String> granted = new ArrayList<>();
+                final List<String> denied = new ArrayList<>();
+
+                for (int index = 0, length = permissions.length; index < length; index++) {
+                    String perm = permissions[index];
+                    if (grantResults[index] == PackageManager.PERMISSION_GRANTED) {
+                        granted.add(perm);
+                    } else {
+                        denied.add(perm);
+                    }
+                }
+
+                if (!granted.isEmpty()) {
+                    mCallback.onGranted(requestCode, granted);
+                }
+
+                if (!denied.isEmpty()) {
+                    mCallback.onDenied(requestCode, denied);
+                }
+            }
         }
     }
 }

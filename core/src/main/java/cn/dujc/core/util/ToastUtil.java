@@ -22,8 +22,12 @@ public class ToastUtil {
         }
     }
 
-    public static void showToast(Context context, Object... objects){
+    public static void showToast(Context context, Object... objects) {
         showToast(context, StringUtil.concat(objects));
+    }
+
+    public static void showToastFormatted(Context context, String format, Object... args) {
+        showToast(context, StringUtil.format(format, args));
     }
 
 }
