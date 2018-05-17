@@ -4,8 +4,11 @@ import android.Manifest;
 import android.os.Bundle;
 import android.view.View;
 
+import java.io.File;
 import java.util.List;
 
+import cn.dujc.core.downloader.DownloadNotification;
+import cn.dujc.core.downloader.Downloader;
 import cn.dujc.core.permission.AppSettingsDialog;
 import cn.dujc.core.ui.BaseFragment;
 import cn.dujc.core.ui.StatusBarPlaceholder;
@@ -64,6 +67,19 @@ public class MainFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 new AppSettingsDialog.Builder(MainFragment.this).setRationale("22222").build().show();
+            }
+        });
+        findViewById(R.id.download).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Downloader.createWithNotification("http://pro-app-qn.fir.im/d0f4d99ae9c4124bbc047911b3675043ba7ef124.apk?attname=jiuqijiuqi-release-signed.apk_1.0.apk&e=1526538193&token=LOvmia8oXF4xnLh0IdH05XMYpH6ENHNpARlmPc-T:9pyQPK7qQ0vr_AIShKarcQv4Ato="
+                        , new File(mActivity.getCacheDir(), "test.apk")
+                        , new DownloadNotification(mActivity, R.mipmap.ic_launcher) {
+                            @Override
+                            public void onDownloadSuccess(File saved) {
+                                ToastUtil.showToast(mActivity, "saved : " + saved);
+                            }
+                        }).download();
             }
         });
     }

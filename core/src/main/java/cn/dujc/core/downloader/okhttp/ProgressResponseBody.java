@@ -1,9 +1,10 @@
-package cn.dujc.core.downloader;
+package cn.dujc.core.downloader.okhttp;
 
 import android.os.Handler;
 
 import java.io.IOException;
 
+import cn.dujc.core.downloader.OnDownloadListener;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import okio.Buffer;
