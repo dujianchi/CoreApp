@@ -68,6 +68,10 @@ public class Downloader {
         return mDestination;
     }
 
+    public void cancel() {
+        if (mHttpClient != null) mHttpClient.cancel();
+    }
+
     public static void removeDownloadQueue(String url, File destination) {
         Downloader.DOWNLOAD_QUEUE.remove(Downloader.bindUrlAndFile(url, destination));
     }
