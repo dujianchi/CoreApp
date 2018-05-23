@@ -11,4 +11,6 @@ import java.io.File;
 public interface IDownloadHttpClient {
 
     void download(String url, File destination, boolean _continue, Handler mainThreadHandler, OnDownloadListener listener);
+
+    void cancel();
 }

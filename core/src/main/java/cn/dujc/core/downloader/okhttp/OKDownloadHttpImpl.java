@@ -25,6 +25,8 @@ import okhttp3.ResponseBody;
  */
 public class OKDownloadHttpImpl implements IDownloadHttpClient {
 
+    private Call call = null;
+
     @Override
     public void download(final String url, final File destination, boolean _continue, final Handler mainThreadHandler, final OnDownloadListener listener) {
         OkHttpClient httpClient = createOkByUrl(url, mainThreadHandler, listener);
@@ -43,7 +45,8 @@ public class OKDownloadHttpImpl implements IDownloadHttpClient {
             destination.getParentFile().mkdirs();
         }
 
-        httpClient.newCall(request.build()).enqueue(new Callback() {
+        call = httpClient.newCall(request.build());
+        call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {
                 Downloader.removeDownloadQueue(url, destination);
@@ -69,6 +72,17 @@ public class OKDownloadHttpImpl implements IDownloadHttpClient {
                 }
             }
         });
+    }
+
+    @Override
+    public void cancel() {
+        if (call != null) {
+            try {
+                call.cancel();
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static OkHttpClient createOkByUrl(String url, final Handler handler, final OnDownloadListener listener) {

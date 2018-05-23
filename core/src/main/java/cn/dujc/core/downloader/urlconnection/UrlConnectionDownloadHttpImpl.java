@@ -10,8 +10,10 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.concurrent.Executor;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
@@ -27,13 +29,15 @@ import cn.dujc.core.downloader.ssl.DefaultSSLSocketFactory;
  */
 public class UrlConnectionDownloadHttpImpl implements IDownloadHttpClient {
 
-    private static final Executor EXECUTOR = Executors.newFixedThreadPool(2);
+    private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(2);
+
+    private Future<Object> future = null;
 
     @Override
     public void download(final String url, final File destination, final boolean _continue, final Handler mainThreadHandler, final OnDownloadListener listener) {
-        final Runnable runnable = new Runnable() {
+        future = EXECUTOR.submit(new Callable<Object>() {
             @Override
-            public void run() {
+            public Object call() throws Exception {
                 final HttpURLConnection downloader = createByUrl(url);
                 if (downloader != null) {
                     if (destination.exists()) {
@@ -62,7 +66,8 @@ public class UrlConnectionDownloadHttpImpl implements IDownloadHttpClient {
                     try {
                         final InputStream inputStream = downloader.getInputStream();
                         final int contentLength = downloader.getContentLength();
-                        if (!_continue || contentLength > 0) save(inputStream, destination, contentLength, listener, mainThreadHandler);
+                        if (!_continue || contentLength > 0)
+                            save(inputStream, destination, contentLength, listener, mainThreadHandler);
                         if (listener != null) {
                             mainThreadHandler.post(new Runnable() {
                                 @Override
@@ -78,9 +83,20 @@ public class UrlConnectionDownloadHttpImpl implements IDownloadHttpClient {
                     downloader.disconnect();
                 }
                 Downloader.removeDownloadQueue(url, destination);
+                return null;
             }
-        };
-        EXECUTOR.execute(runnable);
+        });
+    }
+
+    @Override
+    public void cancel() {
+        if (future != null) {
+            try {
+                future.cancel(true);
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static HttpURLConnection createByUrl(String urlStr) {
