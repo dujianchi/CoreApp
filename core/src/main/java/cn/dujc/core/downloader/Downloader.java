@@ -20,7 +20,7 @@ public class Downloader {
     private static final ConcurrentLinkedQueue<String> DOWNLOAD_QUEUE = new ConcurrentLinkedQueue<String>();
     private final Handler mHandler;
 
-    private IDownloadHttpClient mHttpClient;
+    private IDownloadHttpClient mHttpClient = new OKDownloadHttpImpl();
 
     private String mUrl;
     private File mDestination;
@@ -47,9 +47,9 @@ public class Downloader {
 
         DOWNLOAD_QUEUE.add(bindUrlAndFile(mUrl, mDestination));
 
-        mHttpClient = createHttpClient();
-
-        mHttpClient.download(mUrl, mDestination, _continue, mHandler, mOnDownloadListener);
+        if (mHttpClient != null) {
+            mHttpClient.download(mUrl, mDestination, _continue, mHandler, mOnDownloadListener);
+        }
     }
 
     private IDownloadHttpClient createHttpClient() {
@@ -70,6 +70,13 @@ public class Downloader {
 
     public void cancel() {
         if (mHttpClient != null) mHttpClient.cancel();
+    }
+
+    public Downloader setDownloadHttpClient(IDownloadHttpClient httpClient) {
+        if (httpClient != null) {
+            mHttpClient = httpClient;
+        }
+        return this;
     }
 
     public static void removeDownloadQueue(String url, File destination) {
