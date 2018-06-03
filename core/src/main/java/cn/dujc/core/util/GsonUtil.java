@@ -9,7 +9,7 @@ import java.lang.reflect.Type;
 
 /**
  * json转换工具
- * Created by lucky on 2017/9/22.
+ * Created by du on 2017/9/22.
  */
 public class GsonUtil {
     private static final Gson GSON = new GsonBuilder()

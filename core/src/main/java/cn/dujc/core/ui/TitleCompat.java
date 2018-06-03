@@ -22,7 +22,7 @@ import java.util.Map;
 
 /**
  * Android的顶部沉浸效果 工具
- * Created by lucky on 2017/9/19.
+ * Created by du on 2017/9/19.
  */
 public class TitleCompat {
 

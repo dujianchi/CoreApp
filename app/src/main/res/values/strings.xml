@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">CoreApp</string>
 
-    <string name="toolbar_normal_class">cn.dujc.coreapp.ToolbarUtils</string>
+    <!--<string name="toolbar_normal_class">cn.dujc.coreapp.ToolbarUtils</string>-->
 </resources>

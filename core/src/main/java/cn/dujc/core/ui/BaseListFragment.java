@@ -13,7 +13,7 @@ import cn.dujc.core.adapter.BaseQuickAdapter;
 
 /**
  * 基本列表fragment
- * Created by lucky on 2017/9/27.
+ * Created by du on 2017/9/27.
  */
 public abstract class BaseListFragment extends BaseFragment {
 

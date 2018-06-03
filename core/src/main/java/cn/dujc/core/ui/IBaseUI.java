@@ -14,6 +14,7 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -524,46 +525,47 @@ public interface IBaseUI {
 
         @Override
         public boolean hasPermission(String... permissions) {
-            boolean has = permissions != null && permissions.length > 0;
-            if (has) {
-                for (String permission : permissions) {
-                    has = has && mContext.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
-                }
-            }
-            return has;
+            return IPermissionKeeperImpl.hasPermission(mContext.context(), permissions);
         }
 
         @Override
         public void handOnActivityResult(int requestCode) {
             if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE
                     && mLastRequestedPermissions != null) {
-                final List<String> granted = new ArrayList<>();
-                final List<String> denied = new ArrayList<>();
-
-                for (String perm : mLastRequestedPermissions) {
-                    if (hasPermission(perm)) {
-                        granted.add(perm);
-                    } else {
-                        denied.add(perm);
-                    }
-                }
-
-                if (!granted.isEmpty()) {
-                    mCallback.onGranted(requestCode, granted);
-                }
-
-                if (!denied.isEmpty()) {
-                    mCallback.onDenied(requestCode, denied);
-                }
+                handleGrantedOrDenied(mContext.context(), mCallback, mLastRequestedPermissions, null, requestCode);
             }
         }
 
         @Override
         public void handOnRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-            if (mCallback != null) {
-                final List<String> granted = new ArrayList<>();
-                final List<String> denied = new ArrayList<>();
+            handleGrantedOrDenied(mContext.context(), mCallback, permissions, grantResults, requestCode);
+        }
 
+        private static boolean hasPermission(Context context, String... permissions) {
+            boolean has = permissions != null && permissions.length > 0;
+            if (has) {
+                for (String permission : permissions) {
+                    has = has && ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
+                }
+            }
+            return has;
+        }
+
+        private static void handleGrantedOrDenied(Context context, IPermissionKeeperCallback callback, String[] permissions, int[] grantResults, int requestCode) {
+            if (context == null || callback == null || permissions == null) return;
+
+            final List<String> granted = new ArrayList<>();
+            final List<String> denied = new ArrayList<>();
+
+            if (grantResults == null) {
+                for (String perm : permissions) {
+                    if (hasPermission(context, perm)) {
+                        granted.add(perm);
+                    } else {
+                        denied.add(perm);
+                    }
+                }
+            } else {
                 for (int index = 0, length = permissions.length; index < length; index++) {
                     String perm = permissions[index];
                     if (grantResults[index] == PackageManager.PERMISSION_GRANTED) {
@@ -572,15 +574,21 @@ public interface IBaseUI {
                         denied.add(perm);
                     }
                 }
+            }
 
-                if (!granted.isEmpty()) {
-                    mCallback.onGranted(requestCode, granted);
-                }
+            /*if (!granted.isEmpty()) {
+                callback.onGranted(requestCode, granted);
+            }
 
-                if (!denied.isEmpty()) {
-                    mCallback.onDenied(requestCode, denied);
-                }
+            if (!denied.isEmpty()) {
+                callback.onDenied(requestCode, denied);
+            }*/
+            if (denied.isEmpty() && !granted.isEmpty()) {
+                callback.onGranted(requestCode, granted);
+            } else {
+                callback.onDenied(requestCode, denied);
             }
         }
+
     }
 }

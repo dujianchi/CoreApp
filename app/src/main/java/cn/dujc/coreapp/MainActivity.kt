@@ -28,7 +28,7 @@ class MainActivity : BaseActivity() {
         return (layoutInflater.inflate(R.layout.toolbar, parent, false) as? Toolbar)
     }*/
 
-    private var tOn = false
+    private var tOn = true
     private var fOn = false
     private var lOn = true
     private var pOn = true

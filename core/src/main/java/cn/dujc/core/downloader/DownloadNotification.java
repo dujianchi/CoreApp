@@ -12,7 +12,7 @@ import cn.dujc.core.util.ToastUtil;
 
 /**
  * 下载通知栏
- * Created by lucky on 2018/3/8.
+ * Created by du on 2018/3/8.
  */
 public abstract class DownloadNotification implements OnDownloadListener {
 

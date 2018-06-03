@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -27,7 +26,7 @@ import cn.dujc.core.toolbar.IToolbarHandler;
 
 /**
  * 基本的Activity。所有Activity必须继承于此类。“所有”！
- * Created by lucky on 2017/9/19.
+ * Created by du on 2017/9/19.
  */
 public abstract class BaseActivity extends AppCompatActivity implements IBaseUI, IBaseUI.IPermissionKeeperCallback {
 
@@ -39,8 +38,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI,
     protected Toolbar mToolbar = null;
     private TitleCompat mTitleCompat = null;
     protected View mRootView = null;
-
-    private String mToolbarClass = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -120,9 +117,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI,
     @Nullable
     public Toolbar initToolbar(ViewGroup parent) {
         Toolbar toolbar = mToolbar;
-        if (toolbar == null && TextUtils.isEmpty(mToolbarClass)) {
-            mToolbarClass = getString(R.string.toolbar_normal_class);
-            toolbar = IToolbarHandler.handleByClassname(this, parent, mToolbarClass);
+        if (toolbar == null) {
+            toolbar = IToolbarHandler.handleByContext(this, parent, this);
         }
         return toolbar;
     }

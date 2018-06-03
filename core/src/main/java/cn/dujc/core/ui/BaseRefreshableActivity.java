@@ -5,7 +5,7 @@ import android.view.View;
 
 /**
  * 可刷新的activity
- * Created by lucky on 2017/9/27.
+ * Created by du on 2017/9/27.
  */
 public abstract class BaseRefreshableActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
 

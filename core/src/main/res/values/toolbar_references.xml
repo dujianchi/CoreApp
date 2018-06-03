@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="toolbar_normal_class" translatable="false" />
+    <!--<string name="toolbar_normal_class" translatable="false" />-->
     <item name="toolbar_title_id" type="id" />
     <item name="toolbar_back_id" type="id" />
+    <item name="toolbar_menu_id" type="id" />
 
 </resources>

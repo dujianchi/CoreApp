@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 
 apply plugin: 'com.github.dcendents.android-maven'
 group='cn.dujc'
@@ -26,11 +25,7 @@ android {
 dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'libs')
     compileOnly "com.android.support:appcompat-v7:$support_version"
-    compileOnly 'com.google.code.gson:gson:2.8.2'
     compileOnly "com.android.support:recyclerview-v7:$support_version"
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    compileOnly 'com.squareup.okhttp3:okhttp:3.8.0'
-    //compileOnly 'pub.devrel:easypermissions:1.0.1'
 }
 
 repositories {

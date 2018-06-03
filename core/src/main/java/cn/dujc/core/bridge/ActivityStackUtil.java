@@ -13,7 +13,7 @@ import java.util.Set;
 
 /**
  * activity管理栈
- * Created by lucky on 2017/9/21.
+ * Created by du on 2017/9/21.
  */
 public class ActivityStackUtil {
 

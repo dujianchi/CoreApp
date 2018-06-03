@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * 基本的Fragment。最好Fragment都要继承于此类
- * Created by lucky on 2017/9/19.
+ * Created by du on 2017/9/19.
  */
 public abstract class BaseFragment extends Fragment implements IBaseUI, IBaseUI.IPermissionKeeperCallback {
 
