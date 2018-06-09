@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import cn.dujc.core.R;
 import cn.dujc.core.util.ContextUtil;
@@ -79,7 +80,8 @@ public final class IToolbarHandler {
                                     args[index] = null;
                                 }
                             }
-                            final Toolbar toolbar = (Toolbar) method.invoke(null, args);
+                            final boolean isStatic = Modifier.isStatic(method.getModifiers());
+                            final Toolbar toolbar = (Toolbar) method.invoke(isStatic ? null : toolbarClass.newInstance(), args);
                             if (toolbar != null) {
                                 final View backView = toolbar.findViewById(R.id.toolbar_back_id);
                                 final Activity activity = ContextUtil.getActivity(parent.getContext());
