@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import cn.dujc.core.permission.AppSettingsDialog
 import cn.dujc.core.ui.BaseActivity
-import cn.dujc.core.ui.TitleCompat
 import cn.dujc.core.util.ToastUtil
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -20,9 +19,9 @@ class MainActivity : BaseActivity() {
                 .commit()
     }
 
-    override fun initTransStatusBar(): TitleCompat? {
+    /*override fun initTransStatusBar(): TitleCompat? {
         return TitleCompat.setStatusBar(mActivity, tOn, fOn)//.setFakeStatusBarColorId(R.color.colorPrimaryDark)
-    }
+    }*/
 
     /*override fun initToolbar(parent: ViewGroup?): Toolbar? {
         return (layoutInflater.inflate(R.layout.toolbar, parent, false) as? Toolbar)

@@ -104,4 +104,37 @@ public final class IToolbarHandler {
         }
         return null;
     }
+
+    public static Integer statusColor(Context context) {
+        final String classname = getToolbarClass(context);
+        if (!TextUtils.isEmpty(classname)) {
+            try {
+                final Class<?> toolbarClass = Class.forName(classname);
+                for (Method method : toolbarClass.getDeclaredMethods()) {
+                    final IStatusColor statusColor = method.getAnnotation(IStatusColor.class);
+                    if (statusColor != null) {
+                        if (!method.isAccessible()) method.setAccessible(true);
+
+                        final Class<?>[] parameterTypes = method.getParameterTypes();
+                        Object[] args = new Object[parameterTypes.length];
+                        for (int index = 0, length = parameterTypes.length; index < length; index++) {
+                            if (parameterTypes[index].isInstance(context)) {
+                                args[index] = context;
+                            } else {
+                                args[index] = null;
+                            }
+                        }
+
+                        final boolean isStatic = Modifier.isStatic(method.getModifiers());
+                        final Integer color = (Integer) method.invoke(isStatic ? null : toolbarClass.newInstance(), args);
+                        return color;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
 }
