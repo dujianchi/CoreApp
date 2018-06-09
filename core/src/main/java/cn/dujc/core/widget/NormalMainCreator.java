@@ -10,6 +10,7 @@ import java.util.Set;
 /**
  * 常用的主页生成器
  * Created by du on 2018/1/28.
+ * @deprecated 乱写的，不知道之前在写什么，有空再来看看
  */
 public class NormalMainCreator implements RadioMenu.OnItemSelectedChangeListener {
 
