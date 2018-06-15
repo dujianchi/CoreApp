@@ -2,9 +2,8 @@ package cn.dujc.core.downloader;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -93,7 +92,7 @@ public class Downloader {
     /**
      * 连接url和文件路径，用于判断是否已经添加过任务
      */
-    private static String bindUrlAndFile(@NotNull String url, @NotNull File destination) {
+    private static String bindUrlAndFile(@NonNull String url, @NonNull File destination) {
         return url + destination.getAbsolutePath();
     }
 
