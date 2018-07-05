@@ -36,11 +36,11 @@ public class StatusBarPlaceholder extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int height = 0;
+        int heightSpec = heightMeasureSpec;
         if (isSystemOpen() && mOpen) {
-            height = mStatusBarHeight;
+            heightSpec = MeasureSpec.makeMeasureSpec(mStatusBarHeight, MeasureSpec.EXACTLY);
         }
-        super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+        super.onMeasure(widthMeasureSpec, heightSpec);
     }
 
     public boolean isSystemOpen() {
