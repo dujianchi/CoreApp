@@ -39,14 +39,25 @@ public class TitleCompat {
 
     /**
      * 设置状态栏
-     *
+     * @deprecated 用{@link StatusBarPlaceholder}替代加padding的方案
      * @param activity    activity
      * @param translucent 状态栏是否透明
      * @param fits        是否适应内容
      * @return
      */
+    @Deprecated
     public static TitleCompat setStatusBar(Activity activity, boolean translucent, boolean fits) {
         return new TitleCompat().init(activity, translucent, fits)
+                .setFakeStatusBarColor(DEFAULT_TINT_COLOR);
+    }
+
+    /**
+     * 设置状态栏
+     * @param activity    activity
+     * @param translucent 状态栏是否透明
+     */
+    public static TitleCompat setStatusBar(Activity activity, boolean translucent) {
+        return new TitleCompat().init(activity, translucent)
                 .setFakeStatusBarColor(DEFAULT_TINT_COLOR);
     }
 
@@ -59,7 +70,9 @@ public class TitleCompat {
      * 设计为每个activity都有不同的title，即需要每个activity皆有不同的titleCompat
      * 为了防止使用单例的初始化，所以将构造方法设为私有方法。使每个activity都需要
      * 调用静态方法[TitleCompat.setStatusBar] 来实例化本类
+     * @deprecated 用{@link StatusBarPlaceholder}替代加padding的方案
      */
+    @Deprecated
     private TitleCompat init(Activity activity, boolean translucent, boolean fits) {
         mActivity = activity;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -68,6 +81,20 @@ public class TitleCompat {
             if (translucent) {
                 setContentFits(fits);
             }
+        }
+        return this;
+    }
+
+    /**
+     * 设计为每个activity都有不同的title，即需要每个activity皆有不同的titleCompat
+     * 为了防止使用单例的初始化，所以将构造方法设为私有方法。使每个activity都需要
+     * 调用静态方法[TitleCompat.setStatusBar] 来实例化本类
+     */
+    private TitleCompat init(Activity activity, boolean translucent) {
+        mActivity = activity;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            mStatusBarHeight = getStatusBarHeight(activity.getResources());
+            setTranslucentStatus(translucent);
         }
         return this;
     }
@@ -140,9 +167,10 @@ public class TitleCompat {
 
     /**
      * 设置内部内容适应
-     *
+     * @deprecated 用{@link StatusBarPlaceholder}替代加padding的方案
      * @param fits 要使内容在statusBar下则true
      */
+    @Deprecated
     public TitleCompat setContentFits(boolean fits) {
         if (mActivity != null) {
             ViewGroup contentFrameLayout = (ViewGroup) mActivity.findViewById(Window.ID_ANDROID_CONTENT);
@@ -222,7 +250,9 @@ public class TitleCompat {
 
     /**
      * 为控件设置marginTop为statusBar的高度
+     * @deprecated 用{@link StatusBarPlaceholder}替代加padding的方案
      */
+    @Deprecated
     public TitleCompat addMarginTop(View view) {
         if (view != null) {
             Integer top = mTopViews.get(view);
@@ -240,7 +270,9 @@ public class TitleCompat {
 
     /**
      * 为控件设置paddingTop为statusBar的高度
+     * @deprecated 用{@link StatusBarPlaceholder}替代加padding的方案
      */
+    @Deprecated
     public TitleCompat addPaddingTop(View view) {
         if (view != null) {
             Integer top = mTopViews.get(view);

@@ -15,15 +15,23 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public int getViewId() {
-        return R.layout.activity_main_fragment;
+        return R.layout.activity_main_dialog;
     }
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
         setTitle("asdf");
-        getSupportFragmentManager().beginTransaction()
+        /*getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new MainFragment())
-                .commit();
+                .commit();*/
+    }
+
+    private DialogF mDialog;
+    public void dialog(View v) {
+        if (mDialog == null){
+            mDialog = new DialogF();
+        }
+        mDialog.showOnly(this);
     }
 
     private boolean tOn = true;
