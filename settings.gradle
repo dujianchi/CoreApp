@@ -1,1 +1,1 @@
-include ':app', ':core', ':extralog'
+include ':app', ':core'
