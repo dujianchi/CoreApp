@@ -48,9 +48,18 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
             }
         }
 
-        final ViewGroup parent = (ViewGroup) (mRootView != null ? mRootView.getParent() : null);
-        if (parent != null){
-            parent.removeView(mRootView);
+        if (mRootView != null) {
+            final ViewGroup parent = (ViewGroup) mRootView.getParent();
+            if (parent != null) {
+                parent.removeView(mRootView);
+            }
+
+            ViewGroup.LayoutParams layoutParams = mRootView.getLayoutParams();
+            if (layoutParams == null){
+                layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
+                        , ViewGroup.LayoutParams.MATCH_PARENT);
+                mRootView.setLayoutParams(layoutParams);
+            }
         }
 
         return mRootView;
