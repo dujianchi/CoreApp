@@ -9,8 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
@@ -35,6 +33,7 @@ import cn.dujc.core.ui.StatusBarPlaceholder;
 import cn.dujc.core.util.GodDeserializer;
 import cn.dujc.core.util.GsonUtil;
 import cn.dujc.core.util.LogUtil;
+import cn.dujc.core.util.TextColorBuilder;
 import cn.dujc.core.util.ToastUtil;
 
 public class MainActivity extends BaseActivity {
@@ -52,16 +51,38 @@ public class MainActivity extends BaseActivity {
                 .commit();*/
         //staggeredGrid();
 
-        final String text = "abcdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbccccccccccccccccccc";
-        final Spannable string = new SpannableStringBuilder(text);
-//        string.setSpan(new ImageSpan(ContextCompat.getDrawable(mActivity, R.mipmap.ic_launcher))
-//                , 2, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        string.setSpan(new MyClickSpan("abcd"),0,4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        string.setSpan(new MyClickSpan("aaaa"),10,14, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        final String text = "abcdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbccccccccccccccccccc";
+//        final Spannable string = new SpannableStringBuilder(text);
+////        string.setSpan(new ImageSpan(ContextCompat.getDrawable(mActivity, R.mipmap.ic_launcher))
+////                , 2, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        string.setSpan(new MyClickSpan("abcd"),0,4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        string.setSpan(new MyClickSpan("aaaa"),10,14, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         TextView textView = findViewById(R.id.textView);
 
-        textView.setText(string);
+        textView.setText(new TextColorBuilder()
+                .addTextPart("没有颜色且没有点击")
+                .addTextPart(",")
+                .addTextPart(Color.RED, "红色没有点击")
+                .addTextPart(",")
+                .addTextPart("黑色有点击", Color.BLACK, new TextColorBuilder.OnClickListener() {
+                    @Override
+                    public void onClick(View widget, CharSequence clickedText) {
+                        ToastUtil.showToast(mActivity, clickedText);
+                    }
+                })
+                .addTextPart(",")
+                .addTextPart("没有颜色有点击", 0, new TextColorBuilder.OnClickListener() {
+                    @Override
+                    public void onClick(View widget, CharSequence clickedText) {
+                        ToastUtil.showToast(mActivity, clickedText);
+                    }
+                })
+                .addTextPart(",")
+                .addTextPart("有颜色有点击但没回调", Color.GREEN, null)
+                .addTextPart(",")
+                .addTextPart("没有颜色且没有点击")
+                .build());
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
