@@ -17,6 +17,6 @@ public class DialogF extends BaseDialogFragment {
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-        getDialog().setCanceledOnTouchOutside(false);
+        getDialog().setCanceledOnTouchOutside(true);
     }
 }
