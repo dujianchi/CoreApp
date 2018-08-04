@@ -62,7 +62,7 @@ public interface IBaseUI {
 
     void initBasic(Bundle savedInstanceState);
 
-    interface IContextCompat {
+    public interface IContextCompat {
         void startActivityForResult(Intent intent, int requestCode);
 
         Context context();
@@ -248,11 +248,15 @@ public interface IBaseUI {
         private final IContextCompat mContext;
 
         public IStarterImpl(Activity activity) {
-            mContext = new IContextCompatActivityImpl(activity);
+            this(new IContextCompatActivityImpl(activity));
         }
 
         public IStarterImpl(Fragment fragment) {
-            mContext = new IContextCompatFragmentImpl(fragment);
+            this(new IContextCompatFragmentImpl(fragment));
+        }
+
+        public IStarterImpl(IContextCompat context) {
+            mContext = context;
         }
 
         @Override
@@ -484,12 +488,15 @@ public interface IBaseUI {
         private String[] mLastRequestedPermissions = null;
 
         public IPermissionKeeperImpl(Activity activity, IPermissionKeeperCallback callback) {
-            mContext = new IContextCompatActivityImpl(activity);
-            mCallback = callback;
+            this(new IContextCompatActivityImpl(activity), callback);
         }
 
         public IPermissionKeeperImpl(Fragment fragment, IPermissionKeeperCallback callback) {
-            mContext = new IContextCompatFragmentImpl(fragment);
+            this(new IContextCompatFragmentImpl(fragment), callback);
+        }
+
+        public IPermissionKeeperImpl(IContextCompat context, IPermissionKeeperCallback callback) {
+            mContext = context;
             mCallback = callback;
         }
 

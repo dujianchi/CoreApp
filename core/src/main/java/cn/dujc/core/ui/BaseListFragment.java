@@ -18,7 +18,7 @@ import cn.dujc.core.adapter.BaseQuickAdapter;
 public abstract class BaseListFragment extends BaseFragment {
 
     private SwipeRefreshLayout mSrlLoader;
-    protected RecyclerView mRvList;
+    private RecyclerView mRvList;
     private BaseQuickAdapter mQuickAdapter;
 
     @Override
@@ -82,7 +82,7 @@ public abstract class BaseListFragment extends BaseFragment {
      * 加载失败（部分刷新）
      */
     protected final void loadFailure() {
-        loadingDone();
+        refreshDone();
         if (mQuickAdapter != null) {
             mQuickAdapter.loadMoreFail();
         }
@@ -91,9 +91,22 @@ public abstract class BaseListFragment extends BaseFragment {
     /**
      * 刷新结束
      */
-    protected final void loadingDone() {
+    protected final void refreshDone() {
         if (mSrlLoader != null) {
             mSrlLoader.setRefreshing(false);
+        }
+    }
+
+    /**
+     * 加载结束
+     * @param dataDone 数据加载结束
+     * @param endGone adapter的尾部是否隐藏
+     */
+    protected void loadDone(boolean dataDone, boolean endGone){
+        if (dataDone) {
+            mQuickAdapter.loadMoreEnd(endGone);
+        } else {
+            mQuickAdapter.loadMoreComplete();
         }
     }
 
@@ -101,13 +114,9 @@ public abstract class BaseListFragment extends BaseFragment {
      * 全部刷新
      */
     protected final void notifyDataSetChanged(boolean done) {
-        loadingDone();
+        refreshDone();
         if (mQuickAdapter != null) {
-            if (done) {
-                mQuickAdapter.loadMoreEnd(true);
-            } else {
-                mQuickAdapter.loadMoreComplete();
-            }
+            loadDone(done, true);
             mQuickAdapter.notifyDataSetChanged();
         }
     }
@@ -135,6 +144,11 @@ public abstract class BaseListFragment extends BaseFragment {
     @Nullable
     protected RecyclerView.LayoutManager initLayoutManager() {
         return new LinearLayoutManager(mActivity);
+    }
+
+    @Nullable
+    public RecyclerView getRecyclerView() {
+        return mRvList;
     }
 
     @Nullable
