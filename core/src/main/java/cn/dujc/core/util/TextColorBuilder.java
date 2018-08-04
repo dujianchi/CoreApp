@@ -6,6 +6,8 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextUtils;
+import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
@@ -60,10 +62,22 @@ public class TextColorBuilder {
     }
 
     public TextColorBuilder addTextPart(int color, CharSequence text) {
-        final int start = mStringBuilder.length();
-        final int end = start + text.length();
-        mStringBuilder.append(text);
-        mStringBuilder.setSpan(new ForegroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (!TextUtils.isEmpty(text)){
+            final int start = mStringBuilder.length();
+            final int end = start + text.length();
+            mStringBuilder.append(text);
+            mStringBuilder.setSpan(new ForegroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        return this;
+    }
+
+    public TextColorBuilder addTextPart(CharSequence text, CharacterStyle characterStyle) {
+        if (!TextUtils.isEmpty(text)) {
+            final int start = mStringBuilder.length();
+            final int end = start + text.length();
+            mStringBuilder.append(text);
+            mStringBuilder.setSpan(characterStyle, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
         return this;
     }
 
@@ -72,11 +86,13 @@ public class TextColorBuilder {
     }
 
     public TextColorBuilder addTextPart(CharSequence text, int color, OnClickListener listener){
-        final int start = mStringBuilder.length();
-        final int end = start + text.length();
-        mStringBuilder.append(text);
-        mStringBuilder.setSpan(new TextClickableSpan(text, color, listener)
-                , start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (!TextUtils.isEmpty(text)) {
+            final int start = mStringBuilder.length();
+            final int end = start + text.length();
+            mStringBuilder.append(text);
+            mStringBuilder.setSpan(new TextClickableSpan(text, color, listener)
+                    , start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
         return this;
     }
 }
