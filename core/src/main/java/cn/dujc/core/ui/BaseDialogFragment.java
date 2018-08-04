@@ -1,7 +1,10 @@
 package cn.dujc.core.ui;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,7 +38,7 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mActivity = getActivity();
         final int vid = getViewId();
         final View rootView = getViewV();
@@ -55,7 +58,7 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
             }
 
             ViewGroup.LayoutParams layoutParams = mRootView.getLayoutParams();
-            if (layoutParams == null){
+            if (layoutParams == null) {
                 layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
                         , ViewGroup.LayoutParams.MATCH_PARENT);
                 mRootView.setLayoutParams(layoutParams);
@@ -72,6 +75,13 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
             mLoaded = true;
             initBasic(savedInstanceState);
         }
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        dialogFullscreen();
     }
 
     /**
@@ -156,6 +166,14 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
     @Nullable
     public final View findViewById(int resId) {
         return mRootView != null ? mRootView.findViewById(resId) : null;
+    }
+
+    public void dialogFullscreen() {
+        Dialog dialog = getDialog();
+        if (dialog != null && dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
     }
 
     /**
