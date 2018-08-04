@@ -18,7 +18,7 @@ import cn.dujc.core.adapter.BaseQuickAdapter;
 public abstract class BaseListActivity extends BaseActivity {
 
     private SwipeRefreshLayout mSrlLoader;
-    protected RecyclerView mRvList;
+    private RecyclerView mRvList;
     private BaseQuickAdapter mQuickAdapter;
 
     @Override
