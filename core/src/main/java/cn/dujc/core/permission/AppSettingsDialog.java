@@ -51,7 +51,7 @@ public class AppSettingsDialog implements Parcelable {
     private final String mNegativeButtonText;
     private final int mRequestCode;
 
-    private IBaseUI.IContextCompat mActivityOrFragment;
+    private IBaseUI.IContextCompat mContextCompat;
     private Context mContext;
 
     private AppSettingsDialog(Parcel in) {
@@ -63,14 +63,14 @@ public class AppSettingsDialog implements Parcelable {
         mRequestCode = in.readInt();
     }
 
-    private AppSettingsDialog(@NonNull final IBaseUI.IContextCompat activityOrFragment,
+    private AppSettingsDialog(@NonNull final IBaseUI.IContextCompat contextCompat,
                               @StyleRes int themeResId,
                               @Nullable String rationale,
                               @Nullable String title,
                               @Nullable String positiveButtonText,
                               @Nullable String negativeButtonText,
                               int requestCode) {
-        setActivityOrFragment(activityOrFragment);
+        setContextCompat(contextCompat);
         mThemeResId = themeResId;
         mRationale = rationale;
         mTitle = title;
@@ -81,17 +81,17 @@ public class AppSettingsDialog implements Parcelable {
 
     static AppSettingsDialog fromIntent(Intent intent, Activity activity) {
         AppSettingsDialog dialog = intent.getParcelableExtra(AppSettingsDialog.EXTRA_APP_SETTINGS);
-        dialog.setActivityOrFragment(new IBaseUI.IContextCompatActivityImpl(activity));
+        dialog.setContextCompat(new IBaseUI.IContextCompatActivityImpl(activity));
         return dialog;
     }
 
-    private void setActivityOrFragment(IBaseUI.IContextCompat activityOrFragment) {
-        mActivityOrFragment = activityOrFragment;
-        mContext = activityOrFragment.context();
+    private void setContextCompat(IBaseUI.IContextCompat contextCompat) {
+        mContextCompat = contextCompat;
+        mContext = contextCompat.context();
     }
 
     private void startForResult(Intent intent) {
-        mActivityOrFragment.startActivityForResult(intent, mRequestCode);
+        mContextCompat.startActivityForResult(intent, mRequestCode);
     }
 
     /**
@@ -141,7 +141,7 @@ public class AppSettingsDialog implements Parcelable {
      */
     public static class Builder {
 
-        private final IBaseUI.IContextCompat mActivityOrFragment;
+        private final IBaseUI.IContextCompat mIContextCompat;
         private final Context mContext;
         @StyleRes
         private int mThemeResId = -1;
@@ -164,7 +164,7 @@ public class AppSettingsDialog implements Parcelable {
          * Create a new Builder for an {@link AppSettingsDialog}.
          */
         public Builder(@NonNull IBaseUI.IContextCompat contextCompat) {
-            mActivityOrFragment = contextCompat;
+            mIContextCompat = contextCompat;
             mContext = contextCompat.context();
         }
 
@@ -286,7 +286,7 @@ public class AppSettingsDialog implements Parcelable {
             mRequestCode = mRequestCode > 0 ? mRequestCode : DEFAULT_SETTINGS_REQ_CODE;
 
             return new AppSettingsDialog(
-                    mActivityOrFragment,
+                    mIContextCompat,
                     mThemeResId,
                     mRationale,
                     mTitle,

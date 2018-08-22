@@ -156,6 +156,12 @@ public interface IBaseUI {
         void handOnActivityResult(int requestCode);
 
         void handOnRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
+
+        void setSettingsDialog(IPermissionSettingsDialog settingsDialog);
+    }
+
+    public interface IPermissionSettingsDialog {
+        void showSettingsDialog(IContextCompat context, String title, String message);
     }
 
     public interface IPermissionKeeperCallback {
@@ -485,6 +491,7 @@ public interface IBaseUI {
 
         private final IContextCompat mContext;
         private final IPermissionKeeperCallback mCallback;
+        private IPermissionSettingsDialog mSettingsDialog;
         private String[] mLastRequestedPermissions = null;
 
         public IPermissionKeeperImpl(Activity activity, IPermissionKeeperCallback callback) {
@@ -498,6 +505,7 @@ public interface IBaseUI {
         public IPermissionKeeperImpl(IContextCompat context, IPermissionKeeperCallback callback) {
             mContext = context;
             mCallback = callback;
+            mSettingsDialog = new IPermissionSettingsDialogImpl();
         }
 
         @Override
@@ -519,11 +527,8 @@ public interface IBaseUI {
                 for (String permission : permissions) {
                     showHint = showHint || mContext.shouldShowRequestPermissionRationale(permission);
                 }
-                if (showHint) {
-                    final AppSettingsDialog.Builder builder = new AppSettingsDialog.Builder(mContext);
-                    if (!TextUtils.isEmpty(title)) builder.setTitle(title);
-                    if (!TextUtils.isEmpty(message)) builder.setRationale(message);
-                    builder.build().show();
+                if (showHint && mSettingsDialog != null) {
+                    mSettingsDialog.showSettingsDialog(mContext, title, message);
                 } else {
                     mContext.requestPermissions(permissions, requestCode);
                 }
@@ -546,6 +551,11 @@ public interface IBaseUI {
         @Override
         public void handOnRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
             handleGrantedOrDenied(mContext.context(), mCallback, permissions, grantResults, requestCode);
+        }
+
+        @Override
+        public void setSettingsDialog(IPermissionSettingsDialog settingsDialog) {
+            mSettingsDialog = settingsDialog;
         }
 
         private static boolean hasPermission(Context context, String... permissions) {
@@ -597,5 +607,16 @@ public interface IBaseUI {
             }
         }
 
+    }
+
+    public static class IPermissionSettingsDialogImpl implements IPermissionSettingsDialog {
+
+        @Override
+        public void showSettingsDialog(IContextCompat context, String title, String message) {
+            final AppSettingsDialog.Builder builder = new AppSettingsDialog.Builder(context);
+            if (!TextUtils.isEmpty(title)) builder.setTitle(title);
+            if (!TextUtils.isEmpty(message)) builder.setRationale(message);
+            builder.build().show();
+        }
     }
 }

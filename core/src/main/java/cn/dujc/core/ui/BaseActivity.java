@@ -99,7 +99,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI,
     @Override
     @Nullable
     public View createRootView(View contentView) {
-        return linearRootView(contentView);
+        return linearToolbar() ? linearRootView(contentView) : frameRootView(contentView);
     }
 
     @Nullable
@@ -228,9 +228,16 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI,
     }
 
     /**
+     * 是否线性排列toolbar，否的话则toolbar在布局上方
+     */
+    protected boolean linearToolbar() {
+        return true;
+    }
+
+    /**
      * 标题与界面线性排列
      */
-    protected final View linearRootView(View contentView) {
+    private View linearRootView(View contentView) {
         final LinearLayout layout = new LinearLayout(this);
         mToolbar = initToolbar(layout);
         if (mToolbar != null) {
@@ -247,7 +254,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI,
     /**
      * 标题与界面帧层叠
      */
-    protected final View frameRootView(View contentView) {
+    private View frameRootView(View contentView) {
         final FrameLayout layout = new FrameLayout(this);
         mToolbar = initToolbar(layout);
         if (mToolbar != null) {
