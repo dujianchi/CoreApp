@@ -61,13 +61,20 @@ public abstract class BaseFragment extends Fragment implements IBaseUI, IBaseUI.
 
     @Override
     public View createRootView(View view) {
-        return linearRootView(view);
+        return linearToolbar() ? linearRootView(view) : frameRootView(view);
+    }
+
+    /**
+     * 是否线性排列toolbar，否的话则toolbar在布局上方
+     */
+    protected boolean linearToolbar() {
+        return true;
     }
 
     /**
      * 标题与界面线性排列
      */
-    protected final View linearRootView(View view) {
+    private View linearRootView(View view) {
         LinearLayout layout = new LinearLayout(getActivity());
         mToolbar = initToolbar(layout);
         if (mToolbar != null) {
@@ -83,12 +90,12 @@ public abstract class BaseFragment extends Fragment implements IBaseUI, IBaseUI.
     /**
      * 标题与界面帧层叠
      */
-    protected final View frameRootView(View view) {
+    private View frameRootView(View view) {
         FrameLayout layout = new FrameLayout(getActivity());
         mToolbar = initToolbar(layout);
         if (mToolbar != null) {
-            layout.addView(view, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT
-                    , LinearLayout.LayoutParams.MATCH_PARENT));
+            layout.addView(view, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT
+                    , FrameLayout.LayoutParams.MATCH_PARENT));
             layout.addView(mToolbar);
             return layout;
         }
