@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SB">
+        <attr name="seekBarWidthScale" format="float" />
+        <attr name="seekBarLeftMarginScale" format="float" />
+        <attr name="seekBarTopMarginScale" format="float" />
+        <attr name="seekBarRightMarginScale" format="float" />
+        <attr name="seekBarBottomMarginScale" format="float" />
+        <attr name="seekBarProgressColor" format="color" />
+    </declare-styleable>
+</resources>

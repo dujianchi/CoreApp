@@ -1,10 +1,10 @@
 package cn.dujc.core.ui;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,11 +12,14 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 
 import java.util.List;
 import java.util.UUID;
@@ -45,23 +48,11 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
 
         if (mRootView == null && (vid != 0 || rootView != null)) {
             if (rootView == null) {
-                mRootView = inflater.inflate(vid, container, false);
+                final FrameLayout layout = new FrameLayout(mActivity);
+                inflater.inflate(vid, layout, true);
+                mRootView = layout;
             } else {
                 mRootView = rootView;
-            }
-        }
-
-        if (mRootView != null) {
-            final ViewGroup parent = (ViewGroup) mRootView.getParent();
-            if (parent != null) {
-                parent.removeView(mRootView);
-            }
-
-            ViewGroup.LayoutParams layoutParams = mRootView.getLayoutParams();
-            if (layoutParams == null) {
-                layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
-                        , ViewGroup.LayoutParams.MATCH_PARENT);
-                mRootView.setLayoutParams(layoutParams);
             }
         }
 
@@ -69,48 +60,24 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Light_NoTitleBar_Fullscreen);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        final Window window = getDialog().getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(dialogBackground());
+            window.setLayout(dialogWidth(), dialogHeight());
+            window.setGravity(dialogGravity());
+        }
         if (!mLoaded && mRootView != null) {
             mLoaded = true;
             initBasic(savedInstanceState);
         }
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        dialogFullscreen();
-    }
-
-    /**
-     * @deprecated dialog没有必要处理toolbar
-     */
-    @Override
-    @Deprecated
-    public final View createRootView(View view) {
-        return view;
-    }
-
-    /**
-     * @deprecated dialog没有必要处理toolbar
-     */
-    @Override
-    @Nullable
-    @Deprecated
-    public final Toolbar initToolbar(ViewGroup parent) {
-        return null;
-    }
-
-    /**
-     * @deprecated dialog没有必要处理toolbar
-     */
-    @Override
-    @Nullable
-    @Deprecated
-    public TitleCompat getTitleCompat() {
-        return null;
     }
 
     @Override
@@ -164,16 +131,36 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
     }
 
     @Nullable
-    public final View findViewById(int resId) {
-        return mRootView != null ? mRootView.findViewById(resId) : null;
+    public final <T extends View> T findViewById(int resId) {
+        return mRootView != null ? (T) mRootView.findViewById(resId) : null;
     }
 
-    public void dialogFullscreen() {
-        Dialog dialog = getDialog();
-        if (dialog != null && dialog.getWindow() != null) {
-            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
+    /**
+     * dialog宽度
+     */
+    public int dialogWidth() {
+        return WindowManager.LayoutParams.WRAP_CONTENT;
+    }
+
+    /**
+     * dialog高度
+     */
+    public int dialogHeight() {
+        return WindowManager.LayoutParams.WRAP_CONTENT;
+    }
+
+    /**
+     * dialog对齐方式
+     */
+    public int dialogGravity() {
+        return Gravity.CENTER;
+    }
+
+    /**
+     * dialog对话框
+     */
+    public Drawable dialogBackground() {
+        return new ColorDrawable(Color.TRANSPARENT);
     }
 
     /**

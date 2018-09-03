@@ -44,12 +44,6 @@ public interface IBaseUI {
      */
     int[] _INCREMENT_REQUEST_CODE = {1};
 
-    Toolbar initToolbar(ViewGroup parent);
-
-    TitleCompat getTitleCompat();
-
-    View createRootView(View contentView);
-
     IStarter starter();
 
     IParams extras();
@@ -61,6 +55,14 @@ public interface IBaseUI {
     int getViewId();
 
     void initBasic(Bundle savedInstanceState);
+
+    public interface WithToolbar extends IBaseUI {
+        Toolbar initToolbar(ViewGroup parent);
+
+        TitleCompat getTitleCompat();
+
+        View createRootView(View contentView);
+    }
 
     public interface IContextCompat {
         void startActivityForResult(Intent intent, int requestCode);

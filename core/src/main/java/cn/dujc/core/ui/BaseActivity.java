@@ -28,7 +28,7 @@ import cn.dujc.core.toolbar.IToolbarHandler;
  * 基本的Activity。所有Activity必须继承于此类。“所有”！
  * Created by du on 2017/9/19.
  */
-public abstract class BaseActivity extends AppCompatActivity implements IBaseUI, IBaseUI.IPermissionKeeperCallback {
+public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.WithToolbar, IBaseUI.IPermissionKeeperCallback {
 
     private IStarter mStarter = null;
     private IParams mParams = null;

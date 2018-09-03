@@ -20,7 +20,7 @@ import java.util.List;
  * 基本的Fragment。最好Fragment都要继承于此类
  * Created by du on 2017/9/19.
  */
-public abstract class BaseFragment extends Fragment implements IBaseUI, IBaseUI.IPermissionKeeperCallback {
+public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolbar, IBaseUI.IPermissionKeeperCallback {
 
     private IStarter mStarter = null;
     private IParams mParams = null;
@@ -34,7 +34,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI, IBaseUI.
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mActivity = getActivity();
         final int vid = getViewId();
         final View rootView = getViewV();
@@ -51,7 +51,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI, IBaseUI.
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (!mLoaded && mRootView != null) {
             mLoaded = true;
@@ -75,7 +75,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI, IBaseUI.
      * 标题与界面线性排列
      */
     private View linearRootView(View view) {
-        LinearLayout layout = new LinearLayout(getActivity());
+        LinearLayout layout = new LinearLayout(mActivity);
         mToolbar = initToolbar(layout);
         if (mToolbar != null) {
             layout.setOrientation(LinearLayout.VERTICAL);
@@ -91,7 +91,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI, IBaseUI.
      * 标题与界面帧层叠
      */
     private View frameRootView(View view) {
-        FrameLayout layout = new FrameLayout(getActivity());
+        FrameLayout layout = new FrameLayout(mActivity);
         mToolbar = initToolbar(layout);
         if (mToolbar != null) {
             layout.addView(view, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT
@@ -111,8 +111,8 @@ public abstract class BaseFragment extends Fragment implements IBaseUI, IBaseUI.
     @Override
     @Nullable
     public TitleCompat getTitleCompat() {
-        if (getActivity() instanceof BaseActivity) {
-            mTitleCompat = ((BaseActivity) getActivity()).getTitleCompat();
+        if (mActivity instanceof BaseActivity) {
+            mTitleCompat = ((BaseActivity) mActivity).getTitleCompat();
         }
         return mTitleCompat;
     }
@@ -168,8 +168,8 @@ public abstract class BaseFragment extends Fragment implements IBaseUI, IBaseUI.
     }
 
     @Nullable
-    public final View findViewById(int resId) {
-        return mRootView != null ? mRootView.findViewById(resId) : null;
+    public final <T extends View> T findViewById(int resId) {
+        return mRootView != null ? (T) mRootView.findViewById(resId) : null;
     }
 
     /**
