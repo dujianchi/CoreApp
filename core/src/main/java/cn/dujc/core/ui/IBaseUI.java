@@ -1,6 +1,7 @@
 package cn.dujc.core.ui;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -87,6 +88,10 @@ public interface IBaseUI {
         int go(Class<? extends Activity> activity);
 
         int go(Class<? extends Activity> activity, boolean finishThen);
+
+        int go(Intent intent);
+
+        int go(Intent intent, boolean finishThen);
 
         IStarter clear();
 
@@ -296,6 +301,33 @@ public interface IBaseUI {
                 intent.putExtras(mBundle);
             }
             int requestCode = newRequestCode(activity);
+            mContext.startActivityForResult(intent, requestCode);
+            if (finishThen) {
+                mContext.finish();
+            }
+            return requestCode;
+        }
+
+        @Override
+        public int go(Intent intent) {
+            return go(intent, false);
+        }
+
+        @Override
+        public int go(Intent intent, boolean finishThen) {
+            final ComponentName component = intent.getComponent();
+            int requestCode = 0;
+            if (component != null) {
+                final Class<?> activity;
+                try {
+                    activity = Class.forName(component.getClassName());
+                    requestCode = newRequestCode((Class<? extends Activity>) activity);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (ClassCastException e) {
+                    e.printStackTrace();
+                }
+            }
             mContext.startActivityForResult(intent, requestCode);
             if (finishThen) {
                 mContext.finish();

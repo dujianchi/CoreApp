@@ -12,6 +12,7 @@
             android:exported="false"
             android:label=""
             android:theme="@style/EasyPermissions_Transparent"/>
+        <activity android:name=".ui.FragmentShellActivity" />
     </application>
 
 </manifest>
