@@ -177,7 +177,7 @@ public interface IBaseUI {
         void onDenied(int requestCode, List<String> permissions);
     }
 
-    static class IContextCompatActivityImpl implements IContextCompat {
+    public static class IContextCompatActivityImpl implements IContextCompat {
         private final Activity mActivity;
 
         public IContextCompatActivityImpl(Activity activity) {
@@ -215,7 +215,7 @@ public interface IBaseUI {
         }
     }
 
-    static class IContextCompatFragmentImpl implements IContextCompat {
+    public static class IContextCompatFragmentImpl implements IContextCompat {
         private final Fragment mFragment;
 
         public IContextCompatFragmentImpl(Fragment fragment) {
@@ -256,8 +256,8 @@ public interface IBaseUI {
 
     public static class IStarterImpl implements IStarter {
 
-        Bundle mBundle = new Bundle();
-        Map<Class<? extends Activity>, Integer> mRequestCodes = new ArrayMap<>();
+        private final Bundle mBundle = new Bundle();
+        private final Map<Class<? extends Activity>, Integer> mRequestCodes = new ArrayMap<>();
         private final IContextCompat mContext;
 
         public IStarterImpl(Activity activity) {
@@ -270,6 +270,15 @@ public interface IBaseUI {
 
         public IStarterImpl(IContextCompat context) {
             mContext = context;
+        }
+
+        //跳转
+        private static int go(IContextCompat context, Intent intent, int requestCode, boolean finishThen) {
+            context.startActivityForResult(intent, requestCode);
+            if (finishThen) {
+                context.finish();
+            }
+            return requestCode;
         }
 
         @Override
@@ -297,15 +306,11 @@ public interface IBaseUI {
         @Override
         public int go(Class<? extends Activity> activity, boolean finishThen) {
             Intent intent = new Intent(mContext.context(), activity);
-            if (mBundle != null && mBundle.size() > 0) {
+            if (mBundle.size() > 0) {
                 intent.putExtras(mBundle);
             }
             int requestCode = newRequestCode(activity);
-            mContext.startActivityForResult(intent, requestCode);
-            if (finishThen) {
-                mContext.finish();
-            }
-            return requestCode;
+            return IStarterImpl.go(mContext, intent, requestCode, finishThen);
         }
 
         @Override
@@ -328,11 +333,7 @@ public interface IBaseUI {
                     e.printStackTrace();
                 }
             }
-            mContext.startActivityForResult(intent, requestCode);
-            if (finishThen) {
-                mContext.finish();
-            }
-            return requestCode;
+            return IStarterImpl.go(mContext, intent, requestCode, finishThen);
         }
 
         @Override
