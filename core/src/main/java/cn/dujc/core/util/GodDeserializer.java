@@ -16,6 +16,7 @@ import java.util.Set;
 
 /**
  * 神级的gson反序列化处理类，会处理错误的json类型，取到类型错误也不报错，会继续取到剩余正确的值
+ * 用法：Gson gson = new GsonBuilder().registerTypeAdapter(Bean2.class, new GodDeserializer<Bean>()).create()
  *
  * @author du
  * date 2018/7/14 上午11:21
