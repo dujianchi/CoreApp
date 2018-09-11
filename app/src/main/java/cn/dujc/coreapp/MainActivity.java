@@ -14,6 +14,7 @@ import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -26,17 +27,18 @@ import java.util.Random;
 
 import cn.dujc.core.adapter.BaseAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
-import cn.dujc.core.impls.LinkMovementMethodReplacement;
 import cn.dujc.core.permission.AppSettingsDialog;
 import cn.dujc.core.ui.BaseActivity;
+import cn.dujc.core.ui.FragmentShellActivity;
 import cn.dujc.core.ui.StatusBarPlaceholder;
 import cn.dujc.core.util.GodDeserializer;
 import cn.dujc.core.util.GsonUtil;
 import cn.dujc.core.util.LogUtil;
-import cn.dujc.core.util.TextColorBuilder;
 import cn.dujc.core.util.ToastUtil;
 
 public class MainActivity extends BaseActivity {
+
+    private DialogF mDialogF;
 
     @Override
     public int getViewId() {
@@ -58,59 +60,97 @@ public class MainActivity extends BaseActivity {
 //        string.setSpan(new MyClickSpan("abcd"),0,4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 //        string.setSpan(new MyClickSpan("aaaa"),10,14, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        TextView textView = findViewById(R.id.textView);
+//        SB sb = findViewById(R.id.sb);
+//        final TextView textView = findViewById(R.id.textView);
+////        final TextView textView = new TextView(this);
+////        textView.setText("000000000000");
+//        sb.setCursorView(textView);
+//        sb.setOnProgressCallback(new SB.OnProgressCallback() {
+//            @Override
+//            public void onProgress(float progress) {
+//                textView.setText(String.format(Locale.CHINA, "%f", progress * 100));
+//            }
+//        });
 
-        textView.setText(new TextColorBuilder()
-                .addTextPart("没有颜色且没有点击")
-                .addTextPart(",")
-                .addTextPart(Color.RED, "红色没有点击")
-                .addTextPart(",")
-                .addTextPart("黑色有点击", Color.BLACK, new TextColorBuilder.OnClickListener() {
-                    @Override
-                    public void onClick(View widget, CharSequence clickedText) {
-                        ToastUtil.showToast(mActivity, clickedText);
-                    }
-                })
-                .addTextPart(",")
-                .addTextPart("没有颜色有点击", 0, new TextColorBuilder.OnClickListener() {
-                    @Override
-                    public void onClick(View widget, CharSequence clickedText) {
-                        ToastUtil.showToast(mActivity, clickedText);
-                    }
-                })
-                .addTextPart(",")
-                .addTextPart("有颜色有点击但没回调", Color.GREEN, null)
-                .addTextPart(",")
-                .addTextPart("没有颜色且没有点击")
-                .build());
-        textView.setOnClickListener(new View.OnClickListener() {
+        final Button next = findViewById(R.id.next), pre = findViewById(R.id.pre);
+        List list = Arrays.asList("aaaa", "bbbb", "cccc", "dddd", "eeee", "ffff", "gggg", "hhhh", "iiii", "jjjj", "kkkk", "llll", "mmmm", "nnnn", "1234");
+        final ADSwitcher switcher = findViewById(R.id.switcher);
+        switcher.setList(list);
+        //switcher.start();
+        next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtil.showToast(mActivity, "textview clicked");
-                LogUtil.d("textview clicked");
+                //switcher.showNext();
+                if (mDialog == null) {
+                    mDialog = new DialogF();
+                }
+                mDialog.showOnly(MainActivity.this);
             }
         });
-        textView.setOnLongClickListener(new View.OnLongClickListener() {
+        pre.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                ToastUtil.showToast(mActivity, "textview long clicked");
-                LogUtil.d("textview long clicked");
-                return true;
+            public void onClick(View v) {
+//                switcher.showPrevious();
+//                if (mDialog == null) mDialogF = new DialogF();
+//                mDialogF.showOnly(MainActivity.this);
+                starter().go(FragmentShellActivity.load(mActivity, MainFragment.class));
             }
         });
-        LinkMovementMethodReplacement.assistTextView(textView);
+
+//
+//        textView.setText(new TextColorBuilder()
+//                .addTextPart("没有颜色且没有点击")
+//                .addTextPart(",")
+//                .addTextPart(Color.RED, "红色没有点击")
+//                .addTextPart(",")
+//                .addTextPart("黑色有点击", Color.BLACK, new TextColorBuilder.OnClickListener() {
+//                    @Override
+//                    public void onClick(View widget, CharSequence clickedText) {
+//                        ToastUtil.showToast(mActivity, clickedText);
+//                    }
+//                })
+//                .addTextPart(",")
+//                .addTextPart("没有颜色有点击", 0, new TextColorBuilder.OnClickListener() {
+//                    @Override
+//                    public void onClick(View widget, CharSequence clickedText) {
+//                        ToastUtil.showToast(mActivity, clickedText);
+//                    }
+//                })
+//                .addTextPart(",")
+//                .addTextPart("有颜色有点击但没回调", Color.GREEN, null)
+//                .addTextPart(",")
+//                .addTextPart("没有颜色且没有点击")
+//                .build());
+//        textView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ToastUtil.showToast(mActivity, "textview clicked");
+//                LogUtil.d("textview clicked");
+//            }
+//        });
+//        textView.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                ToastUtil.showToast(mActivity, "textview long clicked");
+//                LogUtil.d("textview long clicked");
+//                return true;
+//            }
+//        });
+//        LinkMovementMethodReplacement.assistTextView(textView);
 //        textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private static class MyClickSpan extends ClickableSpan {
 
         private String tag;
-        public MyClickSpan(String tag){
+
+        public MyClickSpan(String tag) {
             this.tag = tag;
         }
+
         @Override
         public void onClick(View widget) {
-            ToastUtil.showToast(widget.getContext(), tag+" is clicked");
+            ToastUtil.showToast(widget.getContext(), tag + " is clicked");
             LogUtil.d("textview tag clicked");
         }
 

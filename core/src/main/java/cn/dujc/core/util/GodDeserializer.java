@@ -9,7 +9,9 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,19 +35,19 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
     @Override
     public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
         T result;
-        try {
+        /*try {
             result = GSON.fromJson(json, typeOfT);
         } catch (Exception e0) {
-            e0.printStackTrace();
-            try {
-                result = (T) ((Class) typeOfT).newInstance();
-                Map<String, Object> map = GSON.fromJson(json, new TypeToken<Map<String, Object>>() {}.getType());
-                copyFromMap(result, map);
-            } catch (Throwable e1) {
-                e1.printStackTrace();
-                result = null;
-            }
+            e0.printStackTrace();*/
+        try {
+            result = (T) ((Class) typeOfT).newInstance();
+            Map<String, Object> map = GSON.fromJson(json, new TypeToken<Map<String, Object>>() {}.getType());
+            copyFromMap(result, map);
+        } catch (Throwable e1) {
+            e1.printStackTrace();
+            result = null;
         }
+        //}
         return result;
     }
 
@@ -93,14 +95,102 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
         final Class<?> fieldType = field.getType();
         try {
             if (fieldType.isInstance(value)) {
-                field.set(object, value);
+                if (List.class.equals(fieldType)) {
+                    final List values = (List) value;
+                    final int size = values.size();
+                    final List objects = new ArrayList(size);
+                    for (int index = 0; index < size; index++) {
+                        final Object val = values.get(index);
+                        final Type genericType = field.getGenericType();
+                        if (genericType instanceof ParameterizedType) {
+                            final ParameterizedType pt = (ParameterizedType) genericType;
+                            //得到泛型里的class类型对象
+                            final Class<?> genericClazz = (Class<?>) pt.getActualTypeArguments()[0];
+                            if (val instanceof Map) {
+                                final Object o = genericClazz.newInstance();
+                                copyFromMap(o, (Map<String, Object>) val);
+                                objects.add(o);
+                            } else {
+                                final String valueStr = String.valueOf(val);
+                                if (Integer.class.equals(genericClazz)) {
+                                    final double number = Double.valueOf(valueStr);
+                                    objects.add((int) number);
+                                } else if (Float.class.equals(genericClazz)) {
+                                    final double number = Double.valueOf(valueStr);
+                                    objects.add((float) number);
+                                } else if (Double.class.equals(genericClazz)) {
+                                    final double number = Double.valueOf(valueStr);
+                                    objects.add(number);
+                                } else if (Short.class.equals(genericClazz)) {
+                                    final double number = Double.valueOf(valueStr);
+                                    objects.add((short) number);
+                                } else if (Byte.class.equals(genericClazz)) {
+                                    final double number = Double.valueOf(valueStr);
+                                    objects.add((byte) number);
+                                } else if (Boolean.class.equals(genericClazz)) {
+                                    objects.add("true".equals(valueStr) || "1".equals(valueStr) || "1.0".equals(valueStr) || "yes".equalsIgnoreCase(valueStr));
+                                } else if (Character.class.equals(genericClazz)) {
+                                    objects.add(valueStr.trim().charAt(0));
+                                } else if (boolean.class.equals(genericClazz)) {
+                                    boolean b = "true".equals(valueStr) || "1".equals(valueStr) || "1.0".equals(valueStr) || "yes".equalsIgnoreCase(valueStr);
+                                    objects.add(b);
+                                } else if (char.class.equals(genericClazz)) {
+                                    char c = valueStr.trim().charAt(0);
+                                    objects.add(c);
+                                } else if (int.class.equals(genericClazz)) {
+                                    double number = Double.valueOf(valueStr);
+                                    int i = (int) number;
+                                    objects.add(i);
+                                } else if (double.class.equals(genericClazz)) {
+                                    double number = Double.valueOf(valueStr);
+                                    objects.add(number);
+                                } else if (float.class.equals(genericClazz)) {
+                                    double number = Double.valueOf(valueStr);
+                                    float f = (float) number;
+                                    objects.add(f);
+                                } else if (short.class.equals(genericClazz)) {
+                                    double number = Double.valueOf(valueStr);
+                                    short s = (short) number;
+                                    objects.add(s);
+                                } else if (byte.class.equals(genericClazz)) {
+                                    double number = Double.valueOf(valueStr);
+                                    byte b = (byte) number;
+                                    objects.add(b);
+                                } else if (genericClazz.isArray()) {
+                                    final List inner = (List) value;
+                                    final int innerSize = inner.size();
+                                    final Class<?> componentType = genericClazz.getComponentType();
+                                    final Object innerObjects = Array.newInstance(componentType, innerSize);
+                                    for (int innerIndex = 0; innerIndex < innerSize; innerIndex++) {
+                                        final Object innerVal = inner.get(innerIndex);
+                                        if (innerVal instanceof Map) {
+                                            final Object o = componentType.newInstance();
+                                            copyFromMap(o, (Map<String, Object>) innerVal);
+                                            Array.set(innerObjects, innerIndex, o);
+                                        } else {
+                                            putValue(innerObjects, innerIndex, innerVal, componentType);
+                                        }
+                                    }
+                                    objects.add(innerObjects);
+                                } else if (value instanceof Map) {
+                                    final Object child = field.getType().newInstance();
+                                    copyFromMap(child, (Map<String, Object>) value);
+                                    objects.add(child);
+                                }
+                            }
+                        }
+                    }
+                    field.set(object, objects);
+                } else {
+                    field.set(object, value);
+                }
             } else if (fieldType.isPrimitive()) {
                 final String valueStr = String.valueOf(value);
                 if (boolean.class.equals(fieldType)) {
-                    boolean b = "true".equals(valueStr) || "1".equals(valueStr) || "1.0".equals(valueStr);
+                    boolean b = "true".equals(valueStr) || "1".equals(valueStr) || "1.0".equals(valueStr) || "yes".equalsIgnoreCase(valueStr);
                     field.setBoolean(object, b);
                 } else if (char.class.equals(fieldType)) {
-                    char c = valueStr.charAt(0);
+                    char c = valueStr.trim().charAt(0);
                     field.setChar(object, c);
                 } else {
                     double number = Double.valueOf(valueStr);
@@ -142,21 +232,23 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
                 field.set(object, child);
             } else {//Integer Float 等封装类不会到上面到基本类型中去
                 final String valueStr = String.valueOf(value);
-                final double number = Double.valueOf(valueStr);
-                if (Integer.class.equals(fieldType)) {
-                    field.set(object, (int) number);
-                } else if (Float.class.equals(fieldType)) {
-                    field.set(object, (float) number);
-                } else if (Double.class.equals(fieldType)) {
-                    field.set(object, number);
-                } else if (Short.class.equals(fieldType)) {
-                    field.set(object, (short) number);
-                } else if (Byte.class.equals(fieldType)) {
-                    field.set(object, (byte) number);
-                } else if (Boolean.class.equals(fieldType)) {
-                    field.set(object, "true".equals(valueStr) || "1".equals(valueStr) || "1.0".equals(valueStr));
+                if (Boolean.class.equals(fieldType)) {
+                    field.set(object, "true".equals(valueStr) || "1".equals(valueStr) || "1.0".equals(valueStr) || "yes".equalsIgnoreCase(valueStr));
                 } else if (Character.class.equals(fieldType)) {
-                    field.set(object, valueStr.charAt(0));
+                    field.set(object, valueStr.trim().charAt(0));
+                } else {
+                    final double number = Double.valueOf(valueStr);
+                    if (Integer.class.equals(fieldType)) {
+                        field.set(object, (int) number);
+                    } else if (Float.class.equals(fieldType)) {
+                        field.set(object, (float) number);
+                    } else if (Double.class.equals(fieldType)) {
+                        field.set(object, number);
+                    } else if (Short.class.equals(fieldType)) {
+                        field.set(object, (short) number);
+                    } else if (Byte.class.equals(fieldType)) {
+                        field.set(object, (byte) number);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -167,7 +259,14 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
     }
 
     /**
-     * 忘数组中添加数据
+     * 判断字符串是否表示正确
+     */
+    private static boolean valueIsTrue(String valueStr){
+        return "true".equals(valueStr) || "1".equals(valueStr) || "1.0".equals(valueStr) || "yes".equalsIgnoreCase(valueStr);
+    }
+
+    /**
+     * 往数组中添加数据
      *
      * @param object        数组对象
      * @param index         位置
@@ -180,10 +279,10 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
         } else if (componentType.isPrimitive()) {
             final String valueStr = String.valueOf(val);
             if (boolean.class.equals(componentType)) {
-                boolean b = "true".equals(valueStr) || "1".equals(valueStr) || "1.0".equals(valueStr);
+                boolean b = valueIsTrue(valueStr);
                 Array.set(object, index, b);
             } else if (char.class.equals(componentType)) {
-                char c = valueStr.charAt(0);
+                char c = valueStr.trim().charAt(0);
                 Array.set(object, index, c);
             } else {
                 double number = Double.valueOf(valueStr);
@@ -205,21 +304,23 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
             }
         } else {//Integer Float 等封装类不会到上面到基本类型中去
             final String valueStr = String.valueOf(val);
-            final double number = Double.valueOf(valueStr);
-            if (Integer.class.equals(componentType)) {
-                Array.set(object, index, (int) number);
-            } else if (Float.class.equals(componentType)) {
-                Array.set(object, index, (float) number);
-            } else if (Double.class.equals(componentType)) {
-                Array.set(object, index, number);
-            } else if (Short.class.equals(componentType)) {
-                Array.set(object, index, (short) number);
-            } else if (Byte.class.equals(componentType)) {
-                Array.set(object, index, (byte) number);
-            } else if (Boolean.class.equals(componentType)) {
-                Array.set(object, index, "true".equals(valueStr) || "1".equals(valueStr) || "1.0".equals(valueStr));
+            if (Boolean.class.equals(componentType)) {
+                Array.set(object, index, valueIsTrue(valueStr));
             } else if (Character.class.equals(componentType)) {
-                Array.set(object, index, valueStr.charAt(0));
+                Array.set(object, index, valueStr.trim().charAt(0));
+            } else {
+                final double number = Double.valueOf(valueStr);
+                if (Integer.class.equals(componentType)) {
+                    Array.set(object, index, (int) number);
+                } else if (Float.class.equals(componentType)) {
+                    Array.set(object, index, (float) number);
+                } else if (Double.class.equals(componentType)) {
+                    Array.set(object, index, number);
+                } else if (Short.class.equals(componentType)) {
+                    Array.set(object, index, (short) number);
+                } else if (Byte.class.equals(componentType)) {
+                    Array.set(object, index, (byte) number);
+                }
             }
         }
     }

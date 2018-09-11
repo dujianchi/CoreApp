@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.dujc.core.permission.AppSettingsDialog;
+import cn.dujc.core.permission.IOddsPermissionOperator;
 import cn.dujc.core.util.LogUtil;
 
 /**
@@ -165,6 +166,10 @@ public interface IBaseUI {
         void handOnRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
 
         void setSettingsDialog(IPermissionSettingsDialog settingsDialog);
+
+        void registerOddsPermissionOperator(IOddsPermissionOperator... permissionOperators);
+
+        void unregisterOddsPermissionOperator(IOddsPermissionOperator permissionOperator);
     }
 
     public interface IPermissionSettingsDialog {
@@ -524,6 +529,7 @@ public interface IBaseUI {
 
     public static class IPermissionKeeperImpl implements IPermissionKeeper {
 
+        private final List<IOddsPermissionOperator> mPermissionOperators = new ArrayList<>();
         private final IContextCompat mContext;
         private final IPermissionKeeperCallback mCallback;
         private IPermissionSettingsDialog mSettingsDialog;
@@ -591,6 +597,20 @@ public interface IBaseUI {
         @Override
         public void setSettingsDialog(IPermissionSettingsDialog settingsDialog) {
             mSettingsDialog = settingsDialog;
+        }
+
+        @Override
+        public void registerOddsPermissionOperator(IOddsPermissionOperator... permissionOperators) {
+            if (permissionOperators != null && permissionOperators.length > 0) {
+                mPermissionOperators.addAll(Arrays.asList(permissionOperators));
+            }
+        }
+
+        @Override
+        public void unregisterOddsPermissionOperator(IOddsPermissionOperator permissionOperator) {
+            if (permissionOperator != null) {
+                mPermissionOperators.remove(permissionOperator);
+            }
         }
 
         private static boolean hasPermission(Context context, String... permissions) {

@@ -1,10 +1,12 @@
 package cn.dujc.core.ui;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,11 +32,16 @@ import java.util.UUID;
  */
 public abstract class BaseDialogFragment extends DialogFragment implements IBaseUI, IBaseUI.IPermissionKeeperCallback {
 
+    private static final int THEME = Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP
+            ? android.R.style.Theme_Holo_Light_Dialog
+            : android.R.style.Theme_Material_Light_Dialog;
+
     private IStarter mStarter = null;
     private IParams mParams = null;
     private IPermissionKeeper mPermissionKeeper = null;
 
     private boolean mLoaded = false;//是否已经载入
+    private boolean mCanceledOnTouchOutside = true;//是否在点击外部到时候隐藏
     protected View mRootView;
     protected Activity mActivity;
     private String mTagUUId = null;
@@ -55,6 +62,9 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
                 mRootView = rootView;
             }
         }
+        if (mRootView != null && mRootView.getParent() instanceof ViewGroup) {
+            ((ViewGroup) mRootView.getParent()).removeView(mRootView);
+        }
 
         return mRootView;
     }
@@ -62,13 +72,15 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Light_NoTitleBar_Fullscreen);
+        setStyle(DialogFragment.STYLE_NO_TITLE, THEME);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final Window window = getDialog().getWindow();
+        final Dialog dialog = getDialog();
+        final Window window = dialog.getWindow();
+        dialog.setCanceledOnTouchOutside(mCanceledOnTouchOutside);//似乎每次显示都会调用到这个方法，且每次dialog不设置到话斗鱼上次不同
         if (window != null) {
             window.setBackgroundDrawable(dialogBackground());
             window.setLayout(dialogWidth(), dialogHeight());
@@ -133,6 +145,13 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
     @Nullable
     public final <T extends View> T findViewById(int resId) {
         return mRootView != null ? (T) mRootView.findViewById(resId) : null;
+    }
+
+    /**
+     * 是否在点击外部到时候隐藏
+     */
+    public void setCanceledOnTouchOutside(boolean canceledOnTouchOutside) {
+        mCanceledOnTouchOutside = canceledOnTouchOutside;
     }
 
     /**
