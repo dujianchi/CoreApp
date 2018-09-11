@@ -35,19 +35,19 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
     @Override
     public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
         T result;
-        /*try {
+        try {
             result = GSON.fromJson(json, typeOfT);
         } catch (Exception e0) {
-            e0.printStackTrace();*/
-        try {
-            result = (T) ((Class) typeOfT).newInstance();
-            Map<String, Object> map = GSON.fromJson(json, new TypeToken<Map<String, Object>>() {}.getType());
-            copyFromMap(result, map);
-        } catch (Throwable e1) {
-            e1.printStackTrace();
-            result = null;
+            e0.printStackTrace();
+            try {
+                result = (T) ((Class) typeOfT).newInstance();
+                Map<String, Object> map = GSON.fromJson(json, new TypeToken<Map<String, Object>>() {}.getType());
+                copyFromMap(result, map);
+            } catch (Throwable e1) {
+                e1.printStackTrace();
+                result = null;
+            }
         }
-        //}
         return result;
     }
 
@@ -261,7 +261,7 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
     /**
      * 判断字符串是否表示正确
      */
-    private static boolean valueIsTrue(String valueStr){
+    private static boolean valueIsTrue(String valueStr) {
         return "true".equals(valueStr) || "1".equals(valueStr) || "1.0".equals(valueStr) || "yes".equalsIgnoreCase(valueStr);
     }
 
