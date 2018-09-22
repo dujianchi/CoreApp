@@ -28,7 +28,7 @@ import cn.dujc.core.R;
  */
 public class MainCreator extends RelativeLayout {
 
-    public interface INormalTab extends Cloneable {
+    public static interface INormalTab extends Cloneable {
         String getText();
 
         int getDefaultColor();
@@ -44,7 +44,7 @@ public class MainCreator extends RelativeLayout {
         int getBetweenSize();
     }
 
-    public class NormalTabImpl implements INormalTab {
+    public static class NormalTabImpl implements INormalTab {
 
         private String mText;
         private int mDefaultColor, mSelectedColor, mTextSize, mIconDefaultId, mIconSelectedId, mBetweenSize;
