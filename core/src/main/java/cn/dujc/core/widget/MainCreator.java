@@ -136,7 +136,6 @@ public class MainCreator extends RelativeLayout {
 
     private final SparseArray<Fragment> mFragmentArray = new SparseArray<>();
 
-    private int mBottomHeight;
     private int mDefaultIndex = 0;
 
     private FrameLayout mContainer;
@@ -156,11 +155,14 @@ public class MainCreator extends RelativeLayout {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        mBottomHeight = (int) (getResources().getDisplayMetrics().density * DEFAULT_BOTTOM_HEIGHT_DP + 0.5f);
+        int bottomHeight = (int) (getResources().getDisplayMetrics().density * DEFAULT_BOTTOM_HEIGHT_DP + 0.5f);
+        int containerColor = -1, bottomColor = -1;
         if (attrs != null) {
             TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.MainCreator);
             mDefaultIndex = array.getInteger(R.styleable.MainCreator_main_creator_default_index, mDefaultIndex);
-            mBottomHeight = array.getDimensionPixelOffset(R.styleable.MainCreator_main_creator_bottom_height, mBottomHeight);
+            bottomHeight = array.getDimensionPixelOffset(R.styleable.MainCreator_main_creator_bottom_height, bottomHeight);
+            bottomColor = array.getColor(R.styleable.MainCreator_main_creator_bottom_color, bottomColor);
+            containerColor = array.getColor(R.styleable.MainCreator_main_creator_container_color, containerColor);
             array.recycle();
         }
 
@@ -170,11 +172,13 @@ public class MainCreator extends RelativeLayout {
         mContainer.setId(R.id.main_creator_container);
         LayoutParams containerParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         containerParams.addRule(ABOVE, R.id.main_creator_bottom);
+        if (containerColor != -1) mContainer.setBackgroundColor(containerColor);
 
         mBottom = new SingleSelector(context);
         mBottom.setId(R.id.main_creator_bottom);
-        LayoutParams bottomParams = new LayoutParams(LayoutParams.MATCH_PARENT, mBottomHeight);
+        LayoutParams bottomParams = new LayoutParams(LayoutParams.MATCH_PARENT, bottomHeight);
         bottomParams.addRule(ALIGN_PARENT_BOTTOM);
+        if (bottomColor != -1) mContainer.setBackgroundColor(bottomColor);
 
         addView(mBottom, bottomParams);
         addView(mContainer, containerParams);
@@ -190,8 +194,11 @@ public class MainCreator extends RelativeLayout {
         drawable.addState(new int[]{android.R.attr.state_selected}, ContextCompat.getDrawable(getContext(), normalTab.getIconSelectedId()));
         drawable.addState(new int[0], ContextCompat.getDrawable(getContext(), normalTab.getIconDefaultId()));
         icon.setImageDrawable(drawable);
+        icon.setAdjustViewBounds(true);
+        icon.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
         TextView text = new TextView(getContext());
+        text.setGravity(Gravity.CENTER);
         text.setText(normalTab.getText());
         text.setTextColor(new ColorStateList(new int[][]{new int[]{android.R.attr.state_selected}, new int[0]}
                 , new int[]{normalTab.getSelectedColor(), normalTab.getDefaultColor()}));
