@@ -126,7 +126,7 @@ public class MainCreator extends RelativeLayout {
         }
 
         @Override
-        protected NormalTabImpl clone() {
+        public NormalTabImpl clone() {
             return new NormalTabImpl(mText, mDefaultColor, mSelectedColor, mTextSize
                     , mIconDefaultId, mIconSelectedId, mBetweenSize);
         }
