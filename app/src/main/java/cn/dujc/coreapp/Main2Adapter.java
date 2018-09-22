@@ -46,5 +46,7 @@ public class Main2Adapter extends BaseAdapter<IExpandable> {
         } else {//二级的文字设置
             ((TextView) helper.itemView).setText(((Main2Entity.InnerEntity)item).getChild());
         }
+
+//        expandAll();
     }
 }

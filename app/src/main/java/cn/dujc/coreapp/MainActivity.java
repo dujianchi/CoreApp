@@ -35,6 +35,7 @@ import cn.dujc.core.util.GodDeserializer;
 import cn.dujc.core.util.GsonUtil;
 import cn.dujc.core.util.LogUtil;
 import cn.dujc.core.util.ToastUtil;
+import cn.dujc.core.widget.MainCreator;
 
 public class MainActivity extends BaseActivity {
 
@@ -96,6 +97,12 @@ public class MainActivity extends BaseActivity {
                 starter().go(FragmentShellActivity.load(mActivity, MainFragment.class));
             }
         });
+
+        MainCreator mainCreator = findViewById(R.id.mainCreator);
+        mainCreator.add(0, R.layout.tab_index_0, new MainFragment())
+                .add(1, R.layout.tab_index_0, new MainFragment())
+                .add(2, R.layout.tab_index_0, new MainFragment())
+                .show(getSupportFragmentManager());
 
 //
 //        textView.setText(new TextColorBuilder()

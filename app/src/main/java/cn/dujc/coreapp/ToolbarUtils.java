@@ -23,6 +23,6 @@ public class ToolbarUtils {
 
     @IStatusColor
     public int color(Context context){
-        return ContextCompat.getColor(context, R.color.colorAccent);
+        return ContextCompat.getColor(context, R.color.colorTitle);
     }
 }
