@@ -17,7 +17,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Size;
 import android.util.SizeF;
@@ -59,7 +58,7 @@ public interface IBaseUI {
     void initBasic(Bundle savedInstanceState);
 
     public interface WithToolbar extends IBaseUI {
-        Toolbar initToolbar(ViewGroup parent);
+        ViewGroup initToolbar(ViewGroup parent);
 
         TitleCompat getTitleCompat();
 

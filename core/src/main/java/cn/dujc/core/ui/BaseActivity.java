@@ -35,7 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     private IPermissionKeeper mPermissionKeeper = null;
 
     protected Activity mActivity;
-    protected Toolbar mToolbar = null;
+    protected ViewGroup mToolbar = null;
     private TitleCompat mTitleCompat = null;
     protected View mRootView = null;
 
@@ -117,8 +117,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
 
     @Override
     @Nullable
-    public Toolbar initToolbar(ViewGroup parent) {
-        Toolbar toolbar = mToolbar;
+    public ViewGroup initToolbar(ViewGroup parent) {
+        ViewGroup toolbar = mToolbar;
         if (toolbar == null) {
             toolbar = IToolbarHandler.handleByContext(this, parent, this);
         }
@@ -185,8 +185,9 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     }
 
     protected void setupToolbar() {
-        if (mToolbar != null) {
-            setSupportActionBar(mToolbar);
+        if (mToolbar instanceof Toolbar) {
+            Toolbar toolbar = (Toolbar) mToolbar;
+            setSupportActionBar(toolbar);
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
                 actionBar.setDisplayShowHomeEnabled(false);

@@ -3,7 +3,6 @@ package cn.dujc.core.toolbar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,11 +43,11 @@ public final class IToolbarHandler {
         return sCacheClassName = preferences(context).getString(CLASS, "");
     }
 
-    public static Toolbar handleByContext(Object user, ViewGroup parent, Context context) {
+    public static ViewGroup handleByContext(Object user, ViewGroup parent, Context context) {
         return handleByClassname(user, parent, getToolbarClass(context));
     }
 
-    public static Toolbar handleByClassname(Object user, ViewGroup parent, String classname) {
+    public static ViewGroup handleByClassname(Object user, ViewGroup parent, String classname) {
         if (!TextUtils.isEmpty(classname)) {
             try {
                 final Class<?> toolbarClass = Class.forName(classname);
@@ -81,7 +80,7 @@ public final class IToolbarHandler {
                                 }
                             }
                             final boolean isStatic = Modifier.isStatic(method.getModifiers());
-                            final Toolbar toolbar = (Toolbar) method.invoke(isStatic ? null : toolbarClass.newInstance(), args);
+                            final ViewGroup toolbar = (ViewGroup) method.invoke(isStatic ? null : toolbarClass.newInstance(), args);
                             if (toolbar != null) {
                                 final View backView = toolbar.findViewById(R.id.toolbar_back_id);
                                 final Activity activity = ContextUtil.getActivity(parent.getContext());
