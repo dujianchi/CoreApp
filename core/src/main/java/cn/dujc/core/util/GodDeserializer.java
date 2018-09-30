@@ -89,8 +89,8 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
      * @param value  需要设置的值
      * @return 代表是否需要继续尝试其他方案，正确设置值后，返回false，设置失败返回true
      */
-    private static boolean setFieldValue(Field field, Object object, Object value) {
-        boolean _continue = false;
+    private static void setFieldValue(Field field, Object object, Object value) {
+        if (value == null) return;
         if (!field.isAccessible()) field.setAccessible(true);
         final Class<?> fieldType = field.getType();
         try {
@@ -101,6 +101,7 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
                     final List objects = new ArrayList(size);
                     for (int index = 0; index < size; index++) {
                         final Object val = values.get(index);
+                        if (val == null) continue;
                         final Type genericType = field.getGenericType();
                         if (genericType instanceof ParameterizedType) {
                             final ParameterizedType pt = (ParameterizedType) genericType;
@@ -163,6 +164,7 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
                                     final Object innerObjects = Array.newInstance(componentType, innerSize);
                                     for (int innerIndex = 0; innerIndex < innerSize; innerIndex++) {
                                         final Object innerVal = inner.get(innerIndex);
+                                        if (innerVal == null) continue;
                                         if (innerVal instanceof Map) {
                                             final Object o = componentType.newInstance();
                                             copyFromMap(o, (Map<String, Object>) innerVal);
@@ -217,6 +219,7 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
                 final Object objects = Array.newInstance(componentType, size);
                 for (int index = 0; index < size; index++) {
                     final Object val = values.get(index);
+                    if (val == null) continue;
                     if (val instanceof Map) {
                         final Object o = componentType.newInstance();
                         copyFromMap(o, (Map<String, Object>) val);
@@ -253,9 +256,7 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            _continue = true;
         }
-        return _continue;
     }
 
     /**
@@ -274,6 +275,7 @@ public class GodDeserializer<T> implements JsonDeserializer<T> {
      * @param componentType 数组对象类型
      */
     private static void putValue(Object object, int index, Object val, Class<?> componentType) {
+        if (val == null) return;
         if (componentType.isInstance(val)) {
             Array.set(object, index, val);
         } else if (componentType.isPrimitive()) {
