@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     private IPermissionKeeper mPermissionKeeper = null;
 
     private boolean mLoaded = false;//是否已经载入
-    protected Toolbar mToolbar;
+    protected ViewGroup mToolbar;
     protected View mRootView;
     private TitleCompat mTitleCompat = null;
     protected Activity mActivity;
@@ -104,7 +103,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
 
     @Override
     @Nullable
-    public Toolbar initToolbar(ViewGroup parent) {
+    public ViewGroup initToolbar(ViewGroup parent) {
         return null;
     }
 
