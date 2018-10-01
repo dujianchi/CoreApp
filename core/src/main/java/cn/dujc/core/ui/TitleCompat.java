@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -39,11 +40,12 @@ public class TitleCompat {
 
     /**
      * 设置状态栏
-     * @deprecated 用{@link StatusBarPlaceholder}替代加padding的方案
+     *
      * @param activity    activity
      * @param translucent 状态栏是否透明
      * @param fits        是否适应内容
      * @return
+     * @deprecated 用{@link StatusBarPlaceholder}替代加padding的方案
      */
     @Deprecated
     public static TitleCompat setStatusBar(Activity activity, boolean translucent, boolean fits) {
@@ -53,6 +55,7 @@ public class TitleCompat {
 
     /**
      * 设置状态栏
+     *
      * @param activity    activity
      * @param translucent 状态栏是否透明
      */
@@ -70,6 +73,7 @@ public class TitleCompat {
      * 设计为每个activity都有不同的title，即需要每个activity皆有不同的titleCompat
      * 为了防止使用单例的初始化，所以将构造方法设为私有方法。使每个activity都需要
      * 调用静态方法[TitleCompat.setStatusBar] 来实例化本类
+     *
      * @deprecated 用{@link StatusBarPlaceholder}替代加padding的方案
      */
     @Deprecated
@@ -167,8 +171,9 @@ public class TitleCompat {
 
     /**
      * 设置内部内容适应
-     * @deprecated 用{@link StatusBarPlaceholder}替代加padding的方案
+     *
      * @param fits 要使内容在statusBar下则true
+     * @deprecated 用{@link StatusBarPlaceholder}替代加padding的方案
      */
     @Deprecated
     public TitleCompat setContentFits(boolean fits) {
@@ -250,6 +255,7 @@ public class TitleCompat {
 
     /**
      * 为控件设置marginTop为statusBar的高度
+     *
      * @deprecated 用{@link StatusBarPlaceholder}替代加padding的方案
      */
     @Deprecated
@@ -270,6 +276,7 @@ public class TitleCompat {
 
     /**
      * 为控件设置paddingTop为statusBar的高度
+     *
      * @deprecated 用{@link StatusBarPlaceholder}替代加padding的方案
      */
     @Deprecated
@@ -289,22 +296,12 @@ public class TitleCompat {
      * 状态栏亮色模式，设置状态栏黑色文字、图标，
      * 适配4.4以上版本MIUIV、Flyme和6.0以上版本其他Android
      *
-     * @param dark 这个dark指的是状态栏的底色，当状态栏底色是深色的时候，是白色字
-     * @return 1:MIUUI 2:Flyme 3:android6.0
+     * @param dark 字体是否是深色字体
      */
-    public int setStatusBarMode(boolean dark) {
-        int result = 0;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (MIUISetStatusBarLightMode(mActivity, dark)) {
-                result = 1;
-            } else if (FlymeSetStatusBarLightMode(mActivity.getWindow(), dark)) {
-                result = 2;
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                result = 3;
-                AndroidSetStatusBarLightMode(mActivity, dark);
-            }
-        }
-        return result;
+    public void setStatusBarMode(boolean dark) {
+        FlymeStatusbarColorUtils.setStatusBarDarkIcon(mActivity, dark);
+        MIUISetStatusBarLightMode(mActivity, dark);
+        AndroidSetStatusBarLightMode(mActivity, dark);
     }
 
     /**
@@ -314,41 +311,13 @@ public class TitleCompat {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             final View decorView = activity.getWindow().getDecorView();
             if (dark) {
-                decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            } else {
                 decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            } else {
+                decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
             return true;
         }
         return false;
-    }
-
-    /**
-     * 设置状态栏图标为深色和魅族特定的文字风格
-     * 可以用来判断是否为Flyme用户
-     *
-     * @param window 需要设置的窗口
-     * @param dark   是否把状态栏文字及图标颜色设置为深色
-     * @return boolean 成功执行返回true
-     */
-    private static boolean FlymeSetStatusBarLightMode(Window window, boolean dark) {
-        boolean result = false;
-        if (window != null) {
-            try {
-                WindowManager.LayoutParams lp = window.getAttributes();
-                Field darkFlag = WindowManager.LayoutParams.class.getDeclaredField("MEIZU_FLAG_DARK_STATUS_BAR_ICON");
-                Field meizuFlags = WindowManager.LayoutParams.class.getDeclaredField("meizuFlags");
-                darkFlag.setAccessible(true);
-                meizuFlags.setAccessible(true);
-                int bit = darkFlag.getInt(null);
-                int value = meizuFlags.getInt(lp);
-                if (dark) { value |= bit; } else { value &= ~bit; }
-                meizuFlags.setInt(lp, value);
-                window.setAttributes(lp);
-                result = true;
-            } catch (Exception e) { }
-        }
-        return result;
     }
 
     /**
@@ -374,12 +343,227 @@ public class TitleCompat {
                 } else {
                     extraFlagField.invoke(window, 0, darkModeFlag);//清除黑色字体
                 }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {//开发版 7.7.13 及以后版本采用了系统API，旧方法无效但不会报错，所以两个方式都要加上
-                    AndroidSetStatusBarLightMode(activity, dark);
-                }
                 result = true;
             } catch (Exception e) { }
         }
         return result;
+    }
+
+    /**
+     * 从flyme开放平台搞来的工具类
+     */
+    private static class FlymeStatusbarColorUtils {
+        private static Method mSetStatusBarColorIcon;
+        private static Method mSetStatusBarDarkIcon;
+        private static Field mStatusBarColorFiled;
+        private static int SYSTEM_UI_FLAG_LIGHT_STATUS_BAR = 0;
+
+        static {
+            try {
+                mSetStatusBarColorIcon = Activity.class.getMethod("setStatusBarDarkIcon", int.class);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            try {
+                mSetStatusBarDarkIcon = Activity.class.getMethod("setStatusBarDarkIcon", boolean.class);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            try {
+                mStatusBarColorFiled = WindowManager.LayoutParams.class.getField("statusBarColor");
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+            try {
+                Field field = View.class.getField("SYSTEM_UI_FLAG_LIGHT_STATUS_BAR");
+                SYSTEM_UI_FLAG_LIGHT_STATUS_BAR = field.getInt(null);
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        /**
+         * 判断颜色是否偏黑色
+         *
+         * @param color 颜色
+         * @param level 级别
+         * @return
+         */
+        public static boolean isBlackColor(int color, int level) {
+            int grey = toGrey(color);
+            return grey < level;
+        }
+
+        /**
+         * 颜色转换成灰度值
+         *
+         * @param rgb 颜色
+         * @return　灰度值
+         */
+        public static int toGrey(int rgb) {
+            int blue = rgb & 0x000000FF;
+            int green = (rgb & 0x0000FF00) >> 8;
+            int red = (rgb & 0x00FF0000) >> 16;
+            return (red * 38 + green * 75 + blue * 15) >> 7;
+        }
+
+        /**
+         * 设置状态栏字体图标颜色
+         *
+         * @param activity 当前activity
+         * @param color    颜色
+         */
+        public static void setStatusBarDarkIcon(Activity activity, int color) {
+            if (mSetStatusBarColorIcon != null) {
+                try {
+                    mSetStatusBarColorIcon.invoke(activity, color);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                boolean whiteColor = isBlackColor(color, 50);
+                if (mStatusBarColorFiled != null) {
+                    setStatusBarDarkIcon(activity, whiteColor, whiteColor);
+                    setStatusBarDarkIcon(activity.getWindow(), color);
+                } else {
+                    setStatusBarDarkIcon(activity, whiteColor);
+                }
+            }
+        }
+
+        /**
+         * 设置状态栏字体图标颜色(只限全屏非activity情况)
+         *
+         * @param window 当前窗口
+         * @param color  颜色
+         */
+        public static void setStatusBarDarkIcon(Window window, int color) {
+            try {
+                setStatusBarColor(window, color);
+                if (Build.VERSION.SDK_INT > 22) {
+                    setStatusBarDarkIcon(window.getDecorView(), true);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        /**
+         * 设置状态栏字体图标颜色
+         *
+         * @param activity 当前activity
+         * @param dark     是否深色 true为深色 false 为白色
+         */
+        public static void setStatusBarDarkIcon(Activity activity, boolean dark) {
+            setStatusBarDarkIcon(activity, dark, true);
+        }
+
+        private static boolean changeMeizuFlag(WindowManager.LayoutParams winParams, String flagName, boolean on) {
+            try {
+                Field f = winParams.getClass().getDeclaredField(flagName);
+                f.setAccessible(true);
+                int bits = f.getInt(winParams);
+                Field f2 = winParams.getClass().getDeclaredField("meizuFlags");
+                f2.setAccessible(true);
+                int meizuFlags = f2.getInt(winParams);
+                int oldFlags = meizuFlags;
+                if (on) {
+                    meizuFlags |= bits;
+                } else {
+                    meizuFlags &= ~bits;
+                }
+                if (oldFlags != meizuFlags) {
+                    f2.setInt(winParams, meizuFlags);
+                    return true;
+                }
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        /**
+         * 设置状态栏颜色
+         *
+         * @param view
+         * @param dark
+         */
+        private static void setStatusBarDarkIcon(View view, boolean dark) {
+            int oldVis = view.getSystemUiVisibility();
+            int newVis = oldVis;
+            if (dark) {
+                newVis |= SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            } else {
+                newVis &= ~SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            }
+            if (newVis != oldVis) {
+                view.setSystemUiVisibility(newVis);
+            }
+        }
+
+        /**
+         * 设置状态栏颜色
+         *
+         * @param window
+         * @param color
+         */
+        private static void setStatusBarColor(Window window, int color) {
+            WindowManager.LayoutParams winParams = window.getAttributes();
+            if (mStatusBarColorFiled != null) {
+                try {
+                    int oldColor = mStatusBarColorFiled.getInt(winParams);
+                    if (oldColor != color) {
+                        mStatusBarColorFiled.set(winParams, color);
+                        window.setAttributes(winParams);
+                    }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        /**
+         * 设置状态栏字体图标颜色(只限全屏非activity情况)
+         *
+         * @param window 当前窗口
+         * @param dark   是否深色 true为深色 false 为白色
+         */
+        public static void setStatusBarDarkIcon(Window window, boolean dark) {
+            if (Build.VERSION.SDK_INT < 23) {
+                changeMeizuFlag(window.getAttributes(), "MEIZU_FLAG_DARK_STATUS_BAR_ICON", dark);
+            } else {
+                View decorView = window.getDecorView();
+                if (decorView != null) {
+                    setStatusBarDarkIcon(decorView, dark);
+                    setStatusBarColor(window, 0);
+                }
+            }
+        }
+
+        private static void setStatusBarDarkIcon(Activity activity, boolean dark, boolean flag) {
+            if (mSetStatusBarDarkIcon != null) {
+                try {
+                    mSetStatusBarDarkIcon.invoke(activity, dark);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                if (flag) {
+                    setStatusBarDarkIcon(activity.getWindow(), dark);
+                }
+            }
+        }
     }
 }
