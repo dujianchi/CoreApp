@@ -13,4 +13,15 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface IStatusColor {
 
+    enum DarkOpera {
+        DO_NOT//不操作
+        , AUTO//自动
+        , DARK//深色
+        , LIGHT//浅色
+    }
+
+    /**
+     * 是否是深色的
+     */
+    DarkOpera darkOpera() default DarkOpera.DO_NOT;
 }

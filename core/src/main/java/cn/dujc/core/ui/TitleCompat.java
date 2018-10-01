@@ -352,7 +352,7 @@ public class TitleCompat {
     /**
      * 从flyme开放平台搞来的工具类
      */
-    private static class FlymeStatusbarColorUtils {
+    public static class FlymeStatusbarColorUtils {
         private static Method mSetStatusBarColorIcon;
         private static Method mSetStatusBarDarkIcon;
         private static Field mStatusBarColorFiled;

@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import cn.dujc.core.R;
+import cn.dujc.core.ui.TitleCompat;
 import cn.dujc.core.util.ContextUtil;
 
 /**
@@ -104,36 +105,50 @@ public final class IToolbarHandler {
         return null;
     }
 
-    public static Integer statusColor(Context context) {
-        final String classname = getToolbarClass(context);
-        if (!TextUtils.isEmpty(classname)) {
-            try {
-                final Class<?> toolbarClass = Class.forName(classname);
-                for (Method method : toolbarClass.getDeclaredMethods()) {
-                    final IStatusColor statusColor = method.getAnnotation(IStatusColor.class);
-                    if (statusColor != null) {
-                        if (!method.isAccessible()) method.setAccessible(true);
+    public static void statusColor(Context context, TitleCompat titleCompat) {
+        if (titleCompat != null && context != null) {
+            final String classname = getToolbarClass(context);
+            if (!TextUtils.isEmpty(classname)) {
+                try {
+                    final Class<?> toolbarClass = Class.forName(classname);
+                    for (Method method : toolbarClass.getDeclaredMethods()) {
+                        final IStatusColor statusColor = method.getAnnotation(IStatusColor.class);
+                        if (statusColor != null) {
+                            if (!method.isAccessible()) method.setAccessible(true);
 
-                        final Class<?>[] parameterTypes = method.getParameterTypes();
-                        Object[] args = new Object[parameterTypes.length];
-                        for (int index = 0, length = parameterTypes.length; index < length; index++) {
-                            if (parameterTypes[index].isInstance(context)) {
-                                args[index] = context;
-                            } else {
-                                args[index] = null;
+                            final Class<?>[] parameterTypes = method.getParameterTypes();
+                            Object[] args = new Object[parameterTypes.length];
+                            for (int index = 0, length = parameterTypes.length; index < length; index++) {
+                                if (parameterTypes[index].isInstance(context)) {
+                                    args[index] = context;
+                                } else {
+                                    args[index] = null;
+                                }
+                            }
+
+                            final boolean isStatic = Modifier.isStatic(method.getModifiers());
+                            final Integer color = (Integer) method.invoke(isStatic ? null : toolbarClass.newInstance(), args);
+
+                            if (color != null && color != 0) {
+                                final IStatusColor.DarkOpera darkOpera = statusColor.darkOpera();
+                                if (darkOpera == IStatusColor.DarkOpera.AUTO) {
+                                    final boolean darkColor = TitleCompat.FlymeStatusbarColorUtils.isBlackColor(color, 120);
+                                    //上面这个判断是判断颜色是否是深色，所以状态栏就跟颜色相反
+                                    titleCompat.setStatusBarMode(!darkColor);
+                                } else if (darkOpera == IStatusColor.DarkOpera.DARK) {
+                                    titleCompat.setStatusBarMode(true);
+                                } else if (darkOpera == IStatusColor.DarkOpera.LIGHT) {
+                                    titleCompat.setStatusBarMode(false);
+                                }
+                                titleCompat.setFakeStatusBarColor(color);
                             }
                         }
-
-                        final boolean isStatic = Modifier.isStatic(method.getModifiers());
-                        final Integer color = (Integer) method.invoke(isStatic ? null : toolbarClass.newInstance(), args);
-                        return color;
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
-        return null;
     }
 
 }
