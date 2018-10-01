@@ -229,7 +229,7 @@ public class MainCreator extends RelativeLayout {
         mBottom.setId(R.id.main_creator_bottom);
         LayoutParams bottomParams = new LayoutParams(LayoutParams.MATCH_PARENT, bottomHeight);
         bottomParams.addRule(ALIGN_PARENT_BOTTOM);
-        if (bottomColor != -1) mContainer.setBackgroundColor(bottomColor);
+        if (bottomColor != -1) mBottom.setBackgroundColor(bottomColor);
 
         addView(mBottom, bottomParams);
         addView(mContainer, containerParams);
