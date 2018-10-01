@@ -73,7 +73,7 @@ public class SingleSelector extends LinearLayout {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_UP) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
             final float x = event.getRawX(), y = event.getRawY();
             final int count = getChildCount();
             for (int index = 0; index < count; index++) {

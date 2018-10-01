@@ -29,7 +29,25 @@ import cn.dujc.core.R;
 public class MainCreator extends RelativeLayout {
 
     public static interface INormalTab extends Cloneable {
-        String getText();
+        INormalTab setText(CharSequence text);
+
+        INormalTab setDefaultColor(int defaultColor);
+
+        INormalTab setSelectedColor(int selectedColor);
+
+        INormalTab setTextSize(int textSize);
+
+        INormalTab setIconDefaultId(int iconDefaultId);
+
+        INormalTab setIconSelectedId(int iconSelectedId);
+
+        INormalTab setBetweenSize(int betweenSize);
+
+        INormalTab setTopSize(int topSize);
+
+        INormalTab setBottomSize(int bottomSize);
+
+        CharSequence getText();
 
         int getDefaultColor();
 
@@ -42,17 +60,21 @@ public class MainCreator extends RelativeLayout {
         int getIconSelectedId();
 
         int getBetweenSize();
+
+        int getTopSize();
+
+        int getBottomSize();
     }
 
     public static class NormalTabImpl implements INormalTab {
 
-        private String mText;
-        private int mDefaultColor, mSelectedColor, mTextSize, mIconDefaultId, mIconSelectedId, mBetweenSize;
+        private CharSequence mText;
+        private int mDefaultColor, mSelectedColor, mTextSize, mIconDefaultId, mIconSelectedId, mBetweenSize, mTopSize, mBottomSize;
 
         public NormalTabImpl() { }
 
-        public NormalTabImpl(String text, int defaultColor, int selectedColor, int textSize
-                , int iconDefaultId, int iconSelectedId, int betweenSize) {
+        public NormalTabImpl(CharSequence text, int defaultColor, int selectedColor, int textSize
+                , int iconDefaultId, int iconSelectedId, int betweenSize, int bottomSize, int topSize) {
             mText = text;
             mDefaultColor = defaultColor;
             mSelectedColor = selectedColor;
@@ -60,38 +82,57 @@ public class MainCreator extends RelativeLayout {
             mIconDefaultId = iconDefaultId;
             mIconSelectedId = iconSelectedId;
             mBetweenSize = betweenSize;
+            mBottomSize = bottomSize;
+            mTopSize = topSize;
         }
 
-        public void setText(String text) {
+        public INormalTab setText(CharSequence text) {
             mText = text;
+            return this;
         }
 
-        public void setDefaultColor(int defaultColor) {
+        public INormalTab setDefaultColor(int defaultColor) {
             mDefaultColor = defaultColor;
+            return this;
         }
 
-        public void setSelectedColor(int selectedColor) {
+        public INormalTab setSelectedColor(int selectedColor) {
             mSelectedColor = selectedColor;
+            return this;
         }
 
-        public void setTextSize(int textSize) {
+        public INormalTab setTextSize(int textSize) {
             mTextSize = textSize;
+            return this;
         }
 
-        public void setIconDefaultId(int iconDefaultId) {
+        public INormalTab setIconDefaultId(int iconDefaultId) {
             mIconDefaultId = iconDefaultId;
+            return this;
         }
 
-        public void setIconSelectedId(int iconSelectedId) {
+        public INormalTab setIconSelectedId(int iconSelectedId) {
             mIconSelectedId = iconSelectedId;
+            return this;
         }
 
-        public void setBetweenSize(int betweenSize) {
+        public INormalTab setBetweenSize(int betweenSize) {
             mBetweenSize = betweenSize;
+            return this;
+        }
+
+        public INormalTab setTopSize(int topSize) {
+            mTopSize = topSize;
+            return this;
+        }
+
+        public INormalTab setBottomSize(int bottomSize) {
+            mBottomSize = bottomSize;
+            return this;
         }
 
         @Override
-        public String getText() {
+        public CharSequence getText() {
             return mText;
         }
 
@@ -126,9 +167,19 @@ public class MainCreator extends RelativeLayout {
         }
 
         @Override
+        public int getTopSize() {
+            return mTopSize;
+        }
+
+        @Override
+        public int getBottomSize() {
+            return mBottomSize;
+        }
+
+        @Override
         public NormalTabImpl clone() {
             return new NormalTabImpl(mText, mDefaultColor, mSelectedColor, mTextSize
-                    , mIconDefaultId, mIconSelectedId, mBetweenSize);
+                    , mIconDefaultId, mIconSelectedId, mBetweenSize, mBottomSize, mTopSize);
         }
     }
 
@@ -205,9 +256,16 @@ public class MainCreator extends RelativeLayout {
 
         layout.addView(icon);
         layout.addView(text);
-        final MarginLayoutParams params = (MarginLayoutParams) text.getLayoutParams();
-        params.topMargin = normalTab.getBetweenSize();
-        text.setLayoutParams(params);
+
+        final MarginLayoutParams textParams = (MarginLayoutParams) text.getLayoutParams();
+        textParams.topMargin = normalTab.getBetweenSize();
+        textParams.bottomMargin = normalTab.getBottomSize();
+        text.setLayoutParams(textParams);
+
+        final LinearLayout.LayoutParams iconParams = (LinearLayout.LayoutParams) icon.getLayoutParams();
+        iconParams.weight = 1;
+        iconParams.topMargin = normalTab.getTopSize();
+        icon.setLayoutParams(iconParams);
 
         return add(index, layout, fragment);
     }
