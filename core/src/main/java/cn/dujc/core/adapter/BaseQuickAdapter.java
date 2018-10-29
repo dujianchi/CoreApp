@@ -63,6 +63,11 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  */
 public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends RecyclerView.Adapter<K> {
 
+    /**
+     * activity销毁时可以调用一下这个方法，然后可以在adapter内处理一些需要回收的事情
+     */
+    public void onRecycled() {}
+
     //load more
     private boolean mNextLoadEnable = false;
     private boolean mLoadMoreEnable = false;

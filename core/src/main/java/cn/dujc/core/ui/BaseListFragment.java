@@ -71,6 +71,12 @@ public abstract class BaseListFragment extends BaseFragment {
         loadAtFirst();
     }
 
+    @Override
+    public void onDestroy() {
+        if (mQuickAdapter != null) mQuickAdapter.onRecycled();
+        super.onDestroy();
+    }
+
     /**
      * 加载第一次数据，默认同reload方法
      */

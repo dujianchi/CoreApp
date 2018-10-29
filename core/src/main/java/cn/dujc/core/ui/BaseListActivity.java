@@ -73,6 +73,12 @@ public abstract class BaseListActivity extends BaseActivity {
         loadAtFirst();
     }
 
+    @Override
+    protected void onDestroy() {
+        if (mQuickAdapter != null) mQuickAdapter.onRecycled();
+        super.onDestroy();
+    }
+
     /**
      * 加载第一次数据，默认同reload方法
      */
