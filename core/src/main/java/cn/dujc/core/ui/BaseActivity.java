@@ -105,7 +105,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     @Nullable
     public TitleCompat initTransStatusBar() {
         if (mTitleCompat == null) mTitleCompat = TitleCompat.setStatusBar(mActivity, true);
-        IToolbarHandler.statusColor(mActivity, mTitleCompat);
+        IToolbarHandler.statusColor(this, mActivity, mTitleCompat);
         return mTitleCompat;
     }
 

@@ -105,7 +105,7 @@ public final class IToolbarHandler {
         return null;
     }
 
-    public static void statusColor(Context context, TitleCompat titleCompat) {
+    public static void statusColor(Object user, Context context, TitleCompat titleCompat) {
         if (titleCompat != null && context != null) {
             final String classname = getToolbarClass(context);
             if (!TextUtils.isEmpty(classname)) {
@@ -114,33 +114,49 @@ public final class IToolbarHandler {
                     for (Method method : toolbarClass.getDeclaredMethods()) {
                         final IStatusColor statusColor = method.getAnnotation(IStatusColor.class);
                         if (statusColor != null) {
-                            if (!method.isAccessible()) method.setAccessible(true);
-
-                            final Class<?>[] parameterTypes = method.getParameterTypes();
-                            Object[] args = new Object[parameterTypes.length];
-                            for (int index = 0, length = parameterTypes.length; index < length; index++) {
-                                if (parameterTypes[index].isInstance(context)) {
-                                    args[index] = context;
-                                } else {
-                                    args[index] = null;
+                            boolean useHere = statusColor.include().length == 0;//为空即任何类都可以使用
+                            if (!useHere) {
+                                for (Class clazz : statusColor.include()) {//不为空则判断是否满足之类的类型
+                                    useHere = useHere || clazz.isInstance(user);
                                 }
                             }
-
-                            final boolean isStatic = Modifier.isStatic(method.getModifiers());
-                            final Integer color = (Integer) method.invoke(isStatic ? null : toolbarClass.newInstance(), args);
-
-                            if (color != null && color != 0) {
-                                final IStatusColor.DarkOpera darkOpera = statusColor.darkOpera();
-                                if (darkOpera == IStatusColor.DarkOpera.AUTO) {
-                                    final boolean darkColor = TitleCompat.FlymeStatusbarColorUtils.isBlackColor(color, 120);
-                                    //上面这个判断是判断颜色是否是深色，所以状态栏就跟颜色相反
-                                    titleCompat.setStatusBarMode(!darkColor);
-                                } else if (darkOpera == IStatusColor.DarkOpera.DARK) {
-                                    titleCompat.setStatusBarMode(true);
-                                } else if (darkOpera == IStatusColor.DarkOpera.LIGHT) {
-                                    titleCompat.setStatusBarMode(false);
+                            if (useHere) {//如果符合了满足条件，那么判断是否被排除了
+                                for (Class clazz : statusColor.exclude()) {
+                                    if (clazz.isInstance(user)) {
+                                        useHere = false;
+                                        break;
+                                    }
                                 }
-                                titleCompat.setFakeStatusBarColor(color);
+                            }
+                            if (useHere) {
+                                if (!method.isAccessible()) method.setAccessible(true);
+
+                                final Class<?>[] parameterTypes = method.getParameterTypes();
+                                Object[] args = new Object[parameterTypes.length];
+                                for (int index = 0, length = parameterTypes.length; index < length; index++) {
+                                    if (parameterTypes[index].isInstance(context)) {
+                                        args[index] = context;
+                                    } else {
+                                        args[index] = null;
+                                    }
+                                }
+
+                                final boolean isStatic = Modifier.isStatic(method.getModifiers());
+                                final Integer color = (Integer) method.invoke(isStatic ? null : toolbarClass.newInstance(), args);
+
+                                if (color != null && color != 0) {
+                                    final IStatusColor.DarkOpera darkOpera = statusColor.darkOpera();
+                                    if (darkOpera == IStatusColor.DarkOpera.AUTO) {
+                                        final boolean darkColor = TitleCompat.FlymeStatusbarColorUtils.isBlackColor(color, 120);
+                                        //上面这个判断是判断颜色是否是深色，所以状态栏就跟颜色相反
+                                        titleCompat.setStatusBarMode(!darkColor);
+                                    } else if (darkOpera == IStatusColor.DarkOpera.DARK) {
+                                        titleCompat.setStatusBarMode(true);
+                                    } else if (darkOpera == IStatusColor.DarkOpera.LIGHT) {
+                                        titleCompat.setStatusBarMode(false);
+                                    }
+                                    titleCompat.setFakeStatusBarColor(color);
+                                }
                             }
                         }
                     }

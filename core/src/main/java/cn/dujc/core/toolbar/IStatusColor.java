@@ -24,4 +24,8 @@ public @interface IStatusColor {
      * 是否是深色的
      */
     DarkOpera darkOpera() default DarkOpera.DO_NOT;
+
+    Class[] include() default {};//用来设置不同toolbar的，当符合被设置的class的才能使用
+
+    Class[] exclude() default {};//用来排除是否使用此注解的
 }
