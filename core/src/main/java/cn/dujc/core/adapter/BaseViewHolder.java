@@ -354,9 +354,8 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    LinkedHashSet<BaseQuickAdapter.OnItemChildClickListener> listeners = adapter.getOnItemChildClickListeners();
-                    for (BaseQuickAdapter.OnItemChildClickListener listener : listeners){
-                        listener.onItemChildClick(adapter, v, getClickPosition());
+                    if (adapter.getOnItemChildClickListener() != null) {
+                        adapter.getOnItemChildClickListener().onItemChildClick(adapter, v, getClickPosition());
                     }
                 }
             });
