@@ -110,11 +110,13 @@ public abstract class BaseListActivity extends BaseActivity {
      * @param dataDone 数据加载结束
      * @param endGone adapter的尾部是否隐藏
      */
-    protected void loadDone(boolean dataDone, boolean endGone){
-        if (dataDone) {
-            mQuickAdapter.loadMoreEnd(endGone);
-        } else {
-            mQuickAdapter.loadMoreComplete();
+    protected void loadDone(boolean dataDone, boolean endGone) {
+        if (mQuickAdapter != null) {
+            if (dataDone) {
+                mQuickAdapter.loadMoreEnd(endGone);
+            } else {
+                mQuickAdapter.loadMoreComplete();
+            }
         }
     }
 
@@ -122,9 +124,16 @@ public abstract class BaseListActivity extends BaseActivity {
      * 全部刷新
      */
     protected final void notifyDataSetChanged(boolean done) {
+        notifyDataSetChanged(done, true);
+    }
+
+    /**
+     * 全部刷新
+     */
+    protected final void notifyDataSetChanged(boolean dataDone, boolean endGone) {
         refreshDone();
         if (mQuickAdapter != null) {
-            loadDone(done, true);
+            loadDone(dataDone, endGone);
             mQuickAdapter.notifyDataSetChanged();
         }
     }

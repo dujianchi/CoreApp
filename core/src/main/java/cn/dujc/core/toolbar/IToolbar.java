@@ -8,6 +8,12 @@ import java.lang.annotation.Target;
 /**
  * @author du
  * date 2018/5/12 下午6:31
+ * <p>
+ * \@IToolbar
+ * public static ViewGroup normal(ViewGroup parent){
+ * return toolbar;
+ * }
+ * </p>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
@@ -20,7 +26,7 @@ public @interface IToolbar {
     //注解toolbar的类，需要在静态方法中注解，样式如下：
     /*
     @IToolbar
-    public static Toolbar normal(ViewGroup parent){
+    public static ViewGroup normal(ViewGroup parent){
         return toolbar;
     }
      */

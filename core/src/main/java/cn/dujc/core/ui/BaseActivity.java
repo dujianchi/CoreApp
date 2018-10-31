@@ -6,6 +6,8 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -99,7 +101,15 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     @Override
     @Nullable
     public View createRootView(View contentView) {
-        return linearToolbar() ? linearRootView(contentView) : frameRootView(contentView);
+        switch (toolbarStyle()) {
+            default:
+            case LINEAR:
+                return linearRootView(contentView);
+            case FRAME:
+                return frameRootView(contentView);
+            case COORDINATOR:
+                return coordinatorRootView(contentView);
+        }
     }
 
     @Nullable
@@ -230,8 +240,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     /**
      * 是否线性排列toolbar，否的话则toolbar在布局上方
      */
-    protected boolean linearToolbar() {
-        return true;
+    protected STYLE toolbarStyle() {
+        return STYLE.LINEAR;
     }
 
     /**
@@ -260,6 +270,25 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
         if (mToolbar != null) {
             layout.addView(contentView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT
                     , FrameLayout.LayoutParams.MATCH_PARENT));
+            layout.addView(mToolbar);
+            return layout;
+        } else {
+            return contentView;
+        }
+    }
+
+    /**
+     * coordinator布局
+     */
+    private View coordinatorRootView(View contentView) {
+        CoordinatorLayout layout = new CoordinatorLayout(this);
+        mToolbar = initToolbar(layout);
+        if (mToolbar != null) {
+            final CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.MATCH_PARENT
+                    , CoordinatorLayout.LayoutParams.MATCH_PARENT);
+            params.setBehavior(new AppBarLayout.ScrollingViewBehavior());
+
+            layout.addView(contentView, params);
             layout.addView(mToolbar);
             return layout;
         } else {

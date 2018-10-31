@@ -63,6 +63,10 @@ public interface IBaseUI {
         TitleCompat getTitleCompat();
 
         View createRootView(View contentView);
+
+        enum STYLE {
+            LINEAR, FRAME, COORDINATOR
+        }
     }
 
     public interface IContextCompat {
@@ -81,9 +85,9 @@ public interface IBaseUI {
 
     public interface IStarter {
 
-        int getRequestCode(Class<? extends Activity> activityForward);
+        int getRequestCode(Class<?> activityForward);
 
-        int newRequestCode(Class<? extends Activity> activity);
+        int newRequestCode(Class<?> activity);
 
         int go(Class<? extends Activity> activity);
 
@@ -261,7 +265,7 @@ public interface IBaseUI {
     public static class IStarterImpl implements IStarter {
 
         private final Bundle mBundle = new Bundle();
-        private final Map<Class<? extends Activity>, Integer> mRequestCodes = new ArrayMap<>();
+        private final Map<Class<?>, Integer> mRequestCodes = new ArrayMap<>();
         private final IContextCompat mContext;
 
         public IStarterImpl(Activity activity) {
@@ -286,13 +290,13 @@ public interface IBaseUI {
         }
 
         @Override
-        public int getRequestCode(Class<? extends Activity> activityForward) {
+        public int getRequestCode(Class<?> activityForward) {
             final Integer integer = mRequestCodes.get(activityForward);
             return integer == null ? -1 : integer;
         }
 
         @Override
-        public int newRequestCode(Class<? extends Activity> activity) {
+        public int newRequestCode(Class<?> activity) {
             int requestCode = _INCREMENT_REQUEST_CODE[0]++;
             if (requestCode >= 0xffff) {
                 requestCode = _INCREMENT_REQUEST_CODE[0] = 1;
@@ -330,7 +334,7 @@ public interface IBaseUI {
                 final Class<?> activity;
                 try {
                     activity = Class.forName(component.getClassName());
-                    requestCode = newRequestCode((Class<? extends Activity>) activity);
+                    requestCode = newRequestCode(activity);
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 } catch (ClassCastException e) {

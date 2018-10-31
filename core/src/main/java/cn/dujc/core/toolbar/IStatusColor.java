@@ -6,8 +6,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 状态栏默认颜色
+ *
  * @author du
  * date 2018/5/12 下午6:31
+ * <p>
+ * \@IStatusColor()
+ * public static int statusBarColor(Context context){
+ * return ContextCompat.getColor(context,R.color.color_main);
+ * }
+ * </p>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
@@ -28,4 +36,11 @@ public @interface IStatusColor {
     Class[] include() default {};//用来设置不同toolbar的，当符合被设置的class的才能使用
 
     Class[] exclude() default {};//用来排除是否使用此注解的
+
+    /* 使用示例
+     @IStatusColor()
+     public static int statusBarColor(Context context) {
+        return ContextCompat.getColor(context, R.color.color_main);
+     }
+     */
 }

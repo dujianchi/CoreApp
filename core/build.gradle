@@ -26,8 +26,9 @@ android {
 dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'libs')
     compileOnly "com.android.support:appcompat-v7:$support_version"
-    compileOnly 'com.google.code.gson:gson:2.8.4'
+    compileOnly "com.android.support:design:$support_version"
     compileOnly "com.android.support:recyclerview-v7:$support_version"
+    compileOnly 'com.google.code.gson:gson:2.8.4'
     //compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     compileOnly 'com.squareup.okhttp3:okhttp:3.11.0'
     //compileOnly 'pub.devrel:easypermissions:1.0.1'

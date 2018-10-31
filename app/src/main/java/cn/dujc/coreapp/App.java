@@ -3,16 +3,17 @@ package cn.dujc.coreapp;
 import android.app.Application;
 
 import cn.dujc.core.toolbar.IToolbarHandler;
+import cn.dujc.coreapp.ui.toolbar.ToolbarHandler;
 
 /**
  * @author du
- * date 2018/6/3 上午9:38
+ * date 2018/10/31 1:54 PM
  */
 public class App extends Application {
 
     @Override
     public void onCreate() {
         super.onCreate();
-        IToolbarHandler.setToolbarClass(this, ToolbarUtils.class);
+        IToolbarHandler.setToolbarClass(this, ToolbarHandler.class);
     }
 }

@@ -21,6 +21,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import cn.dujc.core.R;
+
 /**
  * Android的顶部沉浸效果 工具
  * Created by du on 2017/9/19.
@@ -220,14 +222,19 @@ public class TitleCompat {
             }
 
             if (mFakeStatusBarView == null) {
-                ViewGroup decorViewGroup = (ViewGroup) decorView;
-                mFakeStatusBarView = new View(mActivity);
-                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, mStatusBarHeight);
-                params.gravity = Gravity.TOP;
-                mFakeStatusBarView.setLayoutParams(params);
+                final View statusBarPlaceholder = mActivity.findViewById(R.id.toolbar_status_bar_placeholder);
+                if (statusBarPlaceholder == null) {
+                    ViewGroup decorViewGroup = (ViewGroup) decorView;
+                    mFakeStatusBarView = new View(mActivity);
+                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, mStatusBarHeight);
+                    params.gravity = Gravity.TOP;
+                    mFakeStatusBarView.setLayoutParams(params);
+                    mFakeStatusBarView.setVisibility(View.GONE);
+                    decorViewGroup.addView(mFakeStatusBarView);
+                } else {
+                    mFakeStatusBarView = statusBarPlaceholder;
+                }
                 mFakeStatusBarView.setBackgroundColor(DEFAULT_TINT_COLOR);
-                mFakeStatusBarView.setVisibility(View.GONE);
-                decorViewGroup.addView(mFakeStatusBarView);
             }
         }
         return this;
