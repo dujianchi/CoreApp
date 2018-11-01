@@ -21,7 +21,7 @@ public class ToolbarHandler {
         return (ViewGroup) LayoutInflater.from(parent.getContext()).inflate(R.layout.toolbar, parent, false);
     }
 
-    @IStatusColor(darkOpera = IStatusColor.DarkOpera.DARK, exclude = {CoordinatorActivity.class})
+    @IStatusColor(darkOpera = IStatusColor.DarkOpera.LIGHT, exclude = {CoordinatorActivity.class})
     public static int color(Context context) {
         return ContextCompat.getColor(context, R.color.colorPrimary);
     }
