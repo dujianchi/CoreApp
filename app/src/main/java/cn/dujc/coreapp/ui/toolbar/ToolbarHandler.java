@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import cn.dujc.core.toolbar.IStatusColor;
 import cn.dujc.core.toolbar.IToolbar;
 import cn.dujc.coreapp.R;
+import cn.dujc.coreapp.ui.CoordinatorActivity;
 
 /**
  * @author du
@@ -15,13 +16,13 @@ import cn.dujc.coreapp.R;
  */
 public class ToolbarHandler {
 
-    @IToolbar
+    @IToolbar(exclude = {CoordinatorActivity.class})
     public static ViewGroup normal(ViewGroup parent) {
         return (ViewGroup) LayoutInflater.from(parent.getContext()).inflate(R.layout.toolbar, parent, false);
     }
 
-    @IStatusColor(darkOpera = IStatusColor.DarkOpera.DARK)
-    public static int color(Context context){
+    @IStatusColor(darkOpera = IStatusColor.DarkOpera.DARK, exclude = {CoordinatorActivity.class})
+    public static int color(Context context) {
         return ContextCompat.getColor(context, R.color.colorPrimary);
     }
 }

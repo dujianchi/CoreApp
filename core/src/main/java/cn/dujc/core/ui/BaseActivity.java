@@ -9,15 +9,21 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -288,8 +294,21 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
                     , CoordinatorLayout.LayoutParams.MATCH_PARENT);
             params.setBehavior(new AppBarLayout.ScrollingViewBehavior());
 
-            layout.addView(contentView, params);
             layout.addView(mToolbar);
+            if (contentView instanceof RecyclerView
+                    || contentView instanceof NestedScrollView
+                    || contentView instanceof ScrollView
+                    || contentView instanceof ListView
+                    || contentView instanceof GridView
+                    || contentView instanceof ViewPager
+                    ) {
+                layout.addView(contentView, params);
+            } else {
+                NestedScrollView nestedScrollView = new NestedScrollView(this);
+                nestedScrollView.addView(contentView, new NestedScrollView.LayoutParams(NestedScrollView.LayoutParams.MATCH_PARENT
+                        , NestedScrollView.LayoutParams.MATCH_PARENT));
+                layout.addView(nestedScrollView, params);
+            }
             return layout;
         } else {
             return contentView;

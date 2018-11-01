@@ -28,6 +28,7 @@
         <activity android:name=".ui.ExpendListActivity" />
         <activity android:name=".ui.ReturnActivity" />
         <activity android:name=".ui.MiddleActivity" />
+        <activity android:name=".ui.CoordinatorActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

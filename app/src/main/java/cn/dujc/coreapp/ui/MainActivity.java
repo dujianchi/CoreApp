@@ -28,7 +28,7 @@ public class MainActivity extends BaseListActivity {
             , "可展开的adapter"
             , "startActivityForResult返回值处理/采用代码布局"
             , "跳转完关闭的使用/直接使用Fragment"
-            , ""
+            , "coordinator"
             , ""
             , ""
             , ""
@@ -89,6 +89,10 @@ public class MainActivity extends BaseListActivity {
             }
             case 7: {
                 starter().go(MiddleActivity.class);
+                break;
+            }
+            case 8: {
+                starter().go(CoordinatorActivity.class);
                 break;
             }
             //case xx: {break;}
