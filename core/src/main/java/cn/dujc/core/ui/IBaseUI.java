@@ -109,7 +109,15 @@ public interface IBaseUI {
 
         IStarter with(String key, short param);
 
+        IStarter with(String key, int param);
+
         IStarter with(String key, float param);
+
+        IStarter with(String key, double param);
+
+        IStarter with(String key, long param);
+
+        IStarter with(String key, boolean param);
 
         IStarter with(String key, CharSequence param);
 
@@ -141,7 +149,15 @@ public interface IBaseUI {
 
         IStarter with(String key, char[] param);
 
+        IStarter with(String key, int[] param);
+
         IStarter with(String key, float[] param);
+
+        IStarter with(String key, double[] param);
+
+        IStarter with(String key, long[] param);
+
+        IStarter with(String key, boolean[] param);
 
         IStarter with(String key, CharSequence[] param);
 
@@ -381,8 +397,32 @@ public interface IBaseUI {
         }
 
         @Override
+        public IStarter with(String key, int param) {
+            mBundle.putInt(key, param);
+            return this;
+        }
+
+        @Override
         public IStarter with(String key, float param) {
             mBundle.putFloat(key, param);
+            return this;
+        }
+
+        @Override
+        public IStarter with(String key, double param) {
+            mBundle.putDouble(key, param);
+            return this;
+        }
+
+        @Override
+        public IStarter with(String key, long param) {
+            mBundle.putLong(key, param);
+            return this;
+        }
+
+        @Override
+        public IStarter with(String key, boolean param) {
+            mBundle.putBoolean(key, param);
             return this;
         }
 
@@ -473,8 +513,32 @@ public interface IBaseUI {
         }
 
         @Override
+        public IStarter with(String key, int[] param) {
+            mBundle.putIntArray(key, param);
+            return this;
+        }
+
+        @Override
         public IStarter with(String key, float[] param) {
             mBundle.putFloatArray(key, param);
+            return this;
+        }
+
+        @Override
+        public IStarter with(String key, double[] param) {
+            mBundle.putDoubleArray(key, param);
+            return this;
+        }
+
+        @Override
+        public IStarter with(String key, long[] param) {
+            mBundle.putLongArray(key, param);
+            return this;
+        }
+
+        @Override
+        public IStarter with(String key, boolean[] param) {
+            mBundle.putBooleanArray(key, param);
             return this;
         }
 

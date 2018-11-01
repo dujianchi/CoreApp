@@ -25,22 +25,22 @@ public class ExpendListActivity extends BaseListActivity {
 
     @Nullable
     @Override
-    protected BaseQuickAdapter initAdapter() {
+    public BaseQuickAdapter initAdapter() {
         return new ExpandAdapter(mList);
     }
 
     @Override
-    protected void onItemClick(int position) {
+    public void onItemClick(int position) {
 
     }
 
     @Override
-    protected void loadMore() {
+    public void loadMore() {
         generateData(false);
     }
 
     @Override
-    protected void reload() {
+    public void reload() {
         generateData(true);
     }
 

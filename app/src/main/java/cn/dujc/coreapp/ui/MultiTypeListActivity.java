@@ -24,22 +24,22 @@ public class MultiTypeListActivity extends BaseListActivity {
 
     @Nullable
     @Override
-    protected BaseQuickAdapter initAdapter() {
+    public BaseQuickAdapter initAdapter() {
         return new MultiTypeAdapter(mList);
     }
 
     @Override
-    protected void onItemClick(int position) {
+    public void onItemClick(int position) {
 
     }
 
     @Override
-    protected void loadMore() {
+    public void loadMore() {
         generateData(false);
     }
 
     @Override
-    protected void reload() {
+    public void reload() {
         generateData(true);
     }
 

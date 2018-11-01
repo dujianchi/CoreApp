@@ -6,5 +6,6 @@
     <item name="toolbar_back_id" type="id" />
     <item name="toolbar_menu_id" type="id" />
     <item name="toolbar_status_bar_placeholder" type="id" />
+    <item name="toolbar_appbar_layout" type="id" />
 
 </resources>

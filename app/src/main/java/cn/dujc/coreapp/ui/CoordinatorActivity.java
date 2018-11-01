@@ -2,7 +2,10 @@ package cn.dujc.coreapp.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import cn.dujc.core.ui.BaseActivity;
@@ -32,6 +35,20 @@ public class CoordinatorActivity extends BaseActivity {
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-
+        final View appbarLayout = findViewById(cn.dujc.core.R.id.toolbar_appbar_layout);
+        final SwipeRefreshLayout mSrlLoader = findViewById(R.id.srl_loader);
+        final AppBarLayout mAppbarLayout;
+        final AppBarLayout.OnOffsetChangedListener mOnOffsetChangedListener;
+        if (mSrlLoader != null
+                && appbarLayout instanceof AppBarLayout) {
+            mAppbarLayout = (AppBarLayout) appbarLayout;
+            mOnOffsetChangedListener = new AppBarLayout.OnOffsetChangedListener() {
+                @Override
+                public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                    mSrlLoader.setEnabled(verticalOffset >= 0);
+                }
+            };
+            mAppbarLayout.addOnOffsetChangedListener(mOnOffsetChangedListener);
+        }
     }
 }

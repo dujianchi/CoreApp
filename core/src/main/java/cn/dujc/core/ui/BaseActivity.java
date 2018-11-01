@@ -11,6 +11,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -297,6 +298,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
             layout.addView(mToolbar);
             if (contentView instanceof RecyclerView
                     || contentView instanceof NestedScrollView
+                    || contentView instanceof SwipeRefreshLayout
                     || contentView instanceof ScrollView
                     || contentView instanceof ListView
                     || contentView instanceof GridView

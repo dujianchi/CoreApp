@@ -49,12 +49,12 @@ public class MainActivity extends BaseListActivity {
 
     @Nullable
     @Override
-    protected BaseQuickAdapter initAdapter() {
+    public BaseQuickAdapter initAdapter() {
         return new ItemAdapter(mList);
     }
 
     @Override
-    protected void onItemClick(int position) {
+    public void onItemClick(int position) {
         switch (position) {
             case 0: {
                 starter().go(ToolbarCtrlActivity.class);
@@ -101,15 +101,15 @@ public class MainActivity extends BaseListActivity {
     }
 
     @Override
-    protected void loadMore() {
+    public void loadMore() {
         ToastUtil.showToast(mActivity, "在这加载更多");
-        loadDone(true, true);
+        notifyDataSetChanged(false, false);
     }
 
     @Override
-    protected void reload() {
+    public void reload() {
         ToastUtil.showToast(mActivity, "在这刷新");
-        refreshDone();
+        notifyDataSetChanged(false,false);
     }
 
     @Override
