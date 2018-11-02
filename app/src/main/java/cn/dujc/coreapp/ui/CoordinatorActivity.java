@@ -2,12 +2,10 @@ package cn.dujc.coreapp.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -50,14 +48,14 @@ public class CoordinatorActivity extends BaseActivity {
             }
         });
         final RecyclerView rvList = findViewById(R.id.rv_list);
-        rvList.setLayoutManager(new LinearLayoutManager(this));
+        rvList.setLayoutManager(new LinearLayoutManager(mActivity));
         final MultiTypeListActivity.MultiTypeAdapter adapter = new MultiTypeListActivity.MultiTypeAdapter(mList);
         rvList.setAdapter(adapter);
 
         for (int index = 0; index < 100; index++) {
             final MultiTypeListActivity.Data data = new MultiTypeListActivity.Data();
             data.text = "text" + index;
-            data.type = index%7;
+            data.type = index % 7;
             mList.add(data);
         }
         adapter.setEnableLoadMore(false);

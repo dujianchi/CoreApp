@@ -92,7 +92,7 @@ public class MainActivity extends BaseListActivity {
                 break;
             }
             case 8: {
-                starter().go(CoordinatorActivity.class);
+                starter().goFragment(CoordinatorFragment.class);
                 break;
             }
             //case xx: {break;}
@@ -109,7 +109,7 @@ public class MainActivity extends BaseListActivity {
     @Override
     public void reload() {
         ToastUtil.showToast(mActivity, "在这刷新");
-        notifyDataSetChanged(false,false);
+        notifyDataSetChanged(false, false);
     }
 
     @Override

@@ -11,10 +11,10 @@ import java.lang.annotation.Target;
  * @author du
  * date 2018/5/12 下午6:31
  * <p>
- * \@IStatusColor()
- * public static int statusBarColor(Context context){
- * return ContextCompat.getColor(context,R.color.color_main);
- * }
+ * @code @IStatusColor()
+ * @code public static int statusBarColor(Context context){
+ * @code    return color;
+ * @code }
  * </p>
  */
 @Retention(RetentionPolicy.RUNTIME)

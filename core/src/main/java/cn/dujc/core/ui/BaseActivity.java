@@ -295,7 +295,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
                     , CoordinatorLayout.LayoutParams.MATCH_PARENT);
             params.setBehavior(new AppBarLayout.ScrollingViewBehavior());
 
-            layout.addView(mToolbar);
             if (contentView instanceof RecyclerView
                     || contentView instanceof NestedScrollView
                     || contentView instanceof SwipeRefreshLayout
@@ -311,6 +310,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
                         , NestedScrollView.LayoutParams.MATCH_PARENT));
                 layout.addView(nestedScrollView, params);
             }
+            layout.addView(mToolbar);
             return layout;
         } else {
             return contentView;

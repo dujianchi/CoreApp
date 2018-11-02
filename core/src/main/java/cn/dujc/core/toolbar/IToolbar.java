@@ -9,10 +9,10 @@ import java.lang.annotation.Target;
  * @author du
  * date 2018/5/12 下午6:31
  * <p>
- * \@IToolbar
- * public static ViewGroup normal(ViewGroup parent){
- * return toolbar;
- * }
+ * @code @IToolbar
+ * @code public static ViewGroup normal(ViewGroup parent){
+ * @code    return toolbar;
+ * @code }
  * </p>
  */
 @Retention(RetentionPolicy.RUNTIME)

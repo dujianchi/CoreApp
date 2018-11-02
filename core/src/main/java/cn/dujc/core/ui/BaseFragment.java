@@ -11,6 +11,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -128,9 +129,9 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
                     , CoordinatorLayout.LayoutParams.MATCH_PARENT);
             params.setBehavior(new AppBarLayout.ScrollingViewBehavior());
 
-            layout.addView(mToolbar);
             if (contentView instanceof RecyclerView
                     || contentView instanceof NestedScrollView
+                    || contentView instanceof SwipeRefreshLayout
                     || contentView instanceof ScrollView
                     || contentView instanceof ListView
                     || contentView instanceof GridView
@@ -143,6 +144,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
                         , NestedScrollView.LayoutParams.MATCH_PARENT));
                 layout.addView(nestedScrollView, params);
             }
+            layout.addView(mToolbar);
             return layout;
         } else {
             return contentView;

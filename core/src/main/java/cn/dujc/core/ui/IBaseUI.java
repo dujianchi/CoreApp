@@ -93,6 +93,8 @@ public interface IBaseUI {
 
         int go(Class<? extends Activity> activity, boolean finishThen);
 
+        int goFragment(Class<? extends Fragment> fragment);
+
         int go(Intent intent);
 
         int go(Intent intent, boolean finishThen);
@@ -335,6 +337,11 @@ public interface IBaseUI {
             }
             int requestCode = newRequestCode(activity);
             return IStarterImpl.go(mContext, intent, requestCode, finishThen);
+        }
+
+        @Override
+        public int goFragment(Class<? extends Fragment> fragment) {
+            return FragmentShellActivity.start(this, fragment);
         }
 
         @Override
