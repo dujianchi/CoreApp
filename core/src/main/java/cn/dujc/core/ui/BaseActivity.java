@@ -44,7 +44,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     private IPermissionKeeper mPermissionKeeper = null;
 
     protected Activity mActivity;
-    protected ViewGroup mToolbar = null;
+    protected View mToolbar = null;
     private TitleCompat mTitleCompat = null;
     protected View mRootView = null;
 
@@ -133,8 +133,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
 
     @Override
     @Nullable
-    public ViewGroup initToolbar(ViewGroup parent) {
-        ViewGroup toolbar = mToolbar;
+    public View initToolbar(ViewGroup parent) {
+        View toolbar = mToolbar;
         if (toolbar == null) {
             toolbar = IToolbarHandler.handleByContext(this, parent, this);
         }

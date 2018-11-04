@@ -58,7 +58,7 @@ public interface IBaseUI {
     void initBasic(Bundle savedInstanceState);
 
     public interface WithToolbar extends IBaseUI {
-        ViewGroup initToolbar(ViewGroup parent);
+        View initToolbar(ViewGroup parent);
 
         TitleCompat getTitleCompat();
 

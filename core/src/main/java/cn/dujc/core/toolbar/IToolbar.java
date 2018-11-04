@@ -1,33 +1,28 @@
 package cn.dujc.core.toolbar;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
 
-/**
- * @author du
- * date 2018/5/12 下午6:31
- * <p>
- * @code @IToolbar
- * @code public static ViewGroup normal(ViewGroup parent){
- * @code    return toolbar;
- * @code }
- * </p>
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface IToolbar {
+import java.util.List;
 
-    Class[] include() default {};//用来设置不同toolbar的，当符合被设置的class的才能使用
-
-    Class[] exclude() default {};//用来排除是否使用此注解的
-
-    //注解toolbar的类，需要在静态方法中注解，样式如下：
-    /*
-    @IToolbar
-    public static ViewGroup normal(ViewGroup parent){
-        return toolbar;
+public interface IToolbar {
+    enum StatusBarMode {
+        NONE//不操作
+        , AUTO//自动
+        , DARK//深色
+        , LIGHT//浅色
     }
-     */
+
+    IToolbar create();
+
+    View normal(ViewGroup parent);
+
+    int statusBarColor(Context context);
+
+    StatusBarMode statusBarMode();
+
+    List<Class<?>> exclude();
+
+    List<Class<?>> include();
 }

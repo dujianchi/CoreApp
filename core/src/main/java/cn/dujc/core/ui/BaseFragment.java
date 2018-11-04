@@ -35,7 +35,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     private IPermissionKeeper mPermissionKeeper = null;
 
     private boolean mLoaded = false;//是否已经载入
-    protected ViewGroup mToolbar;
+    protected View mToolbar;
     protected View mRootView;
     private TitleCompat mTitleCompat = null;
     protected Activity mActivity;
@@ -153,7 +153,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
 
     @Override
     @Nullable
-    public ViewGroup initToolbar(ViewGroup parent) {
+    public View initToolbar(ViewGroup parent) {
         return null;
     }
 
