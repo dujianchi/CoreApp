@@ -10,11 +10,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import cn.dujc.core.toolbar.IToolbar;
+import cn.dujc.core.ui.FragmentShellActivity;
 import cn.dujc.core.ui.IBaseUI;
 import cn.dujc.coreapp.R;
-import cn.dujc.coreapp.ui.CoordinatorFragment;
-import cn.dujc.coreapp.ui.MainActivity;
-import cn.dujc.coreapp.ui.MiddleActivity;
 
 /**
  * @author du
@@ -22,8 +20,17 @@ import cn.dujc.coreapp.ui.MiddleActivity;
  */
 public class ToolbarHandler implements IToolbar {
 
+    private static final ToolbarHandler HANDLER = new ToolbarHandler();
+
+    private ToolbarHandler() {}
+
+    @Instance
+    public static ToolbarHandler getHandler() {
+        return HANDLER;
+    }
+
     @Override
-    public IToolbar create() {
+    public IToolbar get() {
         return this;
     }
 
@@ -43,7 +50,7 @@ public class ToolbarHandler implements IToolbar {
 
     @Override
     public List<Class<? extends IBaseUI>> exclude() {
-        return Arrays.asList(MiddleActivity.class, CoordinatorFragment.class);
+        return Arrays.asList(FragmentShellActivity.class);
     }
 
     @Override

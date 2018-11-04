@@ -3,12 +3,11 @@ package cn.dujc.core.toolbar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.List;
 
 import cn.dujc.core.R;
@@ -40,10 +39,23 @@ public final class IToolbarHandler {
 
     private static void createToolbarByClass(Class<? extends IToolbar> clazz) {
         try {
-            sToolbar = clazz.newInstance().create();
+            for (Method method : clazz.getDeclaredMethods()) {
+                final IToolbar.Instance instance = method.getAnnotation(IToolbar.Instance.class);
+                if (instance != null) {
+                    if (!method.isAccessible()) method.setAccessible(true);
+                    final IToolbar toolbar = (IToolbar) method.invoke(null, null);
+                    if (toolbar != null) {
+                        sToolbar = toolbar;
+                        return;
+                    }
+                }
+            }
+            sToolbar = clazz.newInstance().get();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
     }
