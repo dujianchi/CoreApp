@@ -12,6 +12,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 import cn.dujc.core.R;
+import cn.dujc.core.ui.IBaseUI;
 import cn.dujc.core.ui.TitleCompat;
 import cn.dujc.core.util.ContextUtil;
 
@@ -67,7 +68,7 @@ public final class IToolbarHandler {
 
     public static View handleByClassname(Object user, ViewGroup parent, IToolbar iToolbar) {
         if (iToolbar != null) {
-            final List<Class<?>> include = iToolbar.include();
+            final List<Class<? extends IBaseUI>> include = iToolbar.include();
             boolean useHere = include == null || include.size() == 0;//为空即任何类都可以使用
             if (!useHere) {
                 for (Class clazz : include) {//不为空则判断是否满足之类的类型
@@ -75,7 +76,7 @@ public final class IToolbarHandler {
                 }
             }
             if (useHere) {//如果符合了满足条件，那么判断是否被排除了
-                final List<Class<?>> exclude = iToolbar.exclude();
+                final List<Class<? extends IBaseUI>> exclude = iToolbar.exclude();
                 if (exclude != null && exclude.size() > 0) {
                     for (Class clazz : exclude) {
                         if (clazz.isInstance(user)) {
@@ -109,7 +110,7 @@ public final class IToolbarHandler {
         if (titleCompat != null && context != null) {
             final IToolbar toolbar = getToolbar(context);
             if (toolbar != null) {
-                final List<Class<?>> include = toolbar.include();
+                final List<Class<? extends IBaseUI>> include = toolbar.include();
                 boolean useHere = include == null || include.size() == 0;//为空即任何类都可以使用
                 if (!useHere) {
                     for (Class clazz : include) {//不为空则判断是否满足之类的类型
@@ -117,7 +118,7 @@ public final class IToolbarHandler {
                     }
                 }
                 if (useHere) {//如果符合了满足条件，那么判断是否被排除了
-                    final List<Class<?>> exclude = toolbar.exclude();
+                    final List<Class<? extends IBaseUI>> exclude = toolbar.exclude();
                     if (exclude != null && exclude.size() > 0) {
                         for (Class clazz : exclude) {
                             if (clazz.isInstance(user)) {

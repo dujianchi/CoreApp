@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import cn.dujc.core.ui.IBaseUI;
+
 public interface IToolbar {
     enum StatusBarMode {
         NONE//不操作
@@ -22,7 +24,7 @@ public interface IToolbar {
 
     StatusBarMode statusBarMode();
 
-    List<Class<?>> exclude();
+    List<Class<? extends IBaseUI>> exclude();
 
-    List<Class<?>> include();
+    List<Class<? extends IBaseUI>> include();
 }
