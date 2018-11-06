@@ -136,7 +136,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     public View initToolbar(ViewGroup parent) {
         View toolbar = mToolbar;
         if (toolbar == null) {
-            toolbar = IToolbarHandler.handleByContext(this, parent, this);
+            toolbar = IToolbarHandler.generateToolbar(this, parent, this);
         }
         return toolbar;
     }
