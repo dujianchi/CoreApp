@@ -6,21 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.GridView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ScrollView;
 
 import java.util.List;
 
@@ -72,11 +61,17 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
         switch (toolbarStyle()) {
             default:
             case LINEAR:
-                return linearRootView(view);
+                final View[] linear = BaseToolbarHandler.linearRootView(mActivity, this, view);
+                mToolbar = linear[1];
+                return linear[0];
             case FRAME:
-                return frameRootView(view);
+                final View[] frame = BaseToolbarHandler.frameRootView(mActivity, this, view);
+                mToolbar = frame[1];
+                return frame[0];
             case COORDINATOR:
-                return coordinatorRootView(view);
+                final View[] coordinator = BaseToolbarHandler.coordinatorRootView(mActivity, this, view);
+                mToolbar = coordinator[1];
+                return coordinator[0];
         }
     }
 
@@ -85,70 +80,6 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
      */
     protected STYLE toolbarStyle() {
         return STYLE.LINEAR;
-    }
-
-    /**
-     * 标题与界面线性排列
-     */
-    private View linearRootView(View view) {
-        LinearLayout layout = new LinearLayout(mActivity);
-        mToolbar = initToolbar(layout);
-        if (mToolbar != null) {
-            layout.setOrientation(LinearLayout.VERTICAL);
-            layout.addView(mToolbar);
-            layout.addView(view, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT
-                    , LinearLayout.LayoutParams.MATCH_PARENT));
-            return layout;
-        }
-        return view;
-    }
-
-    /**
-     * 标题与界面帧层叠
-     */
-    private View frameRootView(View view) {
-        FrameLayout layout = new FrameLayout(mActivity);
-        mToolbar = initToolbar(layout);
-        if (mToolbar != null) {
-            layout.addView(view, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT
-                    , FrameLayout.LayoutParams.MATCH_PARENT));
-            layout.addView(mToolbar);
-            return layout;
-        }
-        return view;
-    }
-
-    /**
-     * coordinator布局
-     */
-    private View coordinatorRootView(View contentView) {
-        CoordinatorLayout layout = new CoordinatorLayout(mActivity);
-        mToolbar = initToolbar(layout);
-        if (mToolbar != null) {
-            final CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.MATCH_PARENT
-                    , CoordinatorLayout.LayoutParams.MATCH_PARENT);
-            params.setBehavior(new AppBarLayout.ScrollingViewBehavior());
-
-            if (contentView instanceof RecyclerView
-                    || contentView instanceof NestedScrollView
-                    || contentView instanceof SwipeRefreshLayout
-                    || contentView instanceof ScrollView
-                    || contentView instanceof ListView
-                    || contentView instanceof GridView
-                    || contentView instanceof ViewPager
-                    ) {
-                layout.addView(contentView, params);
-            } else {
-                NestedScrollView nestedScrollView = new NestedScrollView(mActivity);
-                nestedScrollView.addView(contentView, new NestedScrollView.LayoutParams(NestedScrollView.LayoutParams.MATCH_PARENT
-                        , NestedScrollView.LayoutParams.MATCH_PARENT));
-                layout.addView(nestedScrollView, params);
-            }
-            layout.addView(mToolbar);
-            return layout;
-        } else {
-            return contentView;
-        }
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import cn.dujc.core.bridge.ActivityStackUtil;
 import cn.dujc.core.ui.BaseActivity;
 import cn.dujc.coreapp.R;
 
@@ -34,6 +35,12 @@ public class ReturnActivity extends BaseActivity {
                 data.putExtra(KEY, mData.getText().toString());
                 setResult(RESULT_OK, data);
                 finish();
+            }
+        });
+        findViewById(R.id.btn_finish_other).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivityStackUtil.getInstance().closeAllExcept(ReturnActivity.class);
             }
         });
     }

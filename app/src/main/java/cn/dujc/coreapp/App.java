@@ -2,7 +2,7 @@ package cn.dujc.coreapp;
 
 import android.app.Application;
 
-import cn.dujc.core.toolbar.IToolbarHandler;
+import cn.dujc.core.app.Core;
 import cn.dujc.coreapp.ui.toolbar.ToolbarHandler;
 
 /**
@@ -14,6 +14,6 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        IToolbarHandler.setToolbarClass(this, ToolbarHandler.class);
+        Core.init(this, ToolbarHandler.class);
     }
 }

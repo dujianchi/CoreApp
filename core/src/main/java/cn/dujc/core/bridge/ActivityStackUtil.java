@@ -1,14 +1,14 @@
 package cn.dujc.core.bridge;
 
 import android.app.Activity;
+import android.app.Application;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.ArrayMap;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.ArraySet;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -17,12 +17,39 @@ import java.util.Set;
  */
 public class ActivityStackUtil {
 
-    private final Map<Activity, Set<Fragment>> mActivityFragments = new ArrayMap<Activity, Set<Fragment>>();
+    //private final Map<Activity, Set<Fragment>> mActivityFragments = new ArrayMap<Activity, Set<Fragment>>();
     private final Set<Activity> mActivities = new ArraySet<Activity>();
+    private final Application.ActivityLifecycleCallbacks mLifecycleCallbacks;
 
     private static ActivityStackUtil sInstance = null;
 
     private ActivityStackUtil() {
+        mLifecycleCallbacks = new Application.ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                addActivity(activity);
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) { }
+
+            @Override
+            public void onActivityResumed(Activity activity) { }
+
+            @Override
+            public void onActivityPaused(Activity activity) { }
+
+            @Override
+            public void onActivityStopped(Activity activity) { }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) { }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+                removeActivity(activity);
+            }
+        };
     }
 
     public static ActivityStackUtil getInstance() {
@@ -36,42 +63,58 @@ public class ActivityStackUtil {
         return sInstance;
     }
 
-    public void addActivity(Activity activity) {
+    /**
+     * 向Activity中onEvent(int flag, Object value)发送事件
+     *
+     * @param receiver 接受者，此处为Activity和fragment
+     * @param flag     标志参数
+     * @param value    参数
+     */
+    private static void onEvent(Object receiver, int flag, Object value) {
+        if (receiver instanceof IEvent) {
+            ((IEvent) receiver).onMyEvent(flag, value);
+        }
+    }
+
+    public void initApp(Application app) {
+        app.registerActivityLifecycleCallbacks(mLifecycleCallbacks);
+    }
+
+    public void unBind(Application app) {
+        app.unregisterActivityLifecycleCallbacks(mLifecycleCallbacks);
+    }
+
+    private void addActivity(Activity activity) {
         if (activity != null && !activity.isFinishing()) {
             mActivities.add(activity);
         }
     }
 
-    public void removeActivity(Activity activity) {
-        mActivities.remove(activity);
-        removeFragments(activity);
-    }
+//    public void addFragment(Activity activity, Fragment fragment) {
+//        Set<Fragment> fragments = mActivityFragments.get(activity);
+//        if (fragments == null) {
+//            fragments = new ArraySet<Fragment>();
+//            mActivityFragments.put(activity, fragments);
+//        }
+//        if (!fragments.contains(fragment)) {
+//            fragments.add(fragment);
+//        }
+//    }
 
-    public void addFragment(Activity activity, Fragment fragment) {
-        Set<Fragment> fragments = mActivityFragments.get(activity);
-        if (fragments == null) {
-            fragments = new ArraySet<Fragment>();
-            mActivityFragments.put(activity, fragments);
-        }
-        if (!fragments.contains(fragment)) {
-            fragments.add(fragment);
-        }
-    }
+//    public void removeFragment(Activity activity, Fragment fragment) {
+//        Set<Fragment> fragments = mActivityFragments.get(activity);
+//        if (fragments != null && fragments.contains(fragment)) {
+//            fragments.remove(fragment);
+//        }
+//    }
 
-    public void removeFragment(Activity activity, Fragment fragment) {
-        Set<Fragment> fragments = mActivityFragments.get(activity);
-        if (fragments != null && fragments.contains(fragment)) {
-            fragments.remove(fragment);
-        }
-    }
-
-    public void removeFragments(Activity activity) {
-        Set<Fragment> fragments = mActivityFragments.get(activity);
-        if (fragments != null) {
-            fragments.clear();
-            mActivityFragments.remove(activity);
-        }
-    }
+//    public void removeFragments(Activity activity) {
+//        Set<Fragment> fragments = mActivityFragments.get(activity);
+//        if (fragments != null) {
+//            fragments.clear();
+//            mActivityFragments.remove(activity);
+//        }
+//    }
 
     public void clearActivities() {
         mActivities.clear();
@@ -123,49 +166,32 @@ public class ActivityStackUtil {
     //事件接受对象
     public static final byte ACTIVITY = 0b10, FRAGMENT = 0b01, ALL = 0b11;
 
+    private void removeActivity(Activity activity) {
+        mActivities.remove(activity);
+        //removeFragments(activity);
+    }
+
     /**
      * 发送事件
      *
      * @param flag     标注
-     * @param tag      携带参数
+     * @param value    携带参数
      * @param receiver 接受对象，0b10给Activity，0b01给Fragment
      */
-    public void sendEvent(int flag, Object tag, byte receiver) {
+    public void sendEvent(int flag, Object value, byte receiver) {
         for (Activity activity : mActivities) {
             if ((receiver & ACTIVITY) == ACTIVITY) {
-                onEvent(activity, flag, tag);
+                onEvent(activity, flag, value);
             }
-            if ((receiver & FRAGMENT) == FRAGMENT) {
-                final Set<Fragment> fragments = mActivityFragments.get(activity);
-                if (fragments != null && fragments.size() > 0) {
-                    for (Fragment fragment : fragments) {
-                        onEvent(fragment, flag, tag);
+            if (activity instanceof FragmentActivity) {
+                if ((receiver & FRAGMENT) == FRAGMENT) {
+                    final List<Fragment> fragments = ((FragmentActivity) activity).getSupportFragmentManager().getFragments();
+                    if (fragments != null && fragments.size() > 0) {
+                        for (Fragment fragment : fragments) {
+                            onEvent(fragment, flag, value);
+                        }
                     }
                 }
-            }
-        }
-    }
-
-    /**
-     * 向Activity中onEvent(int flag, Object tag)发送事件
-     *
-     * @param receiver 接受者，此处为Activity和fragment
-     * @param flag     标志参数
-     * @param tag      参数
-     */
-    private static void onEvent(Object receiver, int flag, Object tag) {
-        if (receiver != null) {
-            try {
-                Class<?> clazz = receiver.getClass();
-                Method onEvent = clazz.getDeclaredMethod("onEvent", int.class, Object.class);
-                onEvent.setAccessible(true);
-                onEvent.invoke(receiver, flag, tag);
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
             }
         }
     }

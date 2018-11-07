@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 /**
+ * 在目前的实现方式中实现自定义view的toast会有问题，以后再来改（2018年11月7日）
  * Created by du on 2017/9/21.
  */
 public class ToastUtil {

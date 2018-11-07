@@ -76,7 +76,7 @@ public final class IToolbarHandler {
             final boolean isStatic = Modifier.isStatic(method.getModifiers());
             if (isStatic) {
                 if (!method.isAccessible()) method.setAccessible(true);
-                final Object invoke = method.invoke(null, null);
+                final Object invoke = method.invoke(null);
                 if (invoke instanceof IToolbar) return (IToolbar) invoke;
             }
         } catch (Exception e) {
@@ -93,7 +93,7 @@ public final class IToolbarHandler {
             final IToolbar.Instance instance = method.getAnnotation(IToolbar.Instance.class);
             if (instance != null) {
                 if (!method.isAccessible()) method.setAccessible(true);
-                return (IToolbar) method.invoke(null, null);
+                return (IToolbar) method.invoke(null);
             }
         } catch (Exception e) {
             e.printStackTrace();

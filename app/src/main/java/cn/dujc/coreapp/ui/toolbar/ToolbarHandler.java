@@ -6,11 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.Arrays;
 import java.util.List;
 
 import cn.dujc.core.toolbar.IToolbar;
-import cn.dujc.core.ui.FragmentShellActivity;
 import cn.dujc.core.ui.IBaseUI;
 import cn.dujc.coreapp.R;
 
@@ -50,7 +48,7 @@ public class ToolbarHandler implements IToolbar {
 
     @Override
     public List<Class<? extends IBaseUI>> exclude() {
-        return Arrays.asList(FragmentShellActivity.class);
+        return null;
     }
 
     @Override

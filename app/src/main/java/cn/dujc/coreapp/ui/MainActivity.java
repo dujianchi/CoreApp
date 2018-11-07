@@ -25,8 +25,7 @@ public class MainActivity extends BaseListActivity {
             , "刷新开关"
             , "权限控制"
             , "多种类型的adapter"
-            , "可展开的adapter"
-            , "startActivityForResult返回值处理/采用代码布局"
+            , "可展开的adapter", "startActivityForResult返回值处理/采用代码布局/关闭其他activity测试"
             , "跳转完关闭的使用/直接使用Fragment"
             , "coordinator"
             , ""
@@ -95,6 +94,7 @@ public class MainActivity extends BaseListActivity {
                 starter().goFragment(CoordinatorFragment.class);
                 break;
             }
+            //case 9: { break;}
             //case xx: {break;}
             default: {break;}
         }
