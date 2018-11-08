@@ -34,8 +34,8 @@ public class CoordinatorFragment extends BaseFragment {
     }
 
     @Override
-    protected STYLE toolbarStyle() {
-        return STYLE.COORDINATOR;
+    protected Style toolbarStyle() {
+        return Style.COORDINATOR;
     }
 
     @Override

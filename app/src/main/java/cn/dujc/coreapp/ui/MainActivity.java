@@ -2,6 +2,7 @@ package cn.dujc.coreapp.ui;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import cn.dujc.core.adapter.BaseAdapter;
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
 import cn.dujc.core.ui.BaseListActivity;
+import cn.dujc.core.ui.FragmentShellActivity;
 import cn.dujc.core.util.ToastUtil;
 
 /**
@@ -91,7 +93,11 @@ public class MainActivity extends BaseListActivity {
                 break;
             }
             case 8: {
-                starter().goFragment(CoordinatorFragment.class);
+                starter()
+                        .with(FragmentShellActivity.EXTRA_STATUS_DARK_MODE, true)
+                        .with(FragmentShellActivity.EXTRA_STATUS_BAR_COLOR, Color.WHITE)
+                        .with(FragmentShellActivity.EXTRA_TOOLBAR_STYLE, Style.NONE)
+                        .goFragment(CoordinatorFragment.class);
                 break;
             }
             //case 9: { break;}

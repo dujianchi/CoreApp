@@ -58,28 +58,16 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
 
     @Override
     public View createRootView(View view) {
-        switch (toolbarStyle()) {
-            default:
-            case LINEAR:
-                final View[] linear = BaseToolbarHandler.linearRootView(mActivity, this, view);
-                mToolbar = linear[1];
-                return linear[0];
-            case FRAME:
-                final View[] frame = BaseToolbarHandler.frameRootView(mActivity, this, view);
-                mToolbar = frame[1];
-                return frame[0];
-            case COORDINATOR:
-                final View[] coordinator = BaseToolbarHandler.coordinatorRootView(mActivity, this, view);
-                mToolbar = coordinator[1];
-                return coordinator[0];
-        }
+        final View[] viewAndToolbar = BaseToolbarHelper.createRootViewAndToolbar(toolbarStyle(), mActivity, this, view);
+        mToolbar = viewAndToolbar[1];
+        return viewAndToolbar[0];
     }
 
     /**
      * 是否线性排列toolbar，否的话则toolbar在布局上方
      */
-    protected STYLE toolbarStyle() {
-        return STYLE.LINEAR;
+    protected Style toolbarStyle() {
+        return Style.NONE;
     }
 
     @Override

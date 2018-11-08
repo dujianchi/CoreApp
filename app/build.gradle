@@ -43,4 +43,12 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.8.0'
     implementation 'com.google.code.gson:gson:2.8.4'
     implementation 'cn.dujc.DimensCompat:a640:1.2.1'
+
+    //LeakCanary --- start
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
+    // Optional, if you use support library fragments:
+    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
+    //LeakCanary --- end
+
 }

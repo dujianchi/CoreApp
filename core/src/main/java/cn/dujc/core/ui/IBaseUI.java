@@ -64,8 +64,8 @@ public interface IBaseUI {
 
         View createRootView(View contentView);
 
-        enum STYLE {
-            LINEAR, FRAME, COORDINATOR
+        enum Style {
+            NONE, LINEAR, FRAME, COORDINATOR
         }
     }
 
@@ -168,6 +168,8 @@ public interface IBaseUI {
 
     public interface IParams {
         public <T> T get(String key, T defaultValues, Class<T> clazz);
+
+        public <T> T get(String key, T defaultValues);
 
         public <T> T get(String key, Class<T> clazz);
 
@@ -586,6 +588,11 @@ public interface IBaseUI {
                 }
             }
             return defaultValues;
+        }
+
+        @Override
+        public <T> T get(String key, T defaultValues) {
+            return get(key, defaultValues, null);
         }
 
         @Override
