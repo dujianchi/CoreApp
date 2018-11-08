@@ -67,7 +67,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
      * 是否线性排列toolbar，否的话则toolbar在布局上方
      */
     protected Style toolbarStyle() {
-        return Style.NONE;
+        return Style.LINEAR;
     }
 
     @Override
@@ -94,7 +94,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
 
     @Override
     public IParams extras() {
-        if (mParams == null) mParams = new IParamsImpl(mActivity);
+        if (mParams == null) mParams = new FragmentParamsImpl(this);
         return mParams;
     }
 

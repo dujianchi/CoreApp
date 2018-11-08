@@ -101,7 +101,7 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
 
     @Override
     public IParams extras() {
-        if (mParams == null) mParams = new IParamsImpl(mActivity);
+        if (mParams == null) mParams = new FragmentParamsImpl(this);
         return mParams;
     }
 

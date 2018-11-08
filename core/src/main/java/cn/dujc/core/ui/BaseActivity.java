@@ -140,7 +140,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
 
     @Override
     public IParams extras() {
-        if (mParams == null) mParams = new IParamsImpl(this);
+        if (mParams == null) mParams = new ActivityParamsImpl(this);
         return mParams;
     }
 

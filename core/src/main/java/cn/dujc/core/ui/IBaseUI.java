@@ -47,6 +47,10 @@ public interface IBaseUI {
 
     IStarter starter();
 
+    /**
+     * 获取传参的工具类，自1.1.1-alpha1后，fragment和activity传参方式不同
+     * ，但fragment能获取到fragment.getArguments()以及fragment.getActivity().getIntent().getExtras()的并集
+     */
     IParams extras();
 
     IPermissionKeeper permissionKeeper();
@@ -93,11 +97,19 @@ public interface IBaseUI {
 
         int go(Class<? extends Activity> activity, boolean finishThen);
 
+        /**
+         * 跳转到一个fragment，会自动给它套一个{@link FragmentShellActivity}然后跳转
+         */
         int goFragment(Class<? extends Fragment> fragment);
 
         int go(Intent intent);
 
         int go(Intent intent, boolean finishThen);
+
+        /**
+         * 讲参数保存给Fragment
+         */
+        void toFragmentArgs(Fragment fragment);
 
         IStarter clear();
 
@@ -370,6 +382,13 @@ public interface IBaseUI {
         }
 
         @Override
+        public void toFragmentArgs(Fragment fragment) {
+            if (fragment != null) {
+                fragment.setArguments(mBundle);
+            }
+        }
+
+        @Override
         public IStarter clear() {
             mBundle.clear();
             return this;
@@ -564,12 +583,12 @@ public interface IBaseUI {
         }
     }
 
-    public static class IParamsImpl implements IParams {
+    static class BaseParamsImpl implements IParams {
 
-        private final Bundle mBundle;
+        final Bundle mBundle;
 
-        public IParamsImpl(Activity activity) {
-            mBundle = activity != null && activity.getIntent() != null ? activity.getIntent().getExtras() : null;
+        BaseParamsImpl(Bundle bundle) {
+            mBundle = bundle == null ? new Bundle() : bundle;
         }
 
         @Override
@@ -605,6 +624,20 @@ public interface IBaseUI {
         @Nullable
         public <T> T get(String key) {
             return get(key, null, null);
+        }
+    }
+
+    public static class ActivityParamsImpl extends BaseParamsImpl {
+        ActivityParamsImpl(Activity activity) {
+            super(activity != null && activity.getIntent() != null ? activity.getIntent().getExtras() : null);
+        }
+    }
+
+    public static class FragmentParamsImpl extends ActivityParamsImpl {
+        FragmentParamsImpl(Fragment fragment) {
+            super(fragment != null ? fragment.getActivity() : null);
+            if (fragment != null && fragment.getArguments() != null)
+                mBundle.putAll(fragment.getArguments());
         }
     }
 
