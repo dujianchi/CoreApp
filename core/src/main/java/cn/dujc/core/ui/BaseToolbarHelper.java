@@ -24,25 +24,16 @@ class BaseToolbarHelper {
      * rootView和toolbar处理逻辑
      */
     static View[] createRootViewAndToolbar(IBaseUI.WithToolbar.Style toolbarStyle, Context context, IBaseUI.WithToolbar baseUI, View contentView) {
-        final View[] rootAndTool = new View[2];
         switch (toolbarStyle) {
             case LINEAR:
-                final View[] linear = BaseToolbarHelper.linearRootView(context, baseUI, contentView);
-                rootAndTool[0] = linear[0];
-                rootAndTool[1] = linear[1];
-                return rootAndTool;
+                return BaseToolbarHelper.linearRootView(context, baseUI, contentView);
             case FRAME:
-                final View[] frame = BaseToolbarHelper.frameRootView(context, baseUI, contentView);
-                rootAndTool[0] = frame[0];
-                rootAndTool[1] = frame[1];
-                return rootAndTool;
+                return BaseToolbarHelper.frameRootView(context, baseUI, contentView);
             case COORDINATOR:
-                final View[] coordinator = BaseToolbarHelper.coordinatorRootView(context, baseUI, contentView);
-                rootAndTool[0] = coordinator[0];
-                rootAndTool[1] = coordinator[1];
-                return rootAndTool;
+                return BaseToolbarHelper.coordinatorRootView(context, baseUI, contentView);
             default:
             case NONE:
+                final View[] rootAndTool = new View[2];
                 if (contentView instanceof ViewGroup) {
                     rootAndTool[1] = baseUI.initToolbar((ViewGroup) contentView);
                 }
