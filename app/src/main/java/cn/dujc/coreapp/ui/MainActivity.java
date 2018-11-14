@@ -30,7 +30,7 @@ public class MainActivity extends BaseListActivity {
             , "可展开的adapter", "startActivityForResult返回值处理/采用代码布局/关闭其他activity测试"
             , "跳转完关闭的使用/直接使用Fragment"
             , "coordinator"
-            , ""
+            , "dialog fragment"
             , ""
             , ""
             , ""
@@ -47,6 +47,8 @@ public class MainActivity extends BaseListActivity {
 
     private boolean mRefreshEnable = true;
     private boolean mMoreEnable = true;
+
+    private DialogF mDialog;
 
     @Nullable
     @Override
@@ -100,7 +102,11 @@ public class MainActivity extends BaseListActivity {
                         .goFragment(CoordinatorFragment.class);
                 break;
             }
-            //case 9: { break;}
+            case 9: {
+                if (mDialog == null) mDialog = new DialogF();
+                mDialog.showOnly(this);
+                break;
+            }
             //case xx: {break;}
             default: {break;}
         }

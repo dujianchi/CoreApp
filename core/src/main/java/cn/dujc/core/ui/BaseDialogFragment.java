@@ -2,6 +2,7 @@ package cn.dujc.core.ui;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -41,6 +42,7 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
     private IPermissionKeeper mPermissionKeeper = null;
 
     private boolean mLoaded = false;//是否已经载入
+    private volatile boolean mIsShowing = false;//是否在显示中
     private boolean mCanceledOnTouchOutside = true;//是否在点击外部到时候隐藏
     protected View mRootView;
     protected Activity mActivity;
@@ -133,6 +135,18 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
     @Override
     public void onDenied(int requestCode, List<String> permissions) { }
 
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        mIsShowing = false;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        mIsShowing = false;
+    }
+
     /**
      * 关联主界面 **只有在使用自定义View时使用**
      */
@@ -194,12 +208,15 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
      * @param tag
      */
     public void showOnly(FragmentActivity activity, String tag) {
-        final FragmentManager fragmentManager = activity.getSupportFragmentManager();
-        final Fragment preDialog = fragmentManager.findFragmentByTag(tag);
-        if (preDialog != null) {
-            fragmentManager.beginTransaction().remove(preDialog).commit();
+        if (!isShowing()) {
+            final FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            final Fragment preDialog = fragmentManager.findFragmentByTag(tag);
+            if (preDialog != null) {
+                fragmentManager.beginTransaction().remove(preDialog).commit();
+            }
+            show(fragmentManager, tag);
+            mIsShowing = true;
         }
-        show(fragmentManager, tag);
     }
 
     /**
@@ -212,5 +229,12 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
             mTagUUId = UUID.randomUUID().toString();
         }
         showOnly(activity, mTagUUId);
+    }
+
+    /**
+     * 是否在显示中
+     */
+    public synchronized final boolean isShowing() {
+        return mIsShowing;
     }
 }
