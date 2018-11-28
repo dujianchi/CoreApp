@@ -36,7 +36,8 @@ public interface IToolbar {
 
     StatusBarMode statusBarMode();
 
+    IBaseUI.WithToolbar.Style toolbarStyle();
+
     List<Class<? extends IBaseUI>> exclude();
 
-    List<Class<? extends IBaseUI>> include();
 }

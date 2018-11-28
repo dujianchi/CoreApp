@@ -19,6 +19,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import cn.dujc.core.R;
+import cn.dujc.core.toolbar.IToolbar;
 import cn.dujc.core.toolbar.IToolbarHandler;
 
 /**
@@ -181,6 +182,15 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
         return null;
     }
 
+    /**
+     * 是否线性排列toolbar，否的话则toolbar在布局上方
+     */
+    protected Style toolbarStyle() {
+        final IToolbar iToolbar = IToolbarHandler.getToolbar(mActivity);
+        if (iToolbar != null) return iToolbar.toolbarStyle();
+        return Style.LINEAR;
+    }
+
     protected void setupToolbar() {
         if (mToolbar instanceof Toolbar) {
             Toolbar toolbar = (Toolbar) mToolbar;
@@ -223,13 +233,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
      */
     protected boolean alwaysPortrait() {
         return true;
-    }
-
-    /**
-     * 是否线性排列toolbar，否的话则toolbar在布局上方
-     */
-    protected Style toolbarStyle() {
-        return Style.LINEAR;
     }
 
 }

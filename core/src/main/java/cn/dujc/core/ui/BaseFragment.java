@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import cn.dujc.core.toolbar.IToolbar;
+import cn.dujc.core.toolbar.IToolbarHandler;
+
 /**
  * 基本的Fragment。最好Fragment都要继承于此类
  * Created by du on 2017/9/19.
@@ -61,13 +64,6 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
         final View[] viewAndToolbar = BaseToolbarHelper.createRootViewAndToolbar(toolbarStyle(), mActivity, this, view);
         mToolbar = viewAndToolbar[1];
         return viewAndToolbar[0];
-    }
-
-    /**
-     * 是否线性排列toolbar，否的话则toolbar在布局上方
-     */
-    protected Style toolbarStyle() {
-        return Style.LINEAR;
     }
 
     @Override
@@ -125,6 +121,15 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
 
     @Override
     public void onDenied(int requestCode, List<String> permissions) { }
+
+    /**
+     * 是否线性排列toolbar，否的话则toolbar在布局上方
+     */
+    protected Style toolbarStyle() {
+        final IToolbar iToolbar = IToolbarHandler.getToolbar(mActivity);
+        if (iToolbar != null) return iToolbar.toolbarStyle();
+        return Style.LINEAR;
+    }
 
     /**
      * 关联主界面 **只有在使用自定义View时使用**

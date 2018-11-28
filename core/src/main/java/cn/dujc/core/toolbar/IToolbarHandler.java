@@ -156,14 +156,15 @@ public final class IToolbarHandler {
      */
     public static View generateToolbar(Object user, ViewGroup parent, IToolbar iToolbar) {
         if (iToolbar != null) {
-            final List<Class<? extends IBaseUI>> include = iToolbar.include();
-            boolean useHere = include == null || include.size() == 0;//为空即任何类都可以使用
-            if (!useHere) {
-                for (Class clazz : include) {//不为空则判断是否满足之类的类型
-                    useHere = useHere || clazz.isInstance(user);
-                }
-            }
-            if (useHere) {//如果符合了满足条件，那么判断是否被排除了
+            //final List<Class<? extends IBaseUI>> include = iToolbar.include();
+            //boolean useHere = include == null || include.size() == 0;//为空即任何类都可以使用
+            //if (!useHere) {
+            //    for (Class clazz : include) {//不为空则判断是否满足之类的类型
+            //        useHere = useHere || clazz.isInstance(user);
+            //    }
+            //}
+            //if (useHere) {//如果符合了满足条件，那么判断是否被排除了
+            boolean useHere = true;
                 final List<Class<? extends IBaseUI>> exclude = iToolbar.exclude();
                 if (exclude != null && exclude.size() > 0) {
                     for (Class clazz : exclude) {
@@ -173,7 +174,7 @@ public final class IToolbarHandler {
                         }
                     }
                 }
-            }
+            //}
             if (useHere) {
                 final View toolbar = iToolbar.normal(parent);
                 if (toolbar != null) {
@@ -203,14 +204,15 @@ public final class IToolbarHandler {
         if (titleCompat != null && context != null) {
             final IToolbar toolbar = getToolbar(context);
             if (toolbar != null) {
-                final List<Class<? extends IBaseUI>> include = toolbar.include();
-                boolean useHere = include == null || include.size() == 0;//为空即任何类都可以使用
-                if (!useHere) {
-                    for (Class clazz : include) {//不为空则判断是否满足之类的类型
-                        useHere = useHere || clazz.isInstance(user);
-                    }
-                }
-                if (useHere) {//如果符合了满足条件，那么判断是否被排除了
+                //final List<Class<? extends IBaseUI>> include = toolbar.include();
+                //boolean useHere = include == null || include.size() == 0;//为空即任何类都可以使用
+                //if (!useHere) {
+                //    for (Class clazz : include) {//不为空则判断是否满足之类的类型
+                //        useHere = useHere || clazz.isInstance(user);
+                //    }
+                //}
+                //if (useHere) {//如果符合了满足条件，那么判断是否被排除了
+                boolean useHere = true;
                     final List<Class<? extends IBaseUI>> exclude = toolbar.exclude();
                     if (exclude != null && exclude.size() > 0) {
                         for (Class clazz : exclude) {
@@ -220,7 +222,7 @@ public final class IToolbarHandler {
                             }
                         }
                     }
-                }
+                //}
                 if (useHere) {
                     final int color = toolbar.statusBarColor(context);
                     if (color != 0) {

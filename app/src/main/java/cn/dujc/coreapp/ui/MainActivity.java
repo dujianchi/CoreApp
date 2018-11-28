@@ -2,7 +2,6 @@ package cn.dujc.coreapp.ui;
 
 import android.Manifest;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.annotation.Nullable;
 
 import java.util.Arrays;
@@ -12,7 +11,6 @@ import cn.dujc.core.adapter.BaseAdapter;
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
 import cn.dujc.core.ui.BaseListActivity;
-import cn.dujc.core.ui.FragmentShellActivity;
 import cn.dujc.core.util.ToastUtil;
 
 /**
@@ -30,7 +28,7 @@ public class MainActivity extends BaseListActivity {
             , "可展开的adapter", "startActivityForResult返回值处理/采用代码布局/关闭其他activity测试"
             , "跳转完关闭的使用/直接使用Fragment"
             , "coordinator"
-            , "dialog fragment"
+            , ""
             , ""
             , ""
             , ""
@@ -47,8 +45,6 @@ public class MainActivity extends BaseListActivity {
 
     private boolean mRefreshEnable = true;
     private boolean mMoreEnable = true;
-
-    private DialogF mDialog;
 
     @Nullable
     @Override
@@ -95,16 +91,16 @@ public class MainActivity extends BaseListActivity {
                 break;
             }
             case 8: {
-                starter()
+                /*starter()
                         .with(FragmentShellActivity.EXTRA_STATUS_DARK_MODE, true)
                         .with(FragmentShellActivity.EXTRA_STATUS_BAR_COLOR, Color.WHITE)
                         .with(FragmentShellActivity.EXTRA_TOOLBAR_STYLE, Style.NONE)
-                        .goFragment(CoordinatorFragment.class);
+                        .goFragment(CoordinatorFragment.class);*/
+                starter().go(CoordinatorActivity.class);
                 break;
             }
             case 9: {
-                if (mDialog == null) mDialog = new DialogF();
-                mDialog.showOnly(this);
+
                 break;
             }
             //case xx: {break;}

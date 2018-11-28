@@ -1,5 +1,6 @@
 package cn.dujc.coreapp.ui;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.dujc.core.ui.BaseActivity;
+import cn.dujc.core.ui.TitleCompat;
 import cn.dujc.coreapp.R;
 
 /**
@@ -31,6 +33,12 @@ public class CoordinatorActivity extends BaseActivity {
     @Override
     public ViewGroup initToolbar(ViewGroup parent) {
         return (ViewGroup) LayoutInflater.from(mActivity).inflate(R.layout.toolbar_coordinator, parent, false);
+    }
+
+    @Nullable
+    @Override
+    public TitleCompat initTransStatusBar() {
+        return super.initTransStatusBar().setFakeStatusBarColor(Color.TRANSPARENT);
     }
 
     @Override

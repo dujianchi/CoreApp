@@ -47,12 +47,13 @@ public class ToolbarHandler implements IToolbar {
     }
 
     @Override
+    public IBaseUI.WithToolbar.Style toolbarStyle() {
+        return IBaseUI.WithToolbar.Style.LINEAR;
+    }
+
+    @Override
     public List<Class<? extends IBaseUI>> exclude() {
         return null;
     }
 
-    @Override
-    public List<Class<? extends IBaseUI>> include() {
-        return null;
-    }
 }
