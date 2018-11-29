@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BulgeLineView">
+        <!--线多粗-->
+        <attr name="blvLineWide" format="dimension" />
+        <!--凸起多高-->
+        <attr name="blvBulgeHeight" format="dimension" />
+        <!--凸起多大-->
+        <attr name="blvBulgeSize" format="dimension" />
+        <!--凸起中心，左或右-->
+        <attr name="blvPositionGravity" format="enum">
+            <enum name="left" value="0" />
+            <enum name="right" value="1" />
+        </attr>
+        <!--凸起位置，相对于凸起中心的位置-->
+        <attr name="blvBulgePosition" format="dimension" />
+        <!--线条颜色-->
+        <attr name="blvLineColor" format="color" />
+        <!--凸起区域背景颜色-->
+        <attr name="blvBulgeBackground" format="color" />
+    </declare-styleable>
+</resources>

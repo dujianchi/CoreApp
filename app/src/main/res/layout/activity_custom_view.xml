@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <cn.dujc.coreapp.widget.BulgeLineView
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_gravity="center"
+        android:padding="@dimen/a10"
+        app:blvBulgeBackground="@color/colorAccent"
+        app:blvBulgeHeight="@dimen/a40"
+        app:blvBulgePosition="@dimen/a40"
+        app:blvBulgeSize="@dimen/a40"
+        app:blvLineColor="@color/colorPrimaryDark"
+        app:blvLineWide="@dimen/a1"
+        app:blvPositionGravity="right" />
+</FrameLayout>

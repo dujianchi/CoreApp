@@ -29,6 +29,7 @@
         <activity android:name=".ui.ReturnActivity" />
         <activity android:name=".ui.MiddleActivity" />
         <activity android:name=".ui.CoordinatorActivity" />
+        <activity android:name=".ui.CustomViewActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

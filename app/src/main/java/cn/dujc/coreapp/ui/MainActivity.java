@@ -28,7 +28,7 @@ public class MainActivity extends BaseListActivity {
             , "可展开的adapter", "startActivityForResult返回值处理/采用代码布局/关闭其他activity测试"
             , "跳转完关闭的使用/直接使用Fragment"
             , "coordinator"
-            , ""
+            , "自定义控件测试"
             , ""
             , ""
             , ""
@@ -100,7 +100,7 @@ public class MainActivity extends BaseListActivity {
                 break;
             }
             case 9: {
-
+                starter().go(CustomViewActivity.class);
                 break;
             }
             //case xx: {break;}
