@@ -19,29 +19,7 @@ import cn.dujc.core.util.ToastUtil;
  */
 public class MainActivity extends BaseListActivity {
 
-    private final List<String> mList = Arrays.asList(
-            "Toolbar控制"
-            , "加载更多开关"
-            , "刷新开关"
-            , "权限控制"
-            , "多种类型的adapter"
-            , "可展开的adapter", "startActivityForResult返回值处理/采用代码布局/关闭其他activity测试"
-            , "跳转完关闭的使用/直接使用Fragment"
-            , "coordinator"
-            , "自定义控件测试"
-            , ""
-            , ""
-            , ""
-            , ""
-            , ""
-            , ""
-            , ""
-            , ""
-            , ""
-            , ""
-            , ""
-            , ""
-    );
+    private final List<String> mList = Arrays.asList("Toolbar控制", "加载更多开关", "刷新开关", "权限控制", "多种类型的adapter", "可展开的adapter", "startActivityForResult返回值处理/采用代码布局/关闭其他activity测试", "跳转完关闭的使用/直接使用Fragment", "coordinator", "自定义控件测试", "webFragment", "", "", "", "", "", "", "", "", "", "", "");
 
     private boolean mRefreshEnable = true;
     private boolean mMoreEnable = true;
@@ -68,9 +46,7 @@ public class MainActivity extends BaseListActivity {
                 break;
             }
             case 3: {
-                permissionKeeper().requestPermissions(starter().newRequestCode(MainActivity.class)
-                        , "缺少关键权限", "请从设置中打开相关权限，以进一步使用"
-                        , Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                permissionKeeper().requestPermissions(starter().newRequestCode(MainActivity.class), "缺少关键权限", "请从设置中打开相关权限，以进一步使用", Manifest.permission.WRITE_EXTERNAL_STORAGE);
                 break;
             }
             case 4: {
@@ -82,8 +58,7 @@ public class MainActivity extends BaseListActivity {
                 break;
             }
             case 6: {
-                starter().with(ReturnActivity.KEY, "From MainActivity")
-                        .go(ReturnActivity.class);
+                starter().with(ReturnActivity.KEY, "From MainActivity").go(ReturnActivity.class);
                 break;
             }
             case 7: {
@@ -101,6 +76,10 @@ public class MainActivity extends BaseListActivity {
             }
             case 9: {
                 starter().go(CustomViewActivity.class);
+                break;
+            }
+            case 10: {
+                starter().go(WebActvity.class);
                 break;
             }
             //case xx: {break;}

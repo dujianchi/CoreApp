@@ -30,6 +30,7 @@
         <activity android:name=".ui.MiddleActivity" />
         <activity android:name=".ui.CoordinatorActivity" />
         <activity android:name=".ui.CustomViewActivity" />
+        <activity android:name=".ui.WebActvity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

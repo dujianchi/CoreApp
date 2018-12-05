@@ -9,7 +9,10 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -114,6 +117,7 @@ public class BaseWebFragment extends BaseRefreshableFragment {
         }
         mActivity.setTitle("");//防止没有title时没有点击事件2017年3月21日 00:03:20
         init();
+        setupRefresh();
     }
 
     @Override
@@ -191,6 +195,15 @@ public class BaseWebFragment extends BaseRefreshableFragment {
         web_simple_view.setWebChromeClient(getWebChromeClient());
 
         loadAtFirst();
+    }
+
+    protected void setupRefresh() {
+        getSwipeRefreshLayout().setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
+            @Override
+            public boolean canChildScrollUp(@NonNull SwipeRefreshLayout parent, @Nullable View child) {
+                return web_simple_view != null && web_simple_view.getScrollY() > 0;
+            }
+        });
     }
 
     protected void initWebViewSettings() {
