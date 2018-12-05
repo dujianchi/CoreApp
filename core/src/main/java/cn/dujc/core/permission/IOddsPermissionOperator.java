@@ -4,7 +4,7 @@ import cn.dujc.core.ui.IBaseUI;
 
 /**
  * @author du
- * <br/>
+ * <br />
  * 权限组	权限
  * CALENDAR
  * •	READ_CALENDAR
@@ -41,7 +41,7 @@ import cn.dujc.core.ui.IBaseUI;
  * •	WRITE_EXTERNAL_STORAGE
  * <p>
  * <p>
- * <br/>
+ * <br />
  * date 2018/9/5 上午10:10
  */
 public interface IOddsPermissionOperator {

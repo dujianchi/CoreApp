@@ -107,7 +107,7 @@ public class TitleCompat {
 
     /**
      * 设置自己定义的statusBar是否可见
-     * <br/>statusBar的颜色实现，是做了一层假的View覆盖在系统statusBar和decorView之间，实际上系统statusBar还是透明的<br/>
+     * statusBar的颜色实现，是做了一层假的View覆盖在系统statusBar和decorView之间，实际上系统statusBar还是透明的
      *
      * @param visibility
      */
@@ -148,7 +148,7 @@ public class TitleCompat {
 
     /**
      * 设置自己定义的statusBar背景颜色
-     * <br/>statusBar的颜色实现，是做了一层假的View覆盖在系统statusBar和decorView之间，实际上系统statusBar还是透明的<br/>
+     * statusBar的颜色实现，是做了一层假的View覆盖在系统statusBar和decorView之间，实际上系统statusBar还是透明的
      *
      * @param color
      */
@@ -159,7 +159,7 @@ public class TitleCompat {
 
     /**
      * 设置自己定义的statusBar背景
-     * <br/>statusBar的颜色实现，是做了一层假的View覆盖在系统statusBar和decorView之间，实际上系统statusBar还是透明的<br/>
+     * statusBar的颜色实现，是做了一层假的View覆盖在系统statusBar和decorView之间，实际上系统statusBar还是透明的
      *
      * @param drawable
      */

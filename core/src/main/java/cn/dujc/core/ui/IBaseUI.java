@@ -40,7 +40,7 @@ import cn.dujc.core.util.LogUtil;
  */
 public interface IBaseUI {
     /**
-     * 自增的request code，每个跳转都是forresult的跳转，那么，今后只要记住跳转方法{@link #starter().go(Class)}返回的int值
+     * 自增的request code，每个跳转都是forresult的跳转，那么今后只要记住跳转方法{@link #starter().go(Class)}返回的int值
      * ，即为本次跳转产生的request code，从此不再管理request code，且不会再重复，因为不管在什么界面跳转，每次跳转都用了不同的request code（当然，崩溃重启的情况例外）
      */
     int[] _INCREMENT_REQUEST_CODE = {1};
