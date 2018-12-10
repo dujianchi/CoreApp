@@ -90,6 +90,10 @@ public class ActivityStackUtil {
         }
     }
 
+    public int foregroundCount() {
+        return mActivities.size();
+    }
+
 //    public void addFragment(Activity activity, Fragment fragment) {
 //        Set<Fragment> fragments = mActivityFragments.get(activity);
 //        if (fragments == null) {
