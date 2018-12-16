@@ -316,6 +316,10 @@ public class BaseWebFragment extends BaseRefreshableFragment {
         }
     }
 
+    public ProgressBar getProgressBar() {
+        return pb_progressbar;
+    }
+
     public final WebView getWebView() {
         return web_simple_view;
     }
