@@ -90,6 +90,10 @@ public class ActivityStackUtil {
         }
     }
 
+    public Set<Activity> getActivities() {
+        return mActivities;
+    }
+
     public int foregroundCount() {
         return mActivities.size();
     }
