@@ -5,11 +5,10 @@ import android.app.Application;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.util.ArraySet;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.Stack;
 
 /**
  * activity管理栈
@@ -18,7 +17,7 @@ import java.util.Set;
 public class ActivityStackUtil {
 
     //private final Map<Activity, Set<Fragment>> mActivityFragments = new ArrayMap<Activity, Set<Fragment>>();
-    private final Set<Activity> mActivities = new ArraySet<Activity>();
+    private final Stack<Activity> mActivities = new Stack<Activity>();
     private final Application.ActivityLifecycleCallbacks mLifecycleCallbacks;
 
     private static ActivityStackUtil sInstance = null;
@@ -90,7 +89,7 @@ public class ActivityStackUtil {
         }
     }
 
-    public Set<Activity> getActivities() {
+    public Stack<Activity> getActivities() {
         return mActivities;
     }
 
