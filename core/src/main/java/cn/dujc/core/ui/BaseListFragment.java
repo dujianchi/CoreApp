@@ -82,6 +82,11 @@ public abstract class BaseListFragment extends BaseFragment implements IBaseList
         mBaseList.recyclerViewOtherSetup();
     }
 
+    @Override
+    public void doubleClickTitleToTop() {
+        mBaseList.doubleClickTitleToTop();
+    }
+
     @Nullable
     @Override
     public RecyclerView.LayoutManager initLayoutManager() {

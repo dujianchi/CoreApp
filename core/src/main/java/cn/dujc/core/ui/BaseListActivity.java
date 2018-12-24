@@ -82,6 +82,11 @@ public abstract class BaseListActivity extends BaseActivity implements IBaseList
         mBaseList.recyclerViewOtherSetup();
     }
 
+    @Override
+    public void doubleClickTitleToTop() {
+        mBaseList.doubleClickTitleToTop();
+    }
+
     @Nullable
     @Override
     public RecyclerView.LayoutManager initLayoutManager() {

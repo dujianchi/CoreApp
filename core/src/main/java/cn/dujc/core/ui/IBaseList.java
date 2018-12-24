@@ -72,6 +72,11 @@ interface IBaseList {
     void recyclerViewOtherSetup();
 
     /**
+     * 双击标题回到顶部
+     */
+    void doubleClickTitleToTop();
+
+    /**
      * 默认的RecyclerView.LayoutManager是LinearLayoutManager
      *
      * @return LinearLayoutManager
@@ -112,6 +117,7 @@ interface IBaseList {
         private BaseQuickAdapter mQuickAdapter;
         private AppBarLayout.OnOffsetChangedListener mOnOffsetChangedListener;
         private AppBarLayout mAppbarLayout;
+        private long mLastDoubleTap = 0;
 
         public AbsImpl(UI UI) {
             mUI = UI;
@@ -130,6 +136,7 @@ interface IBaseList {
         public void initBasic(Bundle savedInstanceState) {
             mSrlLoader = (SwipeRefreshLayout) findViewById(R.id.srl_loader);
             mRvList = (RecyclerView) findViewById(R.id.rv_list);
+            mUI.doubleClickTitleToTop();
 
             if (mSrlLoader != null) {
                 //mSrlLoader.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent);
@@ -252,6 +259,22 @@ interface IBaseList {
         public void recyclerViewOtherSetup() {
             if (mRvList != null) {
                 mRvList.addItemDecoration(new DividerItemDecoration(context(), DividerItemDecoration.VERTICAL));
+            }
+        }
+
+        @Override
+        public void doubleClickTitleToTop() {
+            final View view = findViewById(R.id.toolbar_title_id);
+            if (view != null) {
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final long current = System.currentTimeMillis();
+                        if (mRvList != null && current - mLastDoubleTap < 500)
+                            mRvList.smoothScrollToPosition(0);
+                        mLastDoubleTap = current;
+                    }
+                });
             }
         }
 
