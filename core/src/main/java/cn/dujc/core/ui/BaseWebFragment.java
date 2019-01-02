@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,15 +13,17 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import java.io.File;
+import java.lang.reflect.Field;
 import java.util.List;
 
 import cn.dujc.core.R;
@@ -62,56 +62,8 @@ public class BaseWebFragment extends BaseRefreshableFragment {
         }
     }
 
-    /**
-     * 对webView的DB进行访问，如果有异常，则判断当前进程不能使用WebView
-     *
-     * @param context
-     */
-    public static boolean isWebViewAvailable(final Context context) {
-
-        boolean checkExisted = false;
-
-        boolean bEnable = true;
-        for (String dbName : DB_NAME_LIST) {
-            // 构造文件，判断有无存在
-            File dbFile = new File(context.getFilesDir().getParentFile().getPath() + "/databases/" + "local_" + dbName);
-            if (dbFile.exists()) {
-                if (!isOpenSuccess(context, dbName)) {
-                    bEnable = false;
-                }
-                checkExisted = true;
-            }
-        }
-
-        if (!checkExisted) {
-            final String dumyDb = "dumyDb";
-            // 加强一下
-            bEnable = isOpenSuccess(context, dumyDb);
-            if (!bEnable) {
-                try {
-                    context.deleteDatabase(dumyDb);
-                } catch (Throwable e) {
-                }
-            }
-        }
-        return bEnable;
-    }
-
     @Override
     public void initBasic(Bundle savedInstanceState) {
-        if (!isWebViewAvailable(mActivity)) {
-            LogUtil.w("web view disable");
-            if (!TextUtils.isEmpty(mUrl)) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mUrl));
-                if (hasIntentHandler(mActivity, intent)) {
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(mActivity, "未检测到浏览器", Toast.LENGTH_SHORT).show();
-                }
-            }
-            mActivity.finish();
-            return;
-        }
         if (Build.VERSION.SDK_INT >= 11) {
             mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
         }
@@ -138,32 +90,43 @@ public class BaseWebFragment extends BaseRefreshableFragment {
 
     @Override
     public void onDestroy() {
-        web_simple_view.destroy();
-        super.onDestroy();
-    }
+        if (web_simple_view != null) {
+            //加载null内容
+            web_simple_view.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
 
-    public static boolean isOpenSuccess(Context context, String dbName) {
-        if (TextUtils.isEmpty(dbName) || context == null) {
-            return false;
-        }
-        boolean isOpenSuccess = true;
-        SQLiteDatabase dataBase = null;
-        try {
-            dataBase = context.openOrCreateDatabase(dbName, 0, null);
-            dataBase.getVersion();
-
-        } catch (Throwable t) {
-            isOpenSuccess = false;
-        } finally {
-            try {
-                if (dataBase != null) {
-                    dataBase.close();
-                }
-            } catch (Exception e) {
-                LogUtil.e(e.getMessage());
+            ViewParent parent = web_simple_view.getParent();
+            if (parent != null) {
+                ((ViewGroup) parent).removeView(web_simple_view);
             }
+
+            web_simple_view.stopLoading();
+            // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
+            web_simple_view.getSettings().setJavaScriptEnabled(false);
+            //web_simple_view.clearHistory();
+            web_simple_view.clearView();
+            //web_simple_view.removeAllViews();
+
+            web_simple_view.clearCache(true);
+            web_simple_view.clearFormData();
+            web_simple_view.clearMatches();
+            web_simple_view.clearSslPreferences();
+            web_simple_view.clearDisappearingChildren();
+            web_simple_view.clearHistory();
+            web_simple_view.clearAnimation();
+            //web_simple_view.loadUrl("about:blank");
+            web_simple_view.removeAllViews();
+            //web_simple_view.freeMemory();
+
+            try {
+                web_simple_view.freeMemory();
+                web_simple_view.destroy();
+                web_simple_view = null;
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
+            setConfigCallback(null);
         }
-        return isOpenSuccess;
+        super.onDestroy();
     }
 
     @Override
@@ -177,12 +140,33 @@ public class BaseWebFragment extends BaseRefreshableFragment {
         refreshDone();
     }
 
+    //反射来清理webview的引用
+    public void setConfigCallback(WindowManager windowManager) {
+        try {
+            Field field = WebView.class.getDeclaredField("mWebViewCore");
+            field = field.getType().getDeclaredField("mBrowserFrame");
+            field = field.getType().getDeclaredField("sConfigCallback");
+            field.setAccessible(true);
+            Object configCallback = field.get(null);
+            if (null == configCallback) {
+                return;
+            }
+            field = field.getType().getDeclaredField("mWindowManager");
+            field.setAccessible(true);
+            field.set(configCallback, windowManager);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void init() {
         if (!TextUtils.isEmpty(mTitle)) {
             mActivity.setTitle(mTitle);
         }
 
-        web_simple_view = (WebView) findViewById(R.id.web_simple_view);
+        web_simple_view = new WebView(mActivity.getApplicationContext());
+        ((LinearLayout)findViewById(R.id.ll_webview_parent))
+                .addView(web_simple_view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         pb_progressbar = (ProgressBar) findViewById(R.id.pb_progressbar);
 
         pb_progressbar.setMax(100);
