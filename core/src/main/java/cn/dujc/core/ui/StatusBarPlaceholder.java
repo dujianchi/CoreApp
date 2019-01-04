@@ -19,6 +19,7 @@ import cn.dujc.core.util.ContextUtil;
 public class StatusBarPlaceholder extends View {
 
     private boolean mOpen = true;
+    private boolean mOverrideSystemOpen = false;
     private final int mStatusBarHeight;
 
     public StatusBarPlaceholder(Context context) {
@@ -44,17 +45,27 @@ public class StatusBarPlaceholder extends View {
     }
 
     public boolean isSystemOpen() {
-        boolean open = false;
+        boolean open = mOverrideSystemOpen;
         final Activity activity = ContextUtil.getActivity(getContext());
         if (activity != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                open = (activity.getWindow().getDecorView().getSystemUiVisibility() & View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN) == View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+                open = open || (activity.getWindow().getDecorView().getSystemUiVisibility() & View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN) == View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 open = open || (activity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS) == WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
             }
         }
         return open;
+    }
+
+    /**
+     * 由于1.2.0-alpha1以后，toolbar改成持有application的context，无法根据context获取activity，然后判断当前activity是否开启了沉浸效果，
+     * 所以定义这个方法，用于重写系统方法，但此方法即使传入true，也需要当前运行环境大于4.4才有效
+     *
+     * @param overrideSystemOpen 是否重写系统判断
+     */
+    public void setOverrideSystemOpen(boolean overrideSystemOpen) {
+        mOverrideSystemOpen = overrideSystemOpen && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
     public void placeholder(boolean open) {
