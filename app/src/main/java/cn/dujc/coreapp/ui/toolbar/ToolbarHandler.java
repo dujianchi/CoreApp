@@ -22,15 +22,14 @@ public class ToolbarHandler implements IToolbar {
 
     private ToolbarHandler() {}
 
-    @Instance
     public static ToolbarHandler getHandler() {
         return HANDLER;
     }
 
-    @Override
-    public IToolbar get() {
-        return this;
-    }
+//    @Override
+//    public IToolbar get() {
+//        return this;
+//    }
 
     public View normal(ViewGroup parent) {
         return LayoutInflater.from(parent.getContext()).inflate(R.layout.toolbar, parent, false);

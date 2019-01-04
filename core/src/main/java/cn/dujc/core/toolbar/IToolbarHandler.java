@@ -23,7 +23,7 @@ import cn.dujc.core.util.ContextUtil;
  */
 public final class IToolbarHandler {
 
-    private static final String CLASS = "CLASS", NAME = IToolbarHandler.class.getSimpleName();
+    private static final String CLASS = "CORE_TOOLBAR_CLASS", NAME = IToolbarHandler.class.getSimpleName();
     private static IToolbar sToolbar = null;
 
     private IToolbarHandler() { }
@@ -55,13 +55,13 @@ public final class IToolbarHandler {
                     return;
                 }
             }
-            for (Method method : declaredMethods) {
-                final IToolbar fromAnnotation = createByAnnotation(method);
-                if (fromAnnotation != null) {
-                    sToolbar = fromAnnotation;
-                    return;
-                }
-            }
+            //for (Method method : declaredMethods) {
+            //    final IToolbar fromAnnotation = createByAnnotation(method);
+            //    if (fromAnnotation != null) {
+            //        sToolbar = fromAnnotation;
+            //        return;
+            //    }
+            //}
             sToolbar = createByNewInstance(clazz);
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,21 +85,21 @@ public final class IToolbarHandler {
         return null;
     }
 
-    /**
-     * 从注解中获取IToolbar实例
-     */
-    public static IToolbar createByAnnotation(Method method) {
-        try {
-            final IToolbar.Instance instance = method.getAnnotation(IToolbar.Instance.class);
-            if (instance != null) {
-                if (!method.isAccessible()) method.setAccessible(true);
-                return (IToolbar) method.invoke(null);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+    ///**
+    // * 从注解中获取IToolbar实例
+    // */
+    //public static IToolbar createByAnnotation(Method method) {
+    //    try {
+    //        final IToolbar.Instance instance = method.getAnnotation(IToolbar.Instance.class);
+    //        if (instance != null) {
+    //            if (!method.isAccessible()) method.setAccessible(true);
+    //            return (IToolbar) method.invoke(null);
+    //        }
+    //    } catch (Exception e) {
+    //        e.printStackTrace();
+    //    }
+    //    return null;
+    //}
 
     /**
      * 用new的方式获取IToolbar实例。这是最终也是最暴力的方式，当静态类、注解都失败的时候

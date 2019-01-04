@@ -24,6 +24,7 @@ class BaseToolbarHelper {
      * rootView和toolbar处理逻辑
      */
     static View[] createRootViewAndToolbar(IBaseUI.WithToolbar.Style toolbarStyle, Context context, IBaseUI.WithToolbar baseUI, View contentView) {
+        if (toolbarStyle == null) return noneRootView(baseUI, contentView);
         switch (toolbarStyle) {
             case LINEAR:
                 return BaseToolbarHelper.linearRootView(context, baseUI, contentView);
@@ -33,20 +34,24 @@ class BaseToolbarHelper {
                 return BaseToolbarHelper.coordinatorRootView(context, baseUI, contentView);
             default:
             case NONE:
-                final View[] rootAndTool = new View[2];
-                if (contentView instanceof ViewGroup) {
-                    rootAndTool[1] = baseUI.initToolbar((ViewGroup) contentView);
-                }
-                rootAndTool[0] = contentView;
-                return rootAndTool;
+                return noneRootView(baseUI, contentView);
         }
+    }
+
+    private static View[] noneRootView(IBaseUI.WithToolbar baseUI, View contentView){
+        final View[] rootAndTool = new View[2];
+        if (contentView instanceof ViewGroup) {
+            rootAndTool[1] = baseUI.initToolbar((ViewGroup) contentView);
+        }
+        rootAndTool[0] = contentView;
+        return rootAndTool;
     }
 
     /**
      * 标题与界面线性排列
      */
     private static View[] linearRootView(Context context, IBaseUI.WithToolbar baseUI, View contentView) {
-        LinearLayout layout = new LinearLayout(context);
+        LinearLayout layout = new LinearLayout(context.getApplicationContext());
         View toolbar = baseUI.initToolbar(layout);
         if (toolbar != null) {
             layout.setOrientation(LinearLayout.VERTICAL);
@@ -63,7 +68,7 @@ class BaseToolbarHelper {
      * 标题与界面帧层叠
      */
     private static View[] frameRootView(Context context, IBaseUI.WithToolbar baseUI, View contentView) {
-        FrameLayout layout = new FrameLayout(context);
+        FrameLayout layout = new FrameLayout(context.getApplicationContext());
         View toolbar = baseUI.initToolbar(layout);
         if (toolbar != null) {
             layout.addView(contentView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
@@ -79,7 +84,7 @@ class BaseToolbarHelper {
      * coordinator布局
      */
     private static View[] coordinatorRootView(Context context, IBaseUI.WithToolbar baseUI, View contentView) {
-        CoordinatorLayout layout = new CoordinatorLayout(context);
+        CoordinatorLayout layout = new CoordinatorLayout(context.getApplicationContext());
         View toolbar = baseUI.initToolbar(layout);
         if (toolbar != null) {
             final CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.MATCH_PARENT, CoordinatorLayout.LayoutParams.MATCH_PARENT);

@@ -31,6 +31,12 @@ public class MainActivity extends BaseListActivity {
     }
 
     @Override
+    public void recyclerViewOtherSetup() {
+        super.recyclerViewOtherSetup();
+        if (getAdapter() != null) getAdapter().setEnableLoadMore(false);
+    }
+
+    @Override
     public void onItemClick(int position) {
         switch (position) {
             case 0: {
@@ -83,14 +89,16 @@ public class MainActivity extends BaseListActivity {
                 break;
             }
             //case xx: {break;}
-            default: {break;}
+            default: {
+                break;
+            }
         }
     }
 
     @Override
     public void loadMore() {
         ToastUtil.showToast(mActivity, "在这加载更多");
-        notifyDataSetChanged(false, false);
+        notifyDataSetChanged(true, false);
     }
 
     @Override
