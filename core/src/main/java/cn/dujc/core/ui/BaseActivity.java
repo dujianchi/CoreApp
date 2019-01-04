@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -84,6 +85,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        recycleRootViewAndToolbar();
         //ActivityStackUtil.getInstance().removeActivity(this);
     }
 
@@ -200,6 +202,23 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
                 actionBar.setDisplayShowHomeEnabled(false);
                 actionBar.setDisplayShowTitleEnabled(false);
             }
+        }
+    }
+
+    protected void recycleRootViewAndToolbar() {
+        if (mToolbar != null) {
+            final ViewParent parent = mToolbar.getParent();
+            if (parent != null) {
+                ((ViewGroup) parent).removeView(mToolbar);
+            }
+            mToolbar = null;
+        }
+        if (mRootView != null) {
+            final ViewParent parent = mRootView.getParent();
+            if (parent != null) {
+                ((ViewGroup) parent).removeView(mRootView);
+            }
+            mRootView = null;
         }
     }
 

@@ -60,7 +60,8 @@ public class StatusBarPlaceholder extends View {
 
     /**
      * 由于1.2.0-alpha1以后，toolbar改成持有application的context，无法根据context获取activity，然后判断当前activity是否开启了沉浸效果，
-     * 所以定义这个方法，用于重写系统方法，但此方法即使传入true，也需要当前运行环境大于4.4才有效
+     * 所以定义这个方法，用于重写系统方法，但此方法即使传入true，也需要当前运行环境大于4.4才有效。
+     * 1.2.0-alpha2又改成持有自身activity的context，因为太麻烦……
      *
      * @param overrideSystemOpen 是否重写系统判断
      */

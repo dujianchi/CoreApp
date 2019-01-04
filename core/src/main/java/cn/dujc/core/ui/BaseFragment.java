@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 
 import java.util.List;
 
@@ -48,6 +49,12 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
             }
         }
         return mRootView;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        recycleRootViewAndToolbar();
     }
 
     @Override
@@ -143,6 +150,23 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     @Nullable
     public final <T extends View> T findViewById(int resId) {
         return mRootView != null ? (T) mRootView.findViewById(resId) : null;
+    }
+
+    protected void recycleRootViewAndToolbar() {
+        if (mToolbar != null) {
+            final ViewParent parent = mToolbar.getParent();
+            if (parent != null) {
+                ((ViewGroup) parent).removeView(mToolbar);
+            }
+            mToolbar = null;
+        }
+        if (mRootView != null) {
+            final ViewParent parent = mRootView.getParent();
+            if (parent != null) {
+                ((ViewGroup) parent).removeView(mRootView);
+            }
+            mRootView = null;
+        }
     }
 
     /**

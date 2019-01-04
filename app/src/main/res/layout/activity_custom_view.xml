@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,4 +17,8 @@
         app:blvLineColor="@color/colorPrimaryDark"
         app:blvLineWide="@dimen/a1"
         app:blvPositionGravity="right" />
-</FrameLayout>
+
+    <cn.dujc.coreapp.widget.GoodsNumber
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/a100"/>
+</LinearLayout>

@@ -29,7 +29,7 @@ public final class IToolbarHandler {
     private IToolbarHandler() { }
 
     private static SharedPreferences preferences(Context context) {
-        return context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        return context.getApplicationContext().getSharedPreferences(NAME, Context.MODE_PRIVATE);
     }
 
     /**

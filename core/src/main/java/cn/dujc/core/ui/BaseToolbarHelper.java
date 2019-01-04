@@ -51,7 +51,7 @@ class BaseToolbarHelper {
      * 标题与界面线性排列
      */
     private static View[] linearRootView(Context context, IBaseUI.WithToolbar baseUI, View contentView) {
-        LinearLayout layout = new LinearLayout(context.getApplicationContext());
+        LinearLayout layout = new LinearLayout(context);
         View toolbar = baseUI.initToolbar(layout);
         if (toolbar != null) {
             layout.setOrientation(LinearLayout.VERTICAL);
@@ -68,7 +68,7 @@ class BaseToolbarHelper {
      * 标题与界面帧层叠
      */
     private static View[] frameRootView(Context context, IBaseUI.WithToolbar baseUI, View contentView) {
-        FrameLayout layout = new FrameLayout(context.getApplicationContext());
+        FrameLayout layout = new FrameLayout(context);
         View toolbar = baseUI.initToolbar(layout);
         if (toolbar != null) {
             layout.addView(contentView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
@@ -84,7 +84,7 @@ class BaseToolbarHelper {
      * coordinator布局
      */
     private static View[] coordinatorRootView(Context context, IBaseUI.WithToolbar baseUI, View contentView) {
-        CoordinatorLayout layout = new CoordinatorLayout(context.getApplicationContext());
+        CoordinatorLayout layout = new CoordinatorLayout(context);
         View toolbar = baseUI.initToolbar(layout);
         if (toolbar != null) {
             final CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.MATCH_PARENT, CoordinatorLayout.LayoutParams.MATCH_PARENT);

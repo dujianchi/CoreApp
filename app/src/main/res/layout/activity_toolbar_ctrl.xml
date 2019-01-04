@@ -18,13 +18,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="fitSwitch0"
-            android:text="适应内容开关0" />
+            android:text="适应内容开关0(padding)" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="fitSwitch1"
-            android:text="适应内容开关1" />
+            android:text="适应内容开关1(placeholder)" />
 
         <Button
             android:layout_width="match_parent"
