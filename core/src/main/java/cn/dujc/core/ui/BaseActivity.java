@@ -87,7 +87,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        recycleRootViewAndToolbar();
+        destroyRootViewAndToolbar();
         //ActivityStackUtil.getInstance().removeActivity(this);
     }
 
@@ -251,7 +251,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
         }
     }
 
-    protected void recycleRootViewAndToolbar() {
+    protected void destroyRootViewAndToolbar() {
         if (mToolbar != null) {
             final ViewParent parent = mToolbar.getParent();
             if (parent != null) {

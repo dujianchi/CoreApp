@@ -56,18 +56,18 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        recycleRootViewAndToolbar();
-    }
-
-    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (!mLoaded && mRootView != null) {
             mLoaded = true;
             initBasic(savedInstanceState);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        destroyRootViewAndToolbar();
     }
 
     @Override
@@ -216,7 +216,8 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
         return Style.LINEAR;
     }
 
-    protected void recycleRootViewAndToolbar() {
+    protected void destroyRootViewAndToolbar() {
+        mLoaded = false;
         if (mToolbar != null) {
             final ViewParent parent = mToolbar.getParent();
             if (parent != null) {
