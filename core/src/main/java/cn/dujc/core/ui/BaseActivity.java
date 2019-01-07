@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -126,15 +128,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     }
 
     @Override
-    public void setTitle(CharSequence title) {
-        super.setTitle(title);
-        if (mToolbar != null) {
-            final View textMaybe = mToolbar.findViewById(R.id.toolbar_title_id);
-            if (textMaybe instanceof TextView) ((TextView) textMaybe).setText(title);
-        }
-    }
-
-    @Override
     public IStarter starter() {
         if (mStarter == null) mStarter = new IStarterImpl(this);
         else mStarter.clear();//为什么要clear呢？想了想，实际上我用的一直是同一个starter，那么，如果一直界面往不同界面都传了值，它就会一直累加……
@@ -182,6 +175,59 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     @Nullable
     public View getViewV() {
         return null;
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        super.setTitle(title);
+        if (mToolbar != null) {
+            final View textMaybe = mToolbar.findViewById(R.id.toolbar_title_id);
+            if (textMaybe instanceof TextView) ((TextView) textMaybe).setText(title);
+        }
+    }
+
+    public void setTitleMenuText(CharSequence menuText, @Nullable View.OnClickListener onClickListener){
+        if (mToolbar != null) {
+            final View textMaybe = mToolbar.findViewById(R.id.toolbar_menu_id);
+            if (textMaybe instanceof TextView) {
+                textMaybe.setVisibility(View.VISIBLE);
+                ((TextView) textMaybe).setText(menuText);
+                if (onClickListener != null) textMaybe.setOnClickListener(onClickListener);
+            } else if (textMaybe instanceof ViewGroup) {
+                for (int index = 0, count = ((ViewGroup) textMaybe).getChildCount(); index < count; index++) {
+                    final View childAt = ((ViewGroup) textMaybe).getChildAt(index);
+                    if (childAt instanceof TextView) {
+                        textMaybe.setVisibility(View.VISIBLE);
+                        childAt.setVisibility(View.VISIBLE);
+                        ((TextView) childAt).setText(menuText);
+                        if (onClickListener != null) childAt.setOnClickListener(onClickListener);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public void setTitleMenuIcon(@DrawableRes int menuRes, @Nullable View.OnClickListener onClickListener){
+        if (mToolbar != null) {
+            final View imageMaybe = mToolbar.findViewById(R.id.toolbar_menu_id);
+            if (imageMaybe instanceof ImageView) {
+                imageMaybe.setVisibility(View.VISIBLE);
+                ((ImageView) imageMaybe).setImageResource(menuRes);
+                if (onClickListener != null) imageMaybe.setOnClickListener(onClickListener);
+            } else if (imageMaybe instanceof ViewGroup) {
+                for (int index = 0, count = ((ViewGroup) imageMaybe).getChildCount(); index < count; index++) {
+                    final View childAt = ((ViewGroup) imageMaybe).getChildAt(index);
+                    if (childAt instanceof ImageView) {
+                        imageMaybe.setVisibility(View.VISIBLE);
+                        childAt.setVisibility(View.VISIBLE);
+                        ((ImageView) childAt).setImageResource(menuRes);
+                        if (onClickListener != null) childAt.setOnClickListener(onClickListener);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /**

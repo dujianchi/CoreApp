@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,9 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.List;
 
+import cn.dujc.core.R;
 import cn.dujc.core.toolbar.IToolbar;
 import cn.dujc.core.toolbar.IToolbarHandler;
 
@@ -130,15 +134,6 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     public void onDenied(int requestCode, List<String> permissions) { }
 
     /**
-     * 是否线性排列toolbar，否的话则toolbar在布局上方
-     */
-    protected Style toolbarStyle() {
-        final IToolbar iToolbar = IToolbarHandler.getToolbar(mActivity);
-        if (iToolbar != null) return iToolbar.toolbarStyle();
-        return Style.LINEAR;
-    }
-
-    /**
      * 关联主界面 **只有在使用自定义View时使用**
      */
     @Override
@@ -150,6 +145,75 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     @Nullable
     public final <T extends View> T findViewById(int resId) {
         return mRootView != null ? (T) mRootView.findViewById(resId) : null;
+    }
+
+    /**
+     * 通知fragment改变了，需要这个的功能，在子类重写，然后其他地方调用这个子类的这个方法，就可以改动这个方法
+     */
+    public void notifyFragmentChanged() {/*在这重写需要更新fragment的动作*/}
+
+    public void setTitle(CharSequence title){
+        if (mToolbar != null) {
+            final View textMaybe = mToolbar.findViewById(R.id.toolbar_title_id);
+            if (textMaybe instanceof TextView) ((TextView) textMaybe).setText(title);
+        }
+    }
+
+    public void setTitle(int titleId) {
+        setTitle(getText(titleId));
+    }
+
+    public void setTitleMenuText(CharSequence menuText, @Nullable View.OnClickListener onClickListener){
+        if (mToolbar != null) {
+            final View textMaybe = mToolbar.findViewById(R.id.toolbar_menu_id);
+            if (textMaybe instanceof TextView) {
+                textMaybe.setVisibility(View.VISIBLE);
+                ((TextView) textMaybe).setText(menuText);
+                if (onClickListener != null) textMaybe.setOnClickListener(onClickListener);
+            } else if (textMaybe instanceof ViewGroup) {
+                for (int index = 0, count = ((ViewGroup) textMaybe).getChildCount(); index < count; index++) {
+                    final View childAt = ((ViewGroup) textMaybe).getChildAt(index);
+                    if (childAt instanceof TextView) {
+                        textMaybe.setVisibility(View.VISIBLE);
+                        childAt.setVisibility(View.VISIBLE);
+                        ((TextView) childAt).setText(menuText);
+                        if (onClickListener != null) childAt.setOnClickListener(onClickListener);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public void setTitleMenuIcon(@DrawableRes int menuRes, @Nullable View.OnClickListener onClickListener){
+        if (mToolbar != null) {
+            final View imageMaybe = mToolbar.findViewById(R.id.toolbar_menu_id);
+            if (imageMaybe instanceof ImageView) {
+                imageMaybe.setVisibility(View.VISIBLE);
+                ((ImageView) imageMaybe).setImageResource(menuRes);
+                if (onClickListener != null) imageMaybe.setOnClickListener(onClickListener);
+            } else if (imageMaybe instanceof ViewGroup) {
+                for (int index = 0, count = ((ViewGroup) imageMaybe).getChildCount(); index < count; index++) {
+                    final View childAt = ((ViewGroup) imageMaybe).getChildAt(index);
+                    if (childAt instanceof ImageView) {
+                        imageMaybe.setVisibility(View.VISIBLE);
+                        childAt.setVisibility(View.VISIBLE);
+                        ((ImageView) childAt).setImageResource(menuRes);
+                        if (onClickListener != null) childAt.setOnClickListener(onClickListener);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 是否线性排列toolbar，否的话则toolbar在布局上方
+     */
+    protected Style toolbarStyle() {
+        final IToolbar iToolbar = IToolbarHandler.getToolbar(mActivity);
+        if (iToolbar != null) return iToolbar.toolbarStyle();
+        return Style.LINEAR;
     }
 
     protected void recycleRootViewAndToolbar() {
@@ -168,10 +232,5 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
             mRootView = null;
         }
     }
-
-    /**
-     * 通知fragment改变了，需要这个的功能，在子类重写，然后其他地方调用这个子类的这个方法，就可以改动这个方法
-     */
-    public void notifyFragmentChanged() {/*在这重写需要更新fragment的动作*/}
 
 }
