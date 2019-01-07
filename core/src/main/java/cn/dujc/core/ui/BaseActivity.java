@@ -200,7 +200,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
                         textMaybe.setVisibility(View.VISIBLE);
                         childAt.setVisibility(View.VISIBLE);
                         ((TextView) childAt).setText(menuText);
-                        if (onClickListener != null) childAt.setOnClickListener(onClickListener);
+                        if (onClickListener != null) textMaybe.setOnClickListener(onClickListener);
                         break;
                     }
                 }
@@ -222,7 +222,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
                         imageMaybe.setVisibility(View.VISIBLE);
                         childAt.setVisibility(View.VISIBLE);
                         ((ImageView) childAt).setImageResource(menuRes);
-                        if (onClickListener != null) childAt.setOnClickListener(onClickListener);
+                        if (onClickListener != null) imageMaybe.setOnClickListener(onClickListener);
                         break;
                     }
                 }
