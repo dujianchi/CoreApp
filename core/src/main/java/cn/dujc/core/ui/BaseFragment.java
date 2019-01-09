@@ -152,7 +152,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
      */
     public void notifyFragmentChanged() {/*在这重写需要更新fragment的动作*/}
 
-    public void setTitle(CharSequence title){
+    public void setTitle(CharSequence title) {
         if (mToolbar != null) {
             final View textMaybe = mToolbar.findViewById(R.id.toolbar_title_id);
             if (textMaybe instanceof TextView) ((TextView) textMaybe).setText(title);
@@ -163,7 +163,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
         setTitle(getText(titleId));
     }
 
-    public void setTitleMenuText(CharSequence menuText, @Nullable View.OnClickListener onClickListener){
+    public void setTitleMenuText(CharSequence menuText, @Nullable View.OnClickListener onClickListener) {
         if (mToolbar != null) {
             final View textMaybe = mToolbar.findViewById(R.id.toolbar_menu_id);
             if (textMaybe instanceof TextView) {
@@ -171,21 +171,23 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
                 ((TextView) textMaybe).setText(menuText);
                 if (onClickListener != null) textMaybe.setOnClickListener(onClickListener);
             } else if (textMaybe instanceof ViewGroup) {
-                for (int index = 0, count = ((ViewGroup) textMaybe).getChildCount(); index < count; index++) {
-                    final View childAt = ((ViewGroup) textMaybe).getChildAt(index);
+                final ViewGroup viewGroup = (ViewGroup) textMaybe;
+                for (int index = 0, count = viewGroup.getChildCount(); index < count; index++) {
+                    final View childAt = viewGroup.getChildAt(index);
                     if (childAt instanceof TextView) {
                         textMaybe.setVisibility(View.VISIBLE);
                         childAt.setVisibility(View.VISIBLE);
                         ((TextView) childAt).setText(menuText);
                         if (onClickListener != null) textMaybe.setOnClickListener(onClickListener);
-                        break;
+                    } else {
+                        childAt.setVisibility(View.INVISIBLE);
                     }
                 }
             }
         }
     }
 
-    public void setTitleMenuIcon(@DrawableRes int menuRes, @Nullable View.OnClickListener onClickListener){
+    public void setTitleMenuIcon(@DrawableRes int menuRes, @Nullable View.OnClickListener onClickListener) {
         if (mToolbar != null) {
             final View imageMaybe = mToolbar.findViewById(R.id.toolbar_menu_id);
             if (imageMaybe instanceof ImageView) {
@@ -193,14 +195,16 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
                 ((ImageView) imageMaybe).setImageResource(menuRes);
                 if (onClickListener != null) imageMaybe.setOnClickListener(onClickListener);
             } else if (imageMaybe instanceof ViewGroup) {
-                for (int index = 0, count = ((ViewGroup) imageMaybe).getChildCount(); index < count; index++) {
-                    final View childAt = ((ViewGroup) imageMaybe).getChildAt(index);
+                final ViewGroup viewGroup = (ViewGroup) imageMaybe;
+                for (int index = 0, count = viewGroup.getChildCount(); index < count; index++) {
+                    final View childAt = viewGroup.getChildAt(index);
                     if (childAt instanceof ImageView) {
                         imageMaybe.setVisibility(View.VISIBLE);
                         childAt.setVisibility(View.VISIBLE);
                         ((ImageView) childAt).setImageResource(menuRes);
                         if (onClickListener != null) imageMaybe.setOnClickListener(onClickListener);
-                        break;
+                    } else {
+                        childAt.setVisibility(View.INVISIBLE);
                     }
                 }
             }
