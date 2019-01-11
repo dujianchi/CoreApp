@@ -1,7 +1,7 @@
 package cn.dujc.coreapp.ui.toolbar;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,12 +37,12 @@ public class ToolbarHandler implements IToolbar {
 
     @Override
     public int statusBarColor(Context context) {
-        return ContextCompat.getColor(context, R.color.colorPrimary);
+        return Color.TRANSPARENT;
     }
 
     @Override
     public StatusBarMode statusBarMode() {
-        return StatusBarMode.NONE;
+        return StatusBarMode.DARK;
     }
 
     @Override

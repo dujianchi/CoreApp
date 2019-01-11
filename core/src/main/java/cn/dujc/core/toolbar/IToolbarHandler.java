@@ -165,15 +165,15 @@ public final class IToolbarHandler {
             //}
             //if (useHere) {//如果符合了满足条件，那么判断是否被排除了
             boolean useHere = true;
-                final List<Class<? extends IBaseUI>> exclude = iToolbar.exclude();
-                if (exclude != null && exclude.size() > 0) {
-                    for (Class clazz : exclude) {
-                        if (clazz.isInstance(user)) {
-                            useHere = false;
-                            break;
-                        }
+            final List<Class<? extends IBaseUI>> exclude = iToolbar.exclude();
+            if (exclude != null && exclude.size() > 0) {
+                for (Class clazz : exclude) {
+                    if (clazz.isInstance(user)) {
+                        useHere = false;
+                        break;
                     }
                 }
+            }
             //}
             if (useHere) {
                 final View toolbar = iToolbar.normal(parent);
@@ -213,32 +213,30 @@ public final class IToolbarHandler {
                 //}
                 //if (useHere) {//如果符合了满足条件，那么判断是否被排除了
                 boolean useHere = true;
-                    final List<Class<? extends IBaseUI>> exclude = toolbar.exclude();
-                    if (exclude != null && exclude.size() > 0) {
-                        for (Class clazz : exclude) {
-                            if (clazz.isInstance(user)) {
-                                useHere = false;
-                                break;
-                            }
+                final List<Class<? extends IBaseUI>> exclude = toolbar.exclude();
+                if (exclude != null && exclude.size() > 0) {
+                    for (Class clazz : exclude) {
+                        if (clazz.isInstance(user)) {
+                            useHere = false;
+                            break;
                         }
                     }
+                }
                 //}
                 if (useHere) {
                     final int color = toolbar.statusBarColor(context);
-                    if (color != 0) {
-                        final IToolbar.StatusBarMode mode = toolbar.statusBarMode();
-                        // mode 可能为null，switch可能不安全
-                        if (mode == IToolbar.StatusBarMode.AUTO) {
-                            final boolean darkColor = TitleCompat.FlymeStatusbarColorUtils.isBlackColor(color, 120);
-                            //上面这个判断是判断颜色是否是深色，所以状态栏就跟颜色相反
-                            titleCompat.setStatusBarMode(!darkColor);
-                        } else if (mode == IToolbar.StatusBarMode.DARK) {
-                            titleCompat.setStatusBarMode(true);
-                        } else if (mode == IToolbar.StatusBarMode.LIGHT) {
-                            titleCompat.setStatusBarMode(false);
-                        }
-                        titleCompat.setFakeStatusBarColor(color);
+                    final IToolbar.StatusBarMode mode = toolbar.statusBarMode();
+                    // mode 可能为null，switch可能不安全
+                    if (mode == IToolbar.StatusBarMode.AUTO) {
+                        final boolean darkColor = TitleCompat.FlymeStatusbarColorUtils.isBlackColor(color, 120);
+                        //上面这个判断是判断颜色是否是深色，所以状态栏就跟颜色相反
+                        titleCompat.setStatusBarMode(!darkColor);
+                    } else if (mode == IToolbar.StatusBarMode.DARK) {
+                        titleCompat.setStatusBarMode(true);
+                    } else if (mode == IToolbar.StatusBarMode.LIGHT) {
+                        titleCompat.setStatusBarMode(false);
                     }
+                    titleCompat.setFakeStatusBarColor(color);
                 }
             }
         }

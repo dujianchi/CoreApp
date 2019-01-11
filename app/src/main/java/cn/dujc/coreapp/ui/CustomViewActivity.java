@@ -3,6 +3,7 @@ package cn.dujc.coreapp.ui;
 import android.os.Bundle;
 
 import cn.dujc.core.ui.BaseActivity;
+import cn.dujc.core.util.SoftHideKeyBoardUtil;
 import cn.dujc.coreapp.R;
 
 /**
@@ -18,6 +19,6 @@ public class CustomViewActivity extends BaseActivity {
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-
+        SoftHideKeyBoardUtil.assistActivity(this);
     }
 }
