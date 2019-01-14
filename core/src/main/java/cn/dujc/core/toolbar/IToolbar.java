@@ -1,23 +1,39 @@
 package cn.dujc.core.toolbar;
 
 import android.content.Context;
+import android.support.annotation.IntDef;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 import cn.dujc.core.ui.IBaseUI;
 
 public interface IToolbar {
 
-    //IToolbar get();
+    public static final int NONE = 0, LINEAR = 1, FRAME = 2, COORDINATOR = 3;
 
-    enum StatusBarMode {
-        NONE//不操作
-        , AUTO//自动
-        , DARK//深色
-        , LIGHT//浅色
-    }
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({NONE//无
+            , LINEAR//线性排列
+            , FRAME//帧（层叠）排列
+            , COORDINATOR//协调布局排列
+    })
+    @interface Style { }
+
+    public final static int AUTO = 1//自动
+            , DARK = 2//深色
+            , LIGHT = 3;//浅色
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({NONE//不操作
+            , AUTO//自动
+            , DARK//深色
+            , LIGHT//浅色
+    })
+    @interface StatusBarMode { }
 
     // /**
     //  * 推荐实现IToolbar的用单例模式，然后单例的方法用这个注解
@@ -30,9 +46,11 @@ public interface IToolbar {
 
     int statusBarColor(Context context);
 
-    StatusBarMode statusBarMode();
+    @StatusBarMode
+    int statusBarMode();
 
-    IBaseUI.WithToolbar.Style toolbarStyle();
+    @Style
+    int toolbarStyle();
 
     List<Class<? extends IBaseUI>> exclude();
 

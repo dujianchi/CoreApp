@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.dujc.core.toolbar.IToolbar;
 import cn.dujc.core.ui.BaseFragment;
 import cn.dujc.coreapp.R;
 
@@ -34,8 +35,8 @@ public class CoordinatorFragment extends BaseFragment {
     }
 
     @Override
-    protected Style toolbarStyle() {
-        return Style.COORDINATOR;
+    protected int toolbarStyle() {
+        return IToolbar.COORDINATOR;
     }
 
     @Override

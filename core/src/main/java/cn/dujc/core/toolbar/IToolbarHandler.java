@@ -225,15 +225,15 @@ public final class IToolbarHandler {
                 //}
                 if (useHere) {
                     final int color = toolbar.statusBarColor(context);
-                    final IToolbar.StatusBarMode mode = toolbar.statusBarMode();
+                    final int mode = toolbar.statusBarMode();
                     // mode 可能为null，switch可能不安全
-                    if (mode == IToolbar.StatusBarMode.AUTO) {
+                    if (mode == IToolbar.AUTO) {
                         final boolean darkColor = TitleCompat.FlymeStatusbarColorUtils.isBlackColor(color, 120);
                         //上面这个判断是判断颜色是否是深色，所以状态栏就跟颜色相反
                         titleCompat.setStatusBarMode(!darkColor);
-                    } else if (mode == IToolbar.StatusBarMode.DARK) {
+                    } else if (mode == IToolbar.DARK) {
                         titleCompat.setStatusBarMode(true);
-                    } else if (mode == IToolbar.StatusBarMode.LIGHT) {
+                    } else if (mode == IToolbar.LIGHT) {
                         titleCompat.setStatusBarMode(false);
                     }
                     titleCompat.setFakeStatusBarColor(color);

@@ -214,10 +214,10 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     /**
      * 是否线性排列toolbar，否的话则toolbar在布局上方
      */
-    protected Style toolbarStyle() {
+    protected int toolbarStyle() {
         final IToolbar iToolbar = IToolbarHandler.getToolbar(mActivity);
         if (iToolbar != null) return iToolbar.toolbarStyle();
-        return Style.LINEAR;
+        return IToolbar.LINEAR;
     }
 
     protected void destroyRootViewAndToolbar() {

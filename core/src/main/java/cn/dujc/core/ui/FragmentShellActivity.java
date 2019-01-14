@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import cn.dujc.core.R;
+import cn.dujc.core.toolbar.IToolbar;
 
 public class FragmentShellActivity extends BaseActivity {
 
@@ -32,7 +33,7 @@ public class FragmentShellActivity extends BaseActivity {
 
     private boolean mFullScreen = false;
     private Boolean mDarkMode = null;
-    private Style mStyle = Style.LINEAR;
+    private int mStyle = IToolbar.LINEAR;
     private Integer mStatusColor = null;
     private String mTitle;
 
@@ -47,7 +48,7 @@ public class FragmentShellActivity extends BaseActivity {
     }
 
     @Override
-    protected Style toolbarStyle() {
+    protected int toolbarStyle() {
         return mStyle;
     }
 

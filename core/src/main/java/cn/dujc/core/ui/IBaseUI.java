@@ -67,10 +67,6 @@ public interface IBaseUI {
         TitleCompat getTitleCompat();
 
         View createRootView(View contentView);
-
-        enum Style {
-            NONE, LINEAR, FRAME, COORDINATOR
-        }
     }
 
     public interface IContextCompat {

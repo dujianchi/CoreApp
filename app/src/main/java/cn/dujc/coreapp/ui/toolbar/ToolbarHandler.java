@@ -41,13 +41,13 @@ public class ToolbarHandler implements IToolbar {
     }
 
     @Override
-    public StatusBarMode statusBarMode() {
-        return StatusBarMode.DARK;
+    public int statusBarMode() {
+        return IToolbar.DARK;
     }
 
     @Override
-    public IBaseUI.WithToolbar.Style toolbarStyle() {
-        return IBaseUI.WithToolbar.Style.LINEAR;
+    public int toolbarStyle() {
+        return IToolbar.LINEAR;
     }
 
     @Override

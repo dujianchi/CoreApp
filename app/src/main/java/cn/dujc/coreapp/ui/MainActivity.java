@@ -52,7 +52,9 @@ public class MainActivity extends BaseListActivity {
                 break;
             }
             case 3: {
-                permissionKeeper().requestPermissions(starter().newRequestCode(MainActivity.class), "缺少关键权限", "请从设置中打开相关权限，以进一步使用", Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                //permissionKeeper().requestPermissions(starter().newRequestCode(MainActivity.class), "缺少关键权限", "请从设置中打开相关权限，以进一步使用", Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                permissionKeeper().requestPermissions(123
+                        , "缺少短信权限", "需要短信权限才能用短信分享", Manifest.permission.SEND_SMS);
                 break;
             }
             case 4: {

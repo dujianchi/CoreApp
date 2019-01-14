@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.dujc.core.toolbar.IToolbar;
 import cn.dujc.core.ui.BaseActivity;
 import cn.dujc.core.ui.TitleCompat;
 import cn.dujc.coreapp.R;
@@ -42,8 +43,8 @@ public class CoordinatorActivity extends BaseActivity {
     }
 
     @Override
-    protected Style toolbarStyle() {
-        return Style.COORDINATOR;
+    protected int toolbarStyle() {
+        return IToolbar.COORDINATOR;
     }
 
     @Override

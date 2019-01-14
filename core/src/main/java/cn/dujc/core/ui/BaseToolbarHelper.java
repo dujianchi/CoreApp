@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 
+import cn.dujc.core.toolbar.IToolbar;
+
 /**
  * toolbar组装工具
  */
@@ -23,17 +25,17 @@ class BaseToolbarHelper {
     /**
      * rootView和toolbar处理逻辑
      */
-    static View[] createRootViewAndToolbar(IBaseUI.WithToolbar.Style toolbarStyle, Context context, IBaseUI.WithToolbar baseUI, View contentView) {
-        if (toolbarStyle == null) return noneRootView(baseUI, contentView);
+    static View[] createRootViewAndToolbar(@IToolbar.Style int toolbarStyle, Context context, IBaseUI.WithToolbar baseUI, View contentView) {
+        //if (toolbarStyle == null) return noneRootView(baseUI, contentView);
         switch (toolbarStyle) {
-            case LINEAR:
+            case IToolbar.LINEAR:
                 return BaseToolbarHelper.linearRootView(context, baseUI, contentView);
-            case FRAME:
+            case IToolbar.FRAME:
                 return BaseToolbarHelper.frameRootView(context, baseUI, contentView);
-            case COORDINATOR:
+            case IToolbar.COORDINATOR:
                 return BaseToolbarHelper.coordinatorRootView(context, baseUI, contentView);
             default:
-            case NONE:
+            case IToolbar.NONE:
                 return noneRootView(baseUI, contentView);
         }
     }
