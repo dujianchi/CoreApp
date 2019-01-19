@@ -131,7 +131,7 @@ public class BaseWebFragment extends BaseRefreshableFragment {
 
     @Override
     public int getViewId() {
-        return R.layout.layout_base_web;
+        return R.layout.dujc_core_layout_base_web;
     }
 
     @Override
@@ -170,7 +170,7 @@ public class BaseWebFragment extends BaseRefreshableFragment {
         pb_progressbar = (ProgressBar) findViewById(R.id.pb_progressbar);
 
         pb_progressbar.setMax(100);
-        pb_progressbar.setProgressDrawable(ContextCompat.getDrawable(mActivity, R.drawable.progress_bar_states));
+        pb_progressbar.setProgressDrawable(ContextCompat.getDrawable(mActivity, R.drawable.dujc_core_progress_bar_states));
         pb_progressbar.setProgress(5); //先加载5%，以使用户觉得界面没有卡死
 
         initWebViewSettings();

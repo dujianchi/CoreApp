@@ -129,7 +129,7 @@ interface IBaseList {
 
         @Override
         public int getViewId() {
-            return R.layout.base_list_layout;
+            return R.layout.dujc_core_base_list_layout;
         }
 
         @Override
@@ -191,7 +191,7 @@ interface IBaseList {
 
         @Override
         public void coordinateRefreshAndAppbar() {
-            View appbarLayout = findViewById(R.id.toolbar_appbar_layout);
+            View appbarLayout = findViewById(R.id.dujc_core_toolbar_appbar_layout);
             if (mSrlLoader != null && appbarLayout instanceof AppBarLayout) {
                 mAppbarLayout = (AppBarLayout) appbarLayout;
                 mOnOffsetChangedListener = new AppBarLayout.OnOffsetChangedListener() {
@@ -264,7 +264,7 @@ interface IBaseList {
 
         @Override
         public void doubleClickTitleToTop() {
-            final View view = findViewById(R.id.toolbar_title_id);
+            final View view = findViewById(R.id.dujc_core_toolbar_title_id);
             if (view != null) {
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override

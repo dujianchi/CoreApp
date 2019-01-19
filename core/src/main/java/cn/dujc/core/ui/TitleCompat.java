@@ -222,7 +222,7 @@ public class TitleCompat {
             }
 
             if (mFakeStatusBarView == null) {
-                final View statusBarPlaceholder = mActivity.findViewById(R.id.toolbar_status_bar_placeholder);
+                final View statusBarPlaceholder = mActivity.findViewById(R.id.dujc_core_toolbar_status_bar_placeholder);
                 if (statusBarPlaceholder == null) {
                     ViewGroup decorViewGroup = (ViewGroup) decorView;
                     mFakeStatusBarView = new View(mActivity);

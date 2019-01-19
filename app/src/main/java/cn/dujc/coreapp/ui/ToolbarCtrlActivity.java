@@ -34,7 +34,7 @@ public class ToolbarCtrlActivity extends BaseActivity {
     }
 
     public void fitSwitch1(View v) {
-        final StatusBarPlaceholder placeholder = findViewById(R.id.toolbar_status_bar_placeholder);
+        final StatusBarPlaceholder placeholder = findViewById(R.id.dujc_core_toolbar_status_bar_placeholder);
         if (placeholder != null) {
             placeholder.setOverrideSystemOpen(true);
             placeholder.placeholder(mFit1 = !mFit1);

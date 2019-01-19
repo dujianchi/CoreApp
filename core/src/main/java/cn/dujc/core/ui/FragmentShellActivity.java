@@ -39,7 +39,7 @@ public class FragmentShellActivity extends BaseActivity {
 
     @Override
     public int getViewId() {
-        return R.layout.fragment_shell_activity;
+        return R.layout.dujc_core_fragment_shell_activity;
     }
 
     @Override

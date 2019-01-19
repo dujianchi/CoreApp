@@ -190,13 +190,11 @@ public class ActivityStackUtil {
             if ((receiver & ACTIVITY) == ACTIVITY) {
                 onEvent(activity, flag, value);
             }
-            if (activity instanceof FragmentActivity) {
-                if ((receiver & FRAGMENT) == FRAGMENT) {
-                    final List<Fragment> fragments = ((FragmentActivity) activity).getSupportFragmentManager().getFragments();
-                    if (fragments != null && fragments.size() > 0) {
-                        for (Fragment fragment : fragments) {
-                            onEvent(fragment, flag, value);
-                        }
+            if ((receiver & FRAGMENT) == FRAGMENT && activity instanceof FragmentActivity) {
+                final List<Fragment> fragments = ((FragmentActivity) activity).getSupportFragmentManager().getFragments();
+                if (fragments != null && fragments.size() > 0) {
+                    for (Fragment fragment : fragments) {
+                        onEvent(fragment, flag, value);
                     }
                 }
             }

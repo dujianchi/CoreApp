@@ -27,31 +27,50 @@ public class MediaUtil {
     public static final int MEDIA_TYPE_VIDEO = 2;
 
     /**
-     * 比较正常的使用方法
-     *
-     * @param subDirName
-     * @return
+     * 获取外置内存卡中公有的路径
+     * @param type The type of storage directory to return. Should be one of
+     *            {@link Environment#DIRECTORY_MUSIC}, {@link Environment#DIRECTORY_PODCASTS},
+     *            {@link Environment#DIRECTORY_RINGTONES}, {@link Environment#DIRECTORY_ALARMS},
+     *            {@link Environment#DIRECTORY_NOTIFICATIONS}, {@link Environment#DIRECTORY_PICTURES},
+     *            {@link Environment#DIRECTORY_MOVIES}, {@link Environment#DIRECTORY_DOWNLOADS},
+     *            {@link Environment#DIRECTORY_DCIM}, or {@link Environment#DIRECTORY_DOCUMENTS}. May not be null.
      */
-    public static File getOutputMediaDir(String subDirName) {
+    public static File getOutputDir(Context context, String type, String subDirName) {
         if (!Environment.getExternalStorageState().equalsIgnoreCase(Environment.MEDIA_MOUNTED)) {
             return null;
         }
 
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), subDirName);
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(type), subDirName);
 
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
                 LogUtil.e("failed to create directory");
-                return null;
+                mediaStorageDir = context.getExternalFilesDir(type);
+
+                if (mediaStorageDir != null && !mediaStorageDir.exists()) {
+                    if (!mediaStorageDir.mkdirs()) {
+                        LogUtil.e("failed to create directory");
+                        return null;
+                    }
+                }
             }
         }
 
         return mediaStorageDir;
     }
 
-    public static File getOutputMediaFile(String subDir, int type) {
-        File mediaStorageDir = getOutputMediaDir(subDir);
+    /**
+     * 比较正常的使用方法
+     *
+     * @param subDirName
+     * @return
+     */
+    public static File getOutputMediaDir(Context context, String subDirName) {
+        return getOutputDir(context, Environment.DIRECTORY_PICTURES, subDirName);
+    }
+
+    public static File getOutputMediaFile(Context context, String subDir, int type) {
+        File mediaStorageDir = getOutputMediaDir(context, subDir);
         if (mediaStorageDir == null) {
             return null;
         }
@@ -156,7 +175,7 @@ public class MediaUtil {
      * @param bitmap
      */
     public static void saveOneStep(Context context, String subDir, Bitmap bitmap){
-        final File file = getOutputMediaFile(subDir, MEDIA_TYPE_IMAGE);
+        final File file = getOutputMediaFile(context, subDir, MEDIA_TYPE_IMAGE);
         if (file != null) {
             String path = saveImgToGallery(context, bitmap, subDir, file.getName());
             ToastUtil.showToast(context, StringUtil.concat("图片已保存到：", path));
@@ -172,7 +191,7 @@ public class MediaUtil {
      * @return path
      */
     public static String saveImgToGallery(Context context, Bitmap bitmap, String subDirName, String fileName) {
-        File outFileDir = getCompatOutputMediaDir(context, subDirName);
+        File outFileDir = getOutputMediaDir(context, subDirName);
         if (outFileDir == null) {
             return null;
         }
@@ -205,37 +224,6 @@ public class MediaUtil {
         //context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
         //mediaScan(context, path);//Android4.4以上无系统权限不能发送Intent.ACTION_MEDIA_MOUNTED广播，所以采用此方法更新图库
         return jpg.getPath();
-    }
-
-    /**
-     * 4.4比较坑爹的方法
-     *
-     * @param context
-     * @return
-     */
-    public static File getKitkatOutputMediaDir(Context context) {
-        if (!Environment.getExternalStorageState().equalsIgnoreCase(Environment.MEDIA_MOUNTED)) {
-            return null;
-        }
-
-        File mediaStorageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
-        if (mediaStorageDir != null && !mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                LogUtil.e("failed to create directory");
-                return null;
-            }
-        }
-
-        return mediaStorageDir;
-    }
-
-    public static File getCompatOutputMediaDir(Context context, String subDirName) {
-        File atSdDir = getOutputMediaDir(subDirName);
-        if (atSdDir == null) {
-            atSdDir = getKitkatOutputMediaDir(context);
-        }
-        return atSdDir;
     }
 
     private static class SingleMediaScanner implements MediaScannerConnection.MediaScannerConnectionClient {

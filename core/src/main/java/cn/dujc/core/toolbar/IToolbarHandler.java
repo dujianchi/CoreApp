@@ -178,7 +178,7 @@ public final class IToolbarHandler {
             if (useHere) {
                 final View toolbar = iToolbar.normal(parent);
                 if (toolbar != null) {
-                    final View backView = toolbar.findViewById(R.id.toolbar_back_id);
+                    final View backView = toolbar.findViewById(R.id.dujc_core_toolbar_back_id);
                     final Activity activity = ContextUtil.getActivity(parent.getContext());
                     if (activity != null && backView != null) {
                         backView.setOnClickListener(new View.OnClickListener() {
