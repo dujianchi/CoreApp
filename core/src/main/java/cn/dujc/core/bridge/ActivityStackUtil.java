@@ -3,6 +3,7 @@ package cn.dujc.core.bridge;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
@@ -15,6 +16,9 @@ import java.util.Stack;
  * Created by du on 2017/9/21.
  */
 public class ActivityStackUtil {
+
+    //事件接受对象
+    public static final byte ACTIVITY = 0b10, FRAGMENT = 0b01, ALL = 0b11;
 
     //private final Map<Activity, Set<Fragment>> mActivityFragments = new ArrayMap<Activity, Set<Fragment>>();
     private final Stack<Activity> mActivities = new Stack<Activity>();
@@ -75,26 +79,53 @@ public class ActivityStackUtil {
         }
     }
 
+    /**
+     * 初始化方法，唯一的初始化方法
+     */
     public void initApp(Application app) {
         app.registerActivityLifecycleCallbacks(mLifecycleCallbacks);
     }
 
+    /**
+     * 反注册方法，基本上用不到这个方法……
+     */
     public void unBind(Application app) {
         app.unregisterActivityLifecycleCallbacks(mLifecycleCallbacks);
     }
 
+    /**
+     * 添加activity。这个方法无需在外界中访问
+     */
     private void addActivity(Activity activity) {
         if (activity != null && !activity.isFinishing()) {
             mActivities.add(activity);
         }
     }
 
+    /**
+     * 获取activity栈
+     */
     public Stack<Activity> getActivities() {
         return mActivities;
     }
 
+    /**
+     * 当前注册到管理栈的activity数量
+     */
     public int foregroundCount() {
         return mActivities.size();
+    }
+
+    /**
+     * 当前管理栈顶部的activity
+     */
+    @Nullable
+    public Activity topActivity() {
+        final Activity activity;
+        if (!ActivityStackUtil.getInstance().getActivities().isEmpty()
+                && (activity = ActivityStackUtil.getInstance().getActivities().peek()) != null
+                && !activity.isFinishing()) return activity;
+        return null;
     }
 
 //    public void addFragment(Activity activity, Fragment fragment) {
@@ -123,15 +154,44 @@ public class ActivityStackUtil {
 //        }
 //    }
 
+    /**
+     * 清除管理栈
+     * @deprecated 如果脑袋不清楚，最好不要调用此方法
+     */
+    @Deprecated
     public void clearActivities() {
         mActivities.clear();
     }
 
+    /**
+     * 关闭指定activity
+     */
     public void finishActivity(Activity activity) {
         if (activity != null) {
             activity.finish();
+            removeActivity(activity);
         }
-        removeActivity(activity);
+    }
+
+    /**
+     * 关闭指定activity
+     */
+    public void finishActivity(Class<? extends Activity> clazz) {
+        final Iterator<Activity> iterator = mActivities.iterator();
+        while (iterator.hasNext()) {
+            Activity activity = iterator.next();
+            if (activity.getClass().equals(clazz)) {
+                iterator.remove();
+                if (!activity.isFinishing()) activity.finish();
+            }
+        }
+    }
+
+    /**
+     * 关闭全部activity
+     */
+    public void closeAllActivity() {
+        closeAllExcept((Activity) null);
     }
 
     /**
@@ -170,9 +230,9 @@ public class ActivityStackUtil {
         }
     }
 
-    //事件接受对象
-    public static final byte ACTIVITY = 0b10, FRAGMENT = 0b01, ALL = 0b11;
-
+    /**
+     * 从管理栈中移除指定activity。并不一定会关闭activity，只是移出管理栈
+     */
     private void removeActivity(Activity activity) {
         mActivities.remove(activity);
         //removeFragments(activity);
