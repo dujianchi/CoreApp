@@ -176,13 +176,16 @@ public class ActivityStackUtil {
     /**
      * 关闭指定activity
      */
-    public void finishActivity(Class<? extends Activity> clazz) {
+    public void finishActivity(Class<? extends Activity>... classes) {
+        if (classes == null || classes.length == 0) return;
         final Iterator<Activity> iterator = mActivities.iterator();
         while (iterator.hasNext()) {
             Activity activity = iterator.next();
-            if (activity.getClass().equals(clazz)) {
-                iterator.remove();
-                if (!activity.isFinishing()) activity.finish();
+            for (Class<? extends Activity> clazz : classes) {
+                if (activity.getClass().equals(clazz)) {
+                    iterator.remove();
+                    if (!activity.isFinishing()) activity.finish();
+                }
             }
         }
     }
@@ -197,13 +200,18 @@ public class ActivityStackUtil {
     /**
      * 关闭所有Activity，除了某个Activity的类，最终可能会存在多个
      *
-     * @param clazz Activity.class
+     * @param classes Activity.class
      */
-    public void closeAllExcept(Class<? extends Activity> clazz) {
+    public void closeAllExcept(Class<? extends Activity>... classes) {
+        if (classes == null || classes.length == 0) return;
         final Iterator<Activity> iterator = mActivities.iterator();
         while (iterator.hasNext()) {
             Activity activity = iterator.next();
-            if (!activity.getClass().equals(clazz)) {
+            boolean contain = false;
+            for (Class<? extends Activity> clazz : classes) {
+                contain = contain || activity.getClass().equals(clazz);
+            }
+            if (!contain) {
                 iterator.remove();
                 activity.finish();
             } else if (activity.isFinishing()) {
