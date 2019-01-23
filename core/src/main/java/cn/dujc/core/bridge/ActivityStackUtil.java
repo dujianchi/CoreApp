@@ -18,7 +18,7 @@ import java.util.Stack;
 public class ActivityStackUtil {
 
     //事件接受对象
-    public static final byte ACTIVITY = 0b10, FRAGMENT = 0b01, ALL = 0b11;
+    public static final byte ACTIVITY = 0b10, FRAGMENT = 0b01, ALL = ACTIVITY | FRAGMENT;
 
     //private final Map<Activity, Set<Fragment>> mActivityFragments = new ArrayMap<Activity, Set<Fragment>>();
     private final Stack<Activity> mActivities = new Stack<Activity>();

@@ -18,7 +18,7 @@ import android.view.View;
  */
 public class TextColorBuilder {
 
-    public interface OnClickListener{
+    public interface OnClickListener {
         void onClick(View widget, CharSequence clickedText);
     }
 
@@ -48,21 +48,22 @@ public class TextColorBuilder {
 
     private final SpannableStringBuilder mStringBuilder = new SpannableStringBuilder();
 
-    public Spannable build(){
+    public Spannable build() {
         return mStringBuilder;
     }
 
     public TextColorBuilder addTextPart(CharSequence text) {
-        mStringBuilder.append(text);
+        if (!TextUtils.isEmpty(text)) mStringBuilder.append(text);
         return this;
     }
 
     public TextColorBuilder addTextPart(Context context, int colorId, CharSequence text) {
+        if (context == null || colorId == 0) return addTextPart(text);
         return addTextPart(ContextCompat.getColor(context, colorId), text);
     }
 
     public TextColorBuilder addTextPart(int color, CharSequence text) {
-        if (!TextUtils.isEmpty(text)){
+        if (!TextUtils.isEmpty(text)) {
             final int start = mStringBuilder.length();
             final int end = start + text.length();
             mStringBuilder.append(text);
@@ -81,11 +82,11 @@ public class TextColorBuilder {
         return this;
     }
 
-    public TextColorBuilder addTextPart(CharSequence text, Context context, int colorId, OnClickListener listener){
+    public TextColorBuilder addTextPart(CharSequence text, Context context, int colorId, OnClickListener listener) {
         return addTextPart(text, ContextCompat.getColor(context, colorId), listener);
     }
 
-    public TextColorBuilder addTextPart(CharSequence text, int color, OnClickListener listener){
+    public TextColorBuilder addTextPart(CharSequence text, int color, OnClickListener listener) {
         if (!TextUtils.isEmpty(text)) {
             final int start = mStringBuilder.length();
             final int end = start + text.length();
