@@ -131,7 +131,7 @@ public class BaseWebFragment extends BaseRefreshableFragment {
 
     @Override
     public int getViewId() {
-        return R.layout.dujc_core_layout_base_web;
+        return R.layout.core_layout_base_web;
     }
 
     @Override
@@ -165,12 +165,12 @@ public class BaseWebFragment extends BaseRefreshableFragment {
         }
 
         web_simple_view = new WebView(mActivity.getApplicationContext());
-        ((LinearLayout)findViewById(R.id.ll_webview_parent))
+        ((LinearLayout)findViewById(R.id.core_ll_webview_parent))
                 .addView(web_simple_view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        pb_progressbar = (ProgressBar) findViewById(R.id.pb_progressbar);
+        pb_progressbar = (ProgressBar) findViewById(R.id.core_pb_progressbar);
 
         pb_progressbar.setMax(100);
-        pb_progressbar.setProgressDrawable(ContextCompat.getDrawable(mActivity, R.drawable.dujc_core_progress_bar_states));
+        pb_progressbar.setProgressDrawable(ContextCompat.getDrawable(mActivity, R.drawable.core_progress_bar_states));
         pb_progressbar.setProgress(5); //先加载5%，以使用户觉得界面没有卡死
 
         initWebViewSettings();

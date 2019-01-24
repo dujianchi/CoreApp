@@ -1,15 +1,15 @@
 <resources>
 
     <!-- 权限 -->
-    <string name="dujc_core_rationale_ask">缺少必要权限可能无法正确运行</string>
-    <string name="dujc_core_rationale_ask_again">
+    <string name="core_rationale_ask">缺少必要权限可能无法正确运行</string>
+    <string name="core_rationale_ask_again">
         缺少必要权限可能无法正确运行。
         打开设置界面授予相关权限。
     </string>
 
-    <string name="dujc_core_title_settings_dialog">权限要求</string>
+    <string name="core_title_settings_dialog">权限要求</string>
 
-    <style name="dujc_core_easy_transparent_theme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="core_easy_transparent_activity_theme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>

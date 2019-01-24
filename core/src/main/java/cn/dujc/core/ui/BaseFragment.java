@@ -154,7 +154,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
 
     public void setTitle(CharSequence title) {
         if (mToolbar != null) {
-            final View textMaybe = mToolbar.findViewById(R.id.dujc_core_toolbar_title_id);
+            final View textMaybe = mToolbar.findViewById(R.id.core_toolbar_title_id);
             if (textMaybe instanceof TextView) ((TextView) textMaybe).setText(title);
         }
     }
@@ -165,7 +165,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
 
     public void setTitleMenuText(CharSequence menuText, @Nullable View.OnClickListener onClickListener) {
         if (mToolbar != null) {
-            final View textMaybe = mToolbar.findViewById(R.id.dujc_core_toolbar_menu_id);
+            final View textMaybe = mToolbar.findViewById(R.id.core_toolbar_menu_id);
             if (textMaybe instanceof TextView) {
                 textMaybe.setVisibility(View.VISIBLE);
                 ((TextView) textMaybe).setText(menuText);
@@ -189,7 +189,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
 
     public void setTitleMenuIcon(@DrawableRes int menuRes, @Nullable View.OnClickListener onClickListener) {
         if (mToolbar != null) {
-            final View imageMaybe = mToolbar.findViewById(R.id.dujc_core_toolbar_menu_id);
+            final View imageMaybe = mToolbar.findViewById(R.id.core_toolbar_menu_id);
             if (imageMaybe instanceof ImageView) {
                 imageMaybe.setVisibility(View.VISIBLE);
                 ((ImageView) imageMaybe).setImageResource(menuRes);

@@ -39,7 +39,7 @@ public class FragmentShellActivity extends BaseActivity {
 
     @Override
     public int getViewId() {
-        return R.layout.dujc_core_fragment_shell_activity;
+        return R.layout.core_fragment_shell_activity;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class FragmentShellActivity extends BaseActivity {
             final Fragment fragment = (Fragment) Class.forName(extras().get(KEY_FRAGMENT_CLASS, String.class))
                     .newInstance();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fl_fragment_container, fragment)
+                    .replace(R.id.core_fl_fragment_container, fragment)
                     .commit();
         } catch (InstantiationException e) {
             e.printStackTrace();

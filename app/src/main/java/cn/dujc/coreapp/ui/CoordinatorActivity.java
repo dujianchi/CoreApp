@@ -49,14 +49,14 @@ public class CoordinatorActivity extends BaseActivity {
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-        final SwipeRefreshLayout srlLoader = findViewById(R.id.srl_loader);
+        final SwipeRefreshLayout srlLoader = findViewById(R.id.core_srl_loader);
         srlLoader.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 srlLoader.setRefreshing(false);
             }
         });
-        final RecyclerView rvList = findViewById(R.id.rv_list);
+        final RecyclerView rvList = findViewById(R.id.core_rv_list);
         rvList.setLayoutManager(new LinearLayoutManager(mActivity));
         final MultiTypeListActivity.MultiTypeAdapter adapter = new MultiTypeListActivity.MultiTypeAdapter(mList);
         rvList.setAdapter(adapter);

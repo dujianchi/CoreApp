@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--<string name="toolbar_normal_class" translatable="false" />-->
+    <item name="core_toolbar_title_id" type="id" />
+    <item name="core_toolbar_back_id" type="id" />
+    <item name="core_toolbar_menu_id" type="id" />
+    <item name="core_toolbar_status_bar_placeholder" type="id" />
+    <item name="core_toolbar_appbar_layout" type="id" />
+
+</resources>

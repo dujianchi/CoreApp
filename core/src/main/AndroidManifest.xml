@@ -11,7 +11,7 @@
             android:name=".permission.AppSettingsDialogHolderActivity"
             android:exported="false"
             android:label=""
-            android:theme="@style/dujc_core_easy_transparent_theme" />
+            android:theme="@style/core_easy_transparent_activity_theme" />
         <activity android:name=".ui.FragmentShellActivity" />
     </application>
 

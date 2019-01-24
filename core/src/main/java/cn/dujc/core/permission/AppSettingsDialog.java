@@ -275,8 +275,8 @@ public class AppSettingsDialog implements Parcelable {
          */
         @NonNull
         public AppSettingsDialog build() {
-            mRationale = TextUtils.isEmpty(mRationale) ? mContext.getString(R.string.dujc_core_rationale_ask_again) : mRationale;
-            mTitle = TextUtils.isEmpty(mTitle) ? mContext.getString(R.string.dujc_core_title_settings_dialog) : mTitle;
+            mRationale = TextUtils.isEmpty(mRationale) ? mContext.getString(R.string.core_rationale_ask_again) : mRationale;
+            mTitle = TextUtils.isEmpty(mTitle) ? mContext.getString(R.string.core_title_settings_dialog) : mTitle;
             mPositiveButtonText = TextUtils.isEmpty(mPositiveButtonText) ?
                     mContext.getString(android.R.string.ok) : mPositiveButtonText;
             mNegativeButtonText = TextUtils.isEmpty(mNegativeButtonText) ?
