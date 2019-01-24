@@ -176,7 +176,8 @@ public class ActivityStackUtil {
     /**
      * 关闭指定activity
      */
-    public void finishActivity(Class<? extends Activity>... classes) {
+    @SafeVarargs
+    public final void finishActivity(Class<? extends Activity>... classes) {
         if (classes == null || classes.length == 0) return;
         final Iterator<Activity> iterator = mActivities.iterator();
         while (iterator.hasNext()) {
@@ -202,7 +203,8 @@ public class ActivityStackUtil {
      *
      * @param classes Activity.class
      */
-    public void closeAllExcept(Class<? extends Activity>... classes) {
+    @SafeVarargs
+    public final void closeAllExcept(Class<? extends Activity>... classes) {
         if (classes == null || classes.length == 0) return;
         final Iterator<Activity> iterator = mActivities.iterator();
         while (iterator.hasNext()) {

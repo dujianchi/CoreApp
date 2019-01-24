@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,6 +53,43 @@ public abstract class BaseAdapterL<T> extends BaseAdapter {
         }
         convert(getItem(position), position, holder);
         return convertView;
+    }
+
+    public void addData(T data) {
+        if (data != null) {
+            if (mList != null) {
+                mList.add(data);
+            } else {
+                mList = new ArrayList<>();
+                mList.add(data);
+            }
+        }
+    }
+
+    public void addAllData(List<T> list) {
+        if (list != null && list.size() > 0) {
+            if (mList != null) {
+                mList.addAll(list);
+            } else {
+                mList = new ArrayList<>();
+                mList.addAll(list);
+            }
+        }
+    }
+
+    public void clearData() {
+        if (mList != null) {
+            mList.clear();
+        }
+    }
+
+    public void resetData(List<T> list) {
+        resetData(list, false);
+    }
+
+    public void resetData(List<T> list, boolean clearBefore) {
+        if (clearBefore) clearData();
+        mList = list;
     }
 
     public abstract View createView(ViewGroup parent);
