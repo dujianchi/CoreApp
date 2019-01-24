@@ -168,7 +168,7 @@ public class ActivityStackUtil {
      */
     public void finishActivity(Activity activity) {
         if (activity != null) {
-            activity.finish();
+            if (!activity.isFinishing()) activity.finish();
             removeActivity(activity);
         }
     }
@@ -184,9 +184,23 @@ public class ActivityStackUtil {
             Activity activity = iterator.next();
             for (Class<? extends Activity> clazz : classes) {
                 if (activity.getClass().equals(clazz)) {
-                    iterator.remove();
-                    if (!activity.isFinishing()) activity.finish();
+                    finishActivity(activity);
                 }
+            }
+        }
+    }
+
+    /**
+     * 关闭相同的类，但保留当前。用于关闭多开的Activity
+     */
+    public final void finishSameButThis(Activity lastSurvivalOfSpecies) {
+        if (lastSurvivalOfSpecies == null) return;
+        final Class<? extends Activity> exterminatedSpecies = lastSurvivalOfSpecies.getClass();
+        final Iterator<Activity> iterator = mActivities.iterator();
+        while (iterator.hasNext()) {
+            Activity activity = iterator.next();
+            if (activity != lastSurvivalOfSpecies && activity.getClass().equals(exterminatedSpecies)) {
+                finishActivity(activity);
             }
         }
     }
