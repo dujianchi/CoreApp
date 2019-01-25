@@ -1,5 +1,6 @@
 package cn.dujc.coreapp.ui;
 
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -21,11 +22,25 @@ public class MultiTypeListActivity extends BaseListActivity {
 
     private final List<Data> mList = new ArrayList<>();
     private final Random mRandom = new Random();
+    private boolean mShowEmpty = true;
 
     @Nullable
     @Override
     public BaseQuickAdapter initAdapter() {
-        return new MultiTypeAdapter(mList);
+        final MultiTypeAdapter adapter = new MultiTypeAdapter(mList);
+        /*adapter.setEmptyView(R.layout.layout_empty_view);
+        adapter.addHeaderView(getLayoutInflater().inflate(R.layout.layout_empty_view, null));
+        adapter.addFooterView(getLayoutInflater().inflate(R.layout.layout_empty_view, null));*/
+        return adapter;
+    }
+
+    @Override
+    public void initBasic(Bundle savedInstanceState) {
+        super.initBasic(savedInstanceState);
+        final BaseQuickAdapter adapter = getAdapter();
+        adapter.setEmptyView(R.layout.layout_empty_view);
+        adapter.addHeaderView(getLayoutInflater().inflate(R.layout.layout_empty_view, null));
+        adapter.addFooterView(getLayoutInflater().inflate(R.layout.layout_empty_view, null));
     }
 
     @Override
@@ -45,13 +60,15 @@ public class MultiTypeListActivity extends BaseListActivity {
 
     private void generateData(boolean clean) {
         if (clean) mList.clear();
-        for (int index = 0; index < 10; index++) {
-            final Data data = new Data();
-            data.text = "text" + index;
-            data.type = mRandom.nextInt(3);
-            mList.add(data);
+        if (mShowEmpty = !mShowEmpty) {
+            for (int index = 0; index < 10; index++) {
+                final Data data = new Data();
+                data.text = "text" + index;
+                data.type = mRandom.nextInt(3);
+                mList.add(data);
+            }
         }
-        notifyDataSetChanged(false, false);
+        notifyDataSetChanged(mList.size() >= 230, false);
     }
 
     public static class Data {

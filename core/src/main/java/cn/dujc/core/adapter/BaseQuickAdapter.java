@@ -1121,7 +1121,7 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
      */
     public int addHeaderView(View header, int index, int orientation) {
         if (mHeaderLayout == null) {
-            mHeaderLayout = new LinearLayout(header.getContext());
+            mHeaderLayout = new LinearLayout(header.getContext().getApplicationContext());
             if (orientation == LinearLayout.VERTICAL) {
                 mHeaderLayout.setOrientation(LinearLayout.VERTICAL);
                 mHeaderLayout.setLayoutParams(new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
@@ -1187,7 +1187,7 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
      */
     public int addFooterView(View footer, int index, int orientation) {
         if (mFooterLayout == null) {
-            mFooterLayout = new LinearLayout(footer.getContext());
+            mFooterLayout = new LinearLayout(footer.getContext().getApplicationContext());
             if (orientation == LinearLayout.VERTICAL) {
                 mFooterLayout.setOrientation(LinearLayout.VERTICAL);
                 mFooterLayout.setLayoutParams(new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
@@ -1336,7 +1336,7 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
     public void setEmptyView(View emptyView) {
         boolean insert = false;
         if (mEmptyLayout == null) {
-            mEmptyLayout = new FrameLayout(emptyView.getContext());
+            mEmptyLayout = new FrameLayout(emptyView.getContext().getApplicationContext());
             final LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             final ViewGroup.LayoutParams lp = emptyView.getLayoutParams();
             if (lp != null) {

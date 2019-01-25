@@ -179,8 +179,14 @@ public interface IBaseUI {
 
         public <T> T get(String key, T defaultValues);
 
+        /**
+         * 如果需要获取基本类型，最好需要给默认值{@link #get(String, Object, Class)}
+         */
         public <T> T get(String key, Class<T> clazz);
 
+        /**
+         * 如果需要获取基本类型，最好需要给默认值{@link #get(String, Object)}
+         */
         public <T> T get(String key);
     }
 
