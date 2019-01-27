@@ -39,21 +39,6 @@ import cn.dujc.core.util.LogUtil;
  * Created by du on 2018/2/14.
  */
 public interface IBaseUI {
-    /**
-     * 自增的request code，每个跳转都是forresult的跳转，那么今后只要记住跳转方法{@link #starter().go(Class)}返回的int值
-     * ，即为本次跳转产生的request code，从此不再管理request code，且不会再重复，因为不管在什么界面跳转，每次跳转都用了不同的request code（当然，崩溃重启的情况例外）
-     */
-    int[] _INCREMENT_REQUEST_CODE = {1};
-
-    IStarter starter();
-
-    /**
-     * 获取传参的工具类，自1.1.1-alpha1后，fragment和activity传参方式不同
-     * ，但fragment能获取到fragment.getArguments()以及fragment.getActivity().getIntent().getExtras()的并集
-     */
-    IParams extras();
-
-    IPermissionKeeper permissionKeeper();
 
     View getViewV();
 
@@ -61,7 +46,23 @@ public interface IBaseUI {
 
     void initBasic(Bundle savedInstanceState);
 
-    public interface WithToolbar extends IBaseUI {
+    public static interface WithToolbar extends IBaseUI {
+        /**
+         * 自增的request code，每个跳转都是forresult的跳转，那么今后只要记住跳转方法{@link #starter().go(Class)}返回的int值
+         * ，即为本次跳转产生的request code，从此不再管理request code，且不会再重复，因为不管在什么界面跳转，每次跳转都用了不同的request code（当然，崩溃重启的情况例外）
+         */
+        int[] _INCREMENT_REQUEST_CODE = {1};
+
+        IStarter starter();
+
+        /**
+         * 获取传参的工具类，自1.1.1-alpha1后，fragment和activity传参方式不同
+         * ，但fragment能获取到fragment.getArguments()以及fragment.getActivity().getIntent().getExtras()的并集
+         */
+        IParams extras();
+
+        IPermissionKeeper permissionKeeper();
+
         View initToolbar(ViewGroup parent);
 
         TitleCompat getTitleCompat();
@@ -69,7 +70,7 @@ public interface IBaseUI {
         View createRootView(View contentView);
     }
 
-    public interface IContextCompat {
+    public static interface IContextCompat {
         void startActivityForResult(Intent intent, int requestCode);
 
         Context context();
@@ -83,7 +84,7 @@ public interface IBaseUI {
         void requestPermissions(String[] permissions, int requestCode);
     }
 
-    public interface IStarter {
+    public static interface IStarter {
 
         int getRequestCode(Class<?> activityForward);
 
@@ -174,7 +175,7 @@ public interface IBaseUI {
         IStarter with(String key, Bundle param);
     }
 
-    public interface IParams {
+    public static interface IParams {
         public <T> T get(String key, T defaultValues, Class<T> clazz);
 
         public <T> T get(String key, T defaultValues);
@@ -190,7 +191,7 @@ public interface IBaseUI {
         public <T> T get(String key);
     }
 
-    public interface IPermissionKeeper {
+    public static interface IPermissionKeeper {
 
         void requestPermissions(int requestCode, @StringRes int title, @StringRes int message, String... permission);
 
@@ -209,11 +210,11 @@ public interface IBaseUI {
         void unregisterOddsPermissionOperator(IOddsPermissionOperator permissionOperator);
     }
 
-    public interface IPermissionSettingsDialog {
+    public static interface IPermissionSettingsDialog {
         void showSettingsDialog(IContextCompat context, String title, String message);
     }
 
-    public interface IPermissionKeeperCallback {
+    public static interface IPermissionKeeperCallback {
         void onGranted(int requestCode, List<String> permissions);
 
         void onDenied(int requestCode, List<String> permissions);
@@ -331,9 +332,9 @@ public interface IBaseUI {
 
         @Override
         public int newRequestCode(Class<?> activity) {
-            int requestCode = _INCREMENT_REQUEST_CODE[0]++;
+            int requestCode = WithToolbar._INCREMENT_REQUEST_CODE[0]++;
             if (requestCode >= 0xffff) {
-                requestCode = _INCREMENT_REQUEST_CODE[0] = 1;
+                requestCode = WithToolbar._INCREMENT_REQUEST_CODE[0] = 1;
             }
             LogUtil.d("------------ request code = " + requestCode);
             mRequestCodes.put(activity, requestCode);
@@ -585,7 +586,7 @@ public interface IBaseUI {
         }
     }
 
-    static class BaseParamsImpl implements IParams {
+    public static class BaseParamsImpl implements IParams {
 
         final Bundle mBundle;
 

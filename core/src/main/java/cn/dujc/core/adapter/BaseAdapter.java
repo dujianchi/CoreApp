@@ -32,7 +32,8 @@ public abstract class BaseAdapter<T> extends BaseQuickAdapter<T, BaseViewHolder>
 
     @Nullable
     public IBaseUI.IStarter starter() {//todo 未知是否有效
-        if (mContext instanceof IBaseUI) return ((IBaseUI) mContext).starter();
+        if (mContext instanceof IBaseUI.WithToolbar)
+            return ((IBaseUI.WithToolbar) mContext).starter();
         return null;
     }
 }

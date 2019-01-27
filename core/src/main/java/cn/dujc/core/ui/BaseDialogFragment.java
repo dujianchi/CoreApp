@@ -3,7 +3,6 @@ package cn.dujc.core.ui;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -23,7 +22,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import java.util.List;
 import java.util.UUID;
 
 import cn.dujc.core.R;
@@ -32,13 +30,9 @@ import cn.dujc.core.R;
  * 基本的Fragment。最好Fragment都要继承于此类
  * Created by du on 2017/9/19.
  */
-public abstract class BaseDialogFragment extends DialogFragment implements IBaseUI, IBaseUI.IPermissionKeeperCallback {
+public abstract class BaseDialogFragment extends DialogFragment implements IBaseUI {
 
     private static final int THEME = R.style.Theme_AppCompat_Light_Dialog;
-
-    private IStarter mStarter = null;
-    private IParams mParams = null;
-    private IPermissionKeeper mPermissionKeeper = null;
 
     private boolean mLoaded = false;//是否已经载入
     private volatile boolean mIsShowing = false;//是否在显示中
@@ -92,47 +86,6 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
             initBasic(savedInstanceState);
         }
     }
-
-    @Override
-    public IStarter starter() {
-        if (mStarter == null) mStarter = new IStarterImpl(this);
-        else mStarter.clear();//为什么要clear呢？想了想，实际上我用的一直是同一个starter，那么，如果一直界面往不同界面都传了值，它就会一直累加……
-        return mStarter;
-    }
-
-    @Override
-    public IParams extras() {
-        if (mParams == null) mParams = new FragmentParamsImpl(this);
-        return mParams;
-    }
-
-    @Override
-    public IPermissionKeeper permissionKeeper() {
-        if (mPermissionKeeper == null) mPermissionKeeper = new IPermissionKeeperImpl(this, this);
-        return mPermissionKeeper;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (mPermissionKeeper != null) {
-            mPermissionKeeper.handOnActivityResult(requestCode);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (mPermissionKeeper != null) {
-            mPermissionKeeper.handOnRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
-
-    @Override
-    public void onGranted(int requestCode, List<String> permissions) { }
-
-    @Override
-    public void onDenied(int requestCode, List<String> permissions) { }
 
     @Override
     public void dismiss() {
