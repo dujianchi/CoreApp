@@ -28,8 +28,10 @@ import cn.dujc.core.R;
 
 /**
  * 基本的Fragment。最好Fragment都要继承于此类
+ * @deprecated 老是提示内存泄漏，同时宽高很难控制，换成用{@link BasePopupWindow}
  * Created by du on 2017/9/19.
  */
+@Deprecated
 public abstract class BaseDialogFragment extends DialogFragment implements IBaseUI {
 
     private static final int THEME = R.style.Theme_AppCompat_Light_Dialog;

@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 
 import cn.dujc.core.R;
@@ -43,7 +44,8 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
 
         if (vid != 0 || mRootView != null) {
             if (vid != 0) {
-                mRootView = LayoutInflater.from(mContext).inflate(vid, null);
+                mRootView = new FrameLayout(mContext);
+                LayoutInflater.from(mContext).inflate(vid, (ViewGroup) mRootView, true);
             }
             setContentView(mRootView);
             setWidth(_getWidth());
