@@ -68,11 +68,11 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
     }
 
     public int _getWidth() {
-        return _getOutsideTouchable() ? ViewGroup.LayoutParams.WRAP_CONTENT : ViewGroup.LayoutParams.MATCH_PARENT;
+        return ViewGroup.LayoutParams.MATCH_PARENT;
     }
 
     public int _getHeight() {
-        return _getOutsideTouchable() ? ViewGroup.LayoutParams.WRAP_CONTENT : ViewGroup.LayoutParams.MATCH_PARENT;
+        return ViewGroup.LayoutParams.MATCH_PARENT;
     }
 
     public boolean _getOutsideTouchable() {
@@ -84,7 +84,7 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
     }
 
     public int _getBackgroundColor(Context context) {
-        return Color.TRANSPARENT;
+        return Color.argb(128, 0, 0, 0);
     }
 
     public Drawable _getBackgroundDrawable(Context context) {
@@ -99,8 +99,7 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
             @Override
             public void run() {
                 if (mView != null && mTouched) {
-                    mLongClicked = true;
-                    mView.performLongClick();
+                    mLongClicked = mView.performLongClick();
                 }
             }
         };
