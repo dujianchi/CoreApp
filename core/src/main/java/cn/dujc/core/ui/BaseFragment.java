@@ -180,7 +180,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
                         ((TextView) childAt).setText(menuText);
                         if (onClickListener != null) textMaybe.setOnClickListener(onClickListener);
                     } else {
-                        childAt.setVisibility(View.INVISIBLE);
+                        childAt.setVisibility(View.GONE);
                     }
                 }
             }
@@ -204,7 +204,7 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
                         ((ImageView) childAt).setImageResource(menuRes);
                         if (onClickListener != null) imageMaybe.setOnClickListener(onClickListener);
                     } else {
-                        childAt.setVisibility(View.INVISIBLE);
+                        childAt.setVisibility(View.GONE);
                     }
                 }
             }
