@@ -9,4 +9,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="spalsh_theme" parent="AppTheme">
+        <item name="android:windowBackground">@mipmap/my_wallet</item>
+    </style>
+
 </resources>

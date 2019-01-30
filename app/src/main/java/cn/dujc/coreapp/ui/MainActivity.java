@@ -3,6 +3,7 @@ package cn.dujc.coreapp.ui;
 import android.Manifest;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,10 +20,26 @@ import cn.dujc.core.util.ToastUtil;
  */
 public class MainActivity extends BaseListActivity {
 
-    private final List<String> mList = Arrays.asList("Toolbar控制", "加载更多开关", "刷新开关", "权限控制", "多种类型的adapter", "可展开的adapter", "startActivityForResult返回值处理/采用代码布局/关闭其他activity测试", "跳转完关闭的使用/直接使用Fragment", "coordinator", "自定义控件测试", "webFragment", "", "", "", "", "", "", "", "", "", "", "");
+    private final List<String> mList = Arrays.asList("Toolbar控制"
+            , "加载更多开关"
+            , "刷新开关"
+            , "权限控制"
+            , "多种类型的adapter"
+            , "可展开的adapter"
+            , "startActivityForResult返回值处理/采用代码布局/关闭其他activity测试"
+            , "跳转完关闭的使用/直接使用Fragment"
+            , "coordinator"
+            , "自定义控件测试"
+            , "webFragment"
+            , "showDialogFragment"
+            , "getInt"
+            , "title menu 0"
+            , "title menu 1"
+            , "", "", "", "", "", "", "", "");
 
     private boolean mRefreshEnable = true;
     private boolean mMoreEnable = true;
+    private DialogF mDialogF;
 
     @Nullable
     @Override
@@ -90,11 +107,40 @@ public class MainActivity extends BaseListActivity {
                 starter().go(WebActvity.class);
                 break;
             }
-            //case xx: {break;}
+            case 11: {
+                if (mDialogF == null) {
+                    mDialogF = new DialogF(mActivity);
+                }
+                if (!mDialogF.isShowing()) mDialogF.showAtLocation(mRootView, Gravity.BOTTOM);
+                break;
+            }
+            case 12: {
+                try {
+                    final int i = extras().get("aaa");
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case 13: {
+                setTitleMenuText("aaaa", null);
+                break;
+            }
+            case 14: {
+                setTitleMenuText("bbbb", null);
+                break;
+            }
+            //case xx: {setTitleMenuText("bbbb", 1, onClickListener);break;}
             default: {
                 break;
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        //MainBackPressed.onBackPressed(this);
     }
 
     @Override

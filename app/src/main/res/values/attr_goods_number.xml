@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="GoodsNumber">
+        <attr name="leftTextColor" format="color" />
+        <attr name="leftTextSize" format="dimension" />
+        <attr name="leftBackground" format="reference|color"/>
+
+        <attr name="middleTextColor" format="color" />
+        <attr name="middleTextSize" format="dimension" />
+        <attr name="middleBackground" format="reference|color" />
+
+        <attr name="rightTextColor" format="color" />
+        <attr name="rightTextSize" format="dimension" />
+        <attr name="rightBackground" format="reference|color" />
+    </declare-styleable>
+</resources>

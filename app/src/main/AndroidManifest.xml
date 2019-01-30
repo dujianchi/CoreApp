@@ -16,13 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".ui.MainActivity"/>
         <activity android:name=".ui.ToolbarCtrlActivity" />
         <activity android:name=".ui.MultiTypeListActivity" />
         <activity android:name=".ui.ExpendListActivity" />
@@ -31,6 +25,13 @@
         <activity android:name=".ui.CoordinatorActivity" />
         <activity android:name=".ui.CustomViewActivity" android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity android:name=".ui.WebActvity" />
+        <activity android:name=".ui.SplashActivity" android:theme="@style/spalsh_theme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
