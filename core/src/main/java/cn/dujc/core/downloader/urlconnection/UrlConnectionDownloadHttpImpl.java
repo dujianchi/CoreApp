@@ -51,7 +51,7 @@ public class UrlConnectionDownloadHttpImpl implements IDownloadHttpClient {
                         destination.getParentFile().mkdirs();
                     }
                     downloader.setDoInput(true);
-                    downloader.setDoOutput(true);
+                    //downloader.setDoOutput(true);
                     downloader.setUseCaches(false);
                     try {
                         downloader.setRequestMethod("GET");
