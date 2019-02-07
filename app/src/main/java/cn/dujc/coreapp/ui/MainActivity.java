@@ -13,6 +13,7 @@ import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
 import cn.dujc.core.ui.BaseListActivity;
 import cn.dujc.core.util.ToastUtil;
+import cn.dujc.coreapp.R;
 
 /**
  * @author du
@@ -35,6 +36,7 @@ public class MainActivity extends BaseListActivity {
             , "getInt"
             , "title menu 0"
             , "title menu 1"
+            , "title menu 2"
             , "", "", "", "", "", "", "", "");
 
     private boolean mRefreshEnable = true;
@@ -123,11 +125,15 @@ public class MainActivity extends BaseListActivity {
                 break;
             }
             case 13: {
-                setTitleMenuText("aaaa", null);
+                setTitleMenuText("aaaa", 0, null);
                 break;
             }
             case 14: {
-                setTitleMenuText("bbbb", null);
+                setTitleMenuText("bbbb", 1, null);
+                break;
+            }
+            case 15: {
+                setTitleMenuIcon(R.mipmap.ic_launcher, 2, null);
                 break;
             }
             //case xx: {setTitleMenuText("bbbb", 1, onClickListener);break;}

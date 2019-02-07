@@ -164,6 +164,10 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     }
 
     public void setTitleMenuText(CharSequence menuText, @Nullable View.OnClickListener onClickListener) {
+        setTitleMenuText(menuText, 0, onClickListener);
+    }
+
+    public void setTitleMenuText(CharSequence menuText, int position, @Nullable View.OnClickListener onClickListener) {
         if (mToolbar != null) {
             final View textMaybe = mToolbar.findViewById(R.id.core_toolbar_menu_id);
             if (textMaybe instanceof TextView) {
@@ -174,12 +178,12 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
                 final ViewGroup viewGroup = (ViewGroup) textMaybe;
                 for (int index = 0, count = viewGroup.getChildCount(); index < count; index++) {
                     final View childAt = viewGroup.getChildAt(index);
-                    if (childAt instanceof TextView) {
+                    if (position == index && childAt instanceof TextView) {
                         textMaybe.setVisibility(View.VISIBLE);
                         childAt.setVisibility(View.VISIBLE);
                         ((TextView) childAt).setText(menuText);
                         if (onClickListener != null) textMaybe.setOnClickListener(onClickListener);
-                    } else {
+                    } else if (position == 0) {
                         childAt.setVisibility(View.GONE);
                     }
                 }
@@ -188,6 +192,10 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
     }
 
     public void setTitleMenuIcon(@DrawableRes int menuRes, @Nullable View.OnClickListener onClickListener) {
+        setTitleMenuIcon(menuRes, 0, onClickListener);
+    }
+
+    public void setTitleMenuIcon(@DrawableRes int menuRes, int position, @Nullable View.OnClickListener onClickListener) {
         if (mToolbar != null) {
             final View imageMaybe = mToolbar.findViewById(R.id.core_toolbar_menu_id);
             if (imageMaybe instanceof ImageView) {
@@ -198,12 +206,12 @@ public abstract class BaseFragment extends Fragment implements IBaseUI.WithToolb
                 final ViewGroup viewGroup = (ViewGroup) imageMaybe;
                 for (int index = 0, count = viewGroup.getChildCount(); index < count; index++) {
                     final View childAt = viewGroup.getChildAt(index);
-                    if (childAt instanceof ImageView) {
+                    if (position == index && childAt instanceof ImageView) {
                         imageMaybe.setVisibility(View.VISIBLE);
                         childAt.setVisibility(View.VISIBLE);
                         ((ImageView) childAt).setImageResource(menuRes);
                         if (onClickListener != null) imageMaybe.setOnClickListener(onClickListener);
-                    } else {
+                    } else if (position == 0) {
                         childAt.setVisibility(View.GONE);
                     }
                 }
