@@ -1,9 +1,5 @@
 package cn.dujc.core.ui;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import java.lang.reflect.Field;
-import java.util.List;
 
 import cn.dujc.core.R;
 import cn.dujc.core.util.LogUtil;
@@ -46,10 +41,8 @@ public class BaseWebFragment extends BaseRefreshableFragment {
     private static final String TITLE_INTENT = "TITLE_INTENT";
     private static final String URL_INTENT = "URL_INTENT";
 
-    private final static String[] DB_NAME_LIST = {"webview.db", "webviewCache.db", "webviewCookiesChromium.db", "webviewCookiesChromiumPrivate.db"};
-
-    private ProgressBar pb_progressbar;
-    private WebView web_simple_view;
+    private ProgressBar mProgressBar;
+    private WebView mWebView;
     private String mUrl;
     private String mTitle;
 
@@ -76,7 +69,7 @@ public class BaseWebFragment extends BaseRefreshableFragment {
     public void onPause() {
         super.onPause();
         if (Build.VERSION.SDK_INT >= 11) {
-            web_simple_view.onPause();
+            mWebView.onPause();
         }
     }
 
@@ -84,43 +77,43 @@ public class BaseWebFragment extends BaseRefreshableFragment {
     public void onResume() {
         super.onResume();
         if (Build.VERSION.SDK_INT >= 11) {
-            web_simple_view.onResume();
+            mWebView.onResume();
         }
     }
 
     @Override
     public void onDestroy() {
-        if (web_simple_view != null) {
+        if (mWebView != null) {
             //加载null内容
-            web_simple_view.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
+            mWebView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
 
-            ViewParent parent = web_simple_view.getParent();
-            if (parent != null) {
-                ((ViewGroup) parent).removeView(web_simple_view);
+            ViewParent parent = mWebView.getParent();
+            if (parent instanceof ViewGroup) {
+                ((ViewGroup) parent).removeView(mWebView);
             }
 
-            web_simple_view.stopLoading();
+            mWebView.stopLoading();
             // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
-            web_simple_view.getSettings().setJavaScriptEnabled(false);
-            //web_simple_view.clearHistory();
-            web_simple_view.clearView();
-            //web_simple_view.removeAllViews();
+            mWebView.getSettings().setJavaScriptEnabled(false);
+            //mWebView.clearHistory();
+            mWebView.clearView();
+            //mWebView.removeAllViews();
 
-            web_simple_view.clearCache(true);
-            web_simple_view.clearFormData();
-            web_simple_view.clearMatches();
-            web_simple_view.clearSslPreferences();
-            web_simple_view.clearDisappearingChildren();
-            web_simple_view.clearHistory();
-            web_simple_view.clearAnimation();
-            //web_simple_view.loadUrl("about:blank");
-            web_simple_view.removeAllViews();
-            //web_simple_view.freeMemory();
+            mWebView.clearCache(true);
+            mWebView.clearFormData();
+            mWebView.clearMatches();
+            mWebView.clearSslPreferences();
+            mWebView.clearDisappearingChildren();
+            mWebView.clearHistory();
+            mWebView.clearAnimation();
+            //mWebView.loadUrl("about:blank");
+            mWebView.removeAllViews();
+            //mWebView.freeMemory();
 
             try {
-                web_simple_view.freeMemory();
-                web_simple_view.destroy();
-                web_simple_view = null;
+                mWebView.freeMemory();
+                mWebView.destroy();
+                mWebView = null;
             } catch (Throwable ex) {
                 ex.printStackTrace();
             }
@@ -136,7 +129,7 @@ public class BaseWebFragment extends BaseRefreshableFragment {
 
     @Override
     public void onRefresh() {
-        if (web_simple_view != null) web_simple_view.reload();
+        if (mWebView != null) mWebView.reload();
         refreshDone();
     }
 
@@ -164,19 +157,19 @@ public class BaseWebFragment extends BaseRefreshableFragment {
             mActivity.setTitle(mTitle);
         }
 
-        web_simple_view = new WebView(mActivity.getApplicationContext());
+        mWebView = new WebView(mActivity.getApplicationContext());
         ((LinearLayout)findViewById(R.id.core_ll_webview_parent))
-                .addView(web_simple_view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        pb_progressbar = (ProgressBar) findViewById(R.id.core_pb_progressbar);
+                .addView(mWebView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mProgressBar = (ProgressBar) findViewById(R.id.core_pb_progressbar);
 
-        pb_progressbar.setMax(100);
-        pb_progressbar.setProgressDrawable(ContextCompat.getDrawable(mActivity, R.drawable.core_progress_bar_states));
-        pb_progressbar.setProgress(5); //先加载5%，以使用户觉得界面没有卡死
+        mProgressBar.setMax(100);
+        mProgressBar.setProgressDrawable(ContextCompat.getDrawable(mActivity, R.drawable.core_progress_bar_states));
+        mProgressBar.setProgress(5); //先加载5%，以使用户觉得界面没有卡死
 
         initWebViewSettings();
 
-        web_simple_view.setWebViewClient(getWebViewClient());
-        web_simple_view.setWebChromeClient(getWebChromeClient());
+        mWebView.setWebViewClient(getWebViewClient());
+        mWebView.setWebChromeClient(getWebChromeClient());
 
         loadAtFirst();
     }
@@ -185,13 +178,13 @@ public class BaseWebFragment extends BaseRefreshableFragment {
         getSwipeRefreshLayout().setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
             @Override
             public boolean canChildScrollUp(@NonNull SwipeRefreshLayout parent, @Nullable View child) {
-                return web_simple_view != null && web_simple_view.getScrollY() > 0;
+                return mWebView != null && mWebView.getScrollY() > 0;
             }
         });
     }
 
     protected void initWebViewSettings() {
-        WebSettings settings = web_simple_view.getSettings();
+        WebSettings settings = mWebView.getSettings();
         settings.setUserAgentString(settings.getUserAgentString() + "" + mActivity.getPackageName());
 
         settings.setJavaScriptEnabled(true);
@@ -225,19 +218,19 @@ public class BaseWebFragment extends BaseRefreshableFragment {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                pb_progressbar.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                pb_progressbar.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 super.onReceivedError(view, errorCode, description, failingUrl);
-                pb_progressbar.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.GONE);
             }
         };
     }
@@ -256,7 +249,7 @@ public class BaseWebFragment extends BaseRefreshableFragment {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 if (newProgress >= 5) {
-                    pb_progressbar.setProgress(newProgress);
+                    mProgressBar.setProgress(newProgress);
                 }
                 super.onProgressChanged(view, newProgress);
             }
@@ -267,22 +260,9 @@ public class BaseWebFragment extends BaseRefreshableFragment {
         loadUrl(mUrl);
     }
 
-    /**
-     * 能否处理intent
-     *
-     * @param context
-     * @param intent
-     * @return
-     */
-    public boolean hasIntentHandler(Context context, Intent intent) {
-        PackageManager pm = context.getPackageManager();
-        List<ResolveInfo> list = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        return list.size() > 0;
-    }
-
     public final boolean onBackPressed() {
-        if (web_simple_view.canGoBack()) {
-            web_simple_view.goBack();
+        if (mWebView.canGoBack()) {
+            mWebView.goBack();
             return true;
         }
         return false;
@@ -294,17 +274,17 @@ public class BaseWebFragment extends BaseRefreshableFragment {
 
     public final void loadUrl(String url, boolean clear) {
         LogUtil.d("load url = " + url);
-        if (web_simple_view != null) {
-            if (clear) web_simple_view.clearHistory();
-            web_simple_view.loadUrl(mUrl = url);
+        if (mWebView != null) {
+            if (clear) mWebView.clearHistory();
+            mWebView.loadUrl(mUrl = url);
         }
     }
 
     public ProgressBar getProgressBar() {
-        return pb_progressbar;
+        return mProgressBar;
     }
 
     public final WebView getWebView() {
-        return web_simple_view;
+        return mWebView;
     }
 }

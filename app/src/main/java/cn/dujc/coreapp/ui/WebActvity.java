@@ -8,6 +8,8 @@ import cn.dujc.coreapp.R;
 
 public class WebActvity extends BaseActivity {
 
+    private BaseWebFragment mFragment;
+
     @Override
     public int getViewId() {
         return R.layout.activity_web;
@@ -15,6 +17,13 @@ public class WebActvity extends BaseActivity {
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, BaseWebFragment.newInstance("baidu", "https://www.baidu.com/s?wd=js%20%E5%92%8C%20Android%20%E4%BA%A4%E4%BA%92")).commit();
+        mFragment = BaseWebFragment.newInstance("baidu", "https://www.baidu.com/s?wd=js%20%E5%92%8C%20Android%20%E4%BA%A4%E4%BA%92");
+        getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, mFragment).commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mFragment != null && !mFragment.onBackPressed()) return;
+        super.onBackPressed();
     }
 }
