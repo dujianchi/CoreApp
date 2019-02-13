@@ -52,6 +52,11 @@ public class TextColorBuilder {
         return mStringBuilder;
     }
 
+    public TextColorBuilder addTextPart(char text) {
+        mStringBuilder.append(text);
+        return this;
+    }
+
     public TextColorBuilder addTextPart(CharSequence text) {
         if (!TextUtils.isEmpty(text)) mStringBuilder.append(text);
         return this;
