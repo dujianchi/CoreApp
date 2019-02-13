@@ -2,11 +2,8 @@ package cn.dujc.coreapp.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
 
 import cn.dujc.core.ui.BasePopupWindow;
-import cn.dujc.core.util.ToastUtil;
 import cn.dujc.coreapp.R;
 
 public class DialogF extends BasePopupWindow {
@@ -18,7 +15,7 @@ public class DialogF extends BasePopupWindow {
 
     @Override
     public int getViewId() {
-        return R.layout.layout_empty_view;
+        return R.layout.dialog_f;
     }
 
    /* @Override
@@ -32,13 +29,13 @@ public class DialogF extends BasePopupWindow {
     @Override
     public void initBasic(Bundle savedInstanceState) {
         //setCanceledOnTouchOutside(false);
-        TextView text = findViewById(R.id.tv_text);
+        /*TextView text = findViewById(R.id.tv_text);
         text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ToastUtil.showToast(mContext, "aaa");
             }
-        });
+        });*/
     }
 
    /* @Override

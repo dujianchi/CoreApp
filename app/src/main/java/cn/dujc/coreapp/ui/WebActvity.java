@@ -23,7 +23,7 @@ public class WebActvity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (mFragment != null && !mFragment.onBackPressed()) return;
+        if (mFragment != null && mFragment.onBackPressed()) return;
         super.onBackPressed();
     }
 }

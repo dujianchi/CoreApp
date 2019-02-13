@@ -37,11 +37,13 @@ public class MainActivity extends BaseListActivity {
             , "title menu 0"
             , "title menu 1"
             , "title menu 2"
-            , "", "", "", "", "", "", "", "");
+            , "dialog"
+            , "", "", "", "", "", "", "");
 
     private boolean mRefreshEnable = true;
     private boolean mMoreEnable = true;
     private DialogF mDialogF;
+    private Dialog2 mDialog2;
 
     @Nullable
     @Override
@@ -134,6 +136,13 @@ public class MainActivity extends BaseListActivity {
             }
             case 15: {
                 setTitleMenuIcon(R.mipmap.ic_launcher, 2, null);
+                break;
+            }
+            case 16: {
+                if (mDialog2 == null) {
+                    mDialog2 = new Dialog2(mActivity);
+                }
+                if (!mDialog2.isShowing()) mDialog2.show();
                 break;
             }
             //case xx: {setTitleMenuText("bbbb", 1, onClickListener);break;}

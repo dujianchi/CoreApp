@@ -1,31 +1,46 @@
 package cn.dujc.core.ui;
 
+import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.FrameLayout;
-import android.widget.PopupWindow;
 
 import cn.dujc.core.R;
 
-public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
+public abstract class BaseDialog extends Dialog implements IBaseUI {
 
     protected Context mContext;
     protected View mRootView;
+    private boolean mCancelable_ = true;
     private View mInsideView;
 
-    public BasePopupWindow(Context context) {
-        super(context);
+    public BaseDialog(Context context) {
+        this(context, R.style.core_base_dialog_theme);
+    }
+
+    public BaseDialog(@NonNull Context context, int themeResId) {
+        super(context, themeResId);
         mContext = context;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         _onCreateView();
+    }
+
+    @Override
+    public void setCancelable(boolean flag) {
+        super.setCancelable(flag);
+        mCancelable_ = flag;
     }
 
     @Override
@@ -33,17 +48,13 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
         return null;
     }
 
-    public void showAtLocation(View parent) {
-        showAtLocation(parent, Gravity.CENTER);
-    }
-
-    public void showAtLocation(View parent, int gravity) {
-        showAtLocation(parent, gravity, 0, 0);
-    }
-
     @Nullable
     public final <T extends View> T findViewById(int resId) {
         return mRootView != null ? (T) mRootView.findViewById(resId) : null;
+    }
+
+    public boolean isCancelable() {
+        return mCancelable_;
     }
 
     public void _onCreateView() {
@@ -58,12 +69,9 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
                 mRootView.setOnTouchListener(new OnRootViewClick(this, mRootView, mInsideView));
             }
             setContentView(mRootView);
-            setWidth(_getWidth());
-            setHeight(_getHeight());
-            setBackgroundDrawable(_getBackgroundDrawable(mContext));
-            setAnimationStyle(_getAnimationStyle());
-            setOutsideTouchable(_getOutsideTouchable());
-            setFocusable(_getFocusable());
+            Window window = getWindow();
+            //window.setBackgroundDrawable(_getBackgroundDrawable(mContext));
+            window.setLayout(_getWidth(), _getHeight());
             initBasic(null);
         }
     }
@@ -76,28 +84,16 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
         return ViewGroup.LayoutParams.MATCH_PARENT;
     }
 
-    public boolean _getOutsideTouchable() {
-        return true;
-    }
-
-    public boolean _getFocusable() {
-        return true;
-    }
-
-    public int _getAnimationStyle() {
-        return R.style.core_popup_animation;
-    }
-
-    public int _getBackgroundColor(Context context) {
+    /*public int _getBackgroundColor(Context context) {
         return Color.argb(128, 0, 0, 0);
-    }
+    }*/
 
-    public Drawable _getBackgroundDrawable(Context context) {
+    /*public Drawable _getBackgroundDrawable(Context context) {
         return new ColorDrawable(_getBackgroundColor(context));
-    }
+    }*/
 
     private static final class OnRootViewClick implements View.OnTouchListener {
-        private final PopupWindow mPopupWindow;
+        private final BaseDialog mDialog;
         private final View mRootView, mInsideView;
         private final Handler mHandler = new Handler();
         private final VRunnable mRunnable = new VRunnable() {
@@ -109,8 +105,8 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
             }
         };
 
-        public OnRootViewClick(PopupWindow popupWindow, View rootView, View insideView) {
-            mPopupWindow = popupWindow;
+        public OnRootViewClick(BaseDialog dialog, View rootView, View insideView) {
+            mDialog = dialog;
             mRootView = rootView;
             mInsideView = insideView;
         }
@@ -131,8 +127,8 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
                     mRunnable.mLongClicked = false;
                     mHandler.removeCallbacks(mRunnable);
                     mRunnable.mView = null;
-                    if (mPopupWindow != null) {
-                        boolean touchable = mPopupWindow.isOutsideTouchable();
+                    if (mDialog != null) {
+                        boolean touchable = mDialog.isCancelable();
                         if (touchable) {
                             int[] xy = new int[2];
                             mInsideView.getLocationOnScreen(xy);
@@ -141,7 +137,7 @@ public abstract class BasePopupWindow extends PopupWindow implements IBaseUI {
                             float x = event.getRawX();
                             float y = event.getRawY();
                             if (x < xy[0] || y < xy[1] || x > xy[0] + width || y > xy[1] + height) {
-                                mPopupWindow.dismiss();
+                                mDialog.dismiss();
                                 return true;
                             }
                         }
