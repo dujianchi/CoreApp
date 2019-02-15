@@ -9,7 +9,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import cn.dujc.core.R;
-import cn.dujc.core.toolbar.IToolbar;
+import cn.dujc.core.initializer.toolbar.IToolbar;
 
 public class FragmentShellActivity extends BaseActivity {
 

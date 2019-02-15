@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 
-import cn.dujc.core.toolbar.IToolbar;
+import cn.dujc.core.initializer.toolbar.IToolbar;
 
 /**
  * toolbar组装工具

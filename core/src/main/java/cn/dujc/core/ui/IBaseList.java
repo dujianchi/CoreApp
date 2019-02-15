@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import cn.dujc.core.R;
 import cn.dujc.core.adapter.BaseQuickAdapter;
+import cn.dujc.core.initializer.baselist.IBaseListHandler;
 
 /**
  * @author du
@@ -257,9 +257,7 @@ interface IBaseList {
 
         @Override
         public void recyclerViewOtherSetup() {
-            if (mRvList != null) {
-                mRvList.addItemDecoration(new DividerItemDecoration(context(), DividerItemDecoration.VERTICAL));
-            }
+            IBaseListHandler.setup(context(), mRvList, mQuickAdapter);
         }
 
         @Override

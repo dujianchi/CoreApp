@@ -1,8 +1,7 @@
-package cn.dujc.core.toolbar;
+package cn.dujc.core.initializer.toolbar;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -13,6 +12,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 import cn.dujc.core.R;
+import cn.dujc.core.app.Initializer;
 import cn.dujc.core.ui.IBaseUI;
 import cn.dujc.core.ui.TitleCompat;
 import cn.dujc.core.util.ContextUtil;
@@ -23,14 +23,10 @@ import cn.dujc.core.util.ContextUtil;
  */
 public final class IToolbarHandler {
 
-    private static final String CLASS = "CORE_TOOLBAR_CLASS", NAME = IToolbarHandler.class.getSimpleName();
+    private static final String CLASS = "CORE_TOOLBAR_CLASS";
     private static IToolbar sToolbar = null;
 
     private IToolbarHandler() { }
-
-    private static SharedPreferences preferences(Context context) {
-        return context.getApplicationContext().getSharedPreferences(NAME, Context.MODE_PRIVATE);
-    }
 
     /**
      * 设置toolbar的处理类，仅推荐默认toolbar使用此方案，其他情况请在activity中重写initToolbar方法
@@ -38,7 +34,7 @@ public final class IToolbarHandler {
     public static void setToolbarClass(Context context, Class<? extends IToolbar> toolbarClass) {
         if (context == null || toolbarClass == null) return;
         final String className = toolbarClass.getName();
-        preferences(context).edit().putString(CLASS, className).apply();
+        Initializer.classesSavior(context).edit().putString(CLASS, className).apply();
         createToolbarByClass(toolbarClass);
     }
 
@@ -128,7 +124,7 @@ public final class IToolbarHandler {
         if (sToolbar != null) return sToolbar;
         if (context == null) return null;
         try {
-            final Class<?> toolbarClass = Class.forName(preferences(context).getString(CLASS, ""));
+            final Class<?> toolbarClass = Class.forName(Initializer.classesSavior(context).getString(CLASS, ""));
             createToolbarByClass((Class<? extends IToolbar>) toolbarClass);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

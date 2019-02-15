@@ -1,4 +1,4 @@
-package cn.dujc.core.toolbar;
+package cn.dujc.core.initializer.toolbar;
 
 import android.content.Context;
 import android.support.annotation.IntDef;
@@ -13,7 +13,8 @@ import cn.dujc.core.ui.IBaseUI;
 
 public interface IToolbar {
 
-    public static final int NONE = 0, LINEAR = 1, FRAME = 2, COORDINATOR = 3;
+    public static final int NONE = 0;
+    public static final int LINEAR = 1, FRAME = 2, COORDINATOR = 3;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({NONE//无

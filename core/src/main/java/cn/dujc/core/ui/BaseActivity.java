@@ -22,8 +22,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import cn.dujc.core.R;
-import cn.dujc.core.toolbar.IToolbar;
-import cn.dujc.core.toolbar.IToolbarHandler;
+import cn.dujc.core.initializer.toolbar.IToolbar;
+import cn.dujc.core.initializer.toolbar.IToolbarHandler;
 
 /**
  * 基本的Activity。所有Activity必须继承于此类。“所有”！

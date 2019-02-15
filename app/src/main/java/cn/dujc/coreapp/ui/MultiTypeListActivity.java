@@ -38,7 +38,7 @@ public class MultiTypeListActivity extends BaseListActivity {
     public void initBasic(Bundle savedInstanceState) {
         super.initBasic(savedInstanceState);
         final BaseQuickAdapter adapter = getAdapter();
-        adapter.setEmptyView(R.layout.layout_empty_view);
+        //adapter.setEmptyView(R.layout.layout_empty_view);
         adapter.addHeaderView(getLayoutInflater().inflate(R.layout.layout_empty_view, null));
         adapter.addFooterView(getLayoutInflater().inflate(R.layout.layout_empty_view, null));
     }

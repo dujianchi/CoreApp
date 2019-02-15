@@ -1,16 +1,20 @@
 package cn.dujc.core.app;
 
-import android.app.Application;
 import android.content.Context;
-
-import cn.dujc.core.toolbar.IToolbar;
+import android.content.SharedPreferences;
 
 /**
- * 核心基础类
+ * 一些初始化类的保存类
+ * @author du
  */
-public interface Initializer {
+public class Initializer {
 
-    public void initActivityStack(Application app);
+    private static final String NAME = Initializer.class.getSimpleName();
 
-    public void initToolbarHelper(Context context, Class<? extends IToolbar> clazz);
+    private Initializer() { }
+
+    public static SharedPreferences classesSavior(Context context) {
+        return context.getApplicationContext().getSharedPreferences(NAME, Context.MODE_PRIVATE);
+    }
+
 }

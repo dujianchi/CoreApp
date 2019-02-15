@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import cn.dujc.core.toolbar.IToolbar;
+import cn.dujc.core.initializer.toolbar.IToolbar;
 import cn.dujc.core.ui.IBaseUI;
 import cn.dujc.coreapp.R;
 
