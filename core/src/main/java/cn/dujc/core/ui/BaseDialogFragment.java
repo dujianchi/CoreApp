@@ -25,9 +25,12 @@ import android.widget.FrameLayout;
 import java.util.UUID;
 
 import cn.dujc.core.R;
+import cn.dujc.core.ui.func.IDialog;
+import cn.dujc.core.ui.func.OnRootViewClick;
 
 /**
  * 基本的Fragment。最好Fragment都要继承于此类
+ *
  * @deprecated 老是提示内存泄漏，同时宽高很难控制，换成用{@link BasePopupWindow}
  * Created by du on 2017/9/19.
  */
@@ -52,9 +55,10 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
 
         if (mRootView == null && (vid != 0 || rootView != null)) {
             if (rootView == null) {
-                final FrameLayout layout = new FrameLayout(mActivity);
-                inflater.inflate(vid, layout, true);
-                mRootView = layout;
+                mRootView = new FrameLayout(mActivity);
+                View innerView = inflater.inflate(vid, (ViewGroup) mRootView, false);
+                ((ViewGroup) mRootView).addView(innerView);
+                mRootView.setOnTouchListener(new OnRootViewClick(new IDialog.DialogFragmentImpl(this), mRootView, innerView));
             } else {
                 mRootView = rootView;
             }
@@ -73,16 +77,21 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         final Dialog dialog = getDialog();
         final Window window = dialog.getWindow();
-        dialog.setCanceledOnTouchOutside(mCanceledOnTouchOutside);//似乎每次显示都会调用到这个方法，且每次dialog不设置到话斗鱼上次不同
+        dialog.setCanceledOnTouchOutside(mCanceledOnTouchOutside);//似乎每次显示都会调用到这个方法，且每次dialog不设置的话都与上次不同
         if (window != null) {
             window.setBackgroundDrawable(dialogBackground());
             window.setLayout(dialogWidth(), dialogHeight());
             window.setGravity(dialogGravity());
         }
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         if (!mLoaded && mRootView != null) {
             mLoaded = true;
             initBasic(savedInstanceState);
@@ -122,18 +131,22 @@ public abstract class BaseDialogFragment extends DialogFragment implements IBase
         mCanceledOnTouchOutside = canceledOnTouchOutside;
     }
 
+    public boolean isCanceledOnTouchOutside() {
+        return mCanceledOnTouchOutside;
+    }
+
     /**
      * dialog宽度
      */
     public int dialogWidth() {
-        return WindowManager.LayoutParams.WRAP_CONTENT;
+        return WindowManager.LayoutParams.MATCH_PARENT;
     }
 
     /**
      * dialog高度
      */
     public int dialogHeight() {
-        return WindowManager.LayoutParams.WRAP_CONTENT;
+        return WindowManager.LayoutParams.MATCH_PARENT;
     }
 
     /**

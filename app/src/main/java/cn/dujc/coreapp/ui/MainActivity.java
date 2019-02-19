@@ -3,7 +3,6 @@ package cn.dujc.coreapp.ui;
 import android.Manifest;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.view.Gravity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +41,8 @@ public class MainActivity extends BaseListActivity {
 
     private boolean mRefreshEnable = true;
     private boolean mMoreEnable = true;
-    private DialogF mDialogF;
+    private DialogF mDialog;
+//    private DialogP mDialog;
     private Dialog2 mDialog2;
 
     @Nullable
@@ -112,17 +112,20 @@ public class MainActivity extends BaseListActivity {
                 break;
             }
             case 11: {
-                if (mDialogF == null) {
-                    mDialogF = new DialogF(mActivity);
+                if (mDialog == null) {
+                    //mDialog = new DialogP(mActivity);
+                    mDialog = new DialogF();
                 }
-                if (!mDialogF.isShowing()) mDialogF.showAtLocation(mRootView, Gravity.BOTTOM);
+                if (!mDialog.isShowing()) mDialog.showOnly(this);
                 break;
             }
             case 12: {
                 try {
                     final int i = extras().get("aaa");
+                    ToastUtil.showToast(mActivity, "int = " + i);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
+                    ToastUtil.showToast(mActivity, "error");
                 }
                 break;
             }
