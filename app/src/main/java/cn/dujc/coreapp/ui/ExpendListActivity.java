@@ -1,6 +1,7 @@
 package cn.dujc.coreapp.ui;
 
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.Random;
 import cn.dujc.core.adapter.BaseAdapter;
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
-import cn.dujc.core.adapter.entity.AbstractExpandableItem;
+import cn.dujc.core.adapter.entity.IExpandable;
 import cn.dujc.core.adapter.util.MultiTypeDelegate;
 import cn.dujc.core.ui.BaseListActivity;
 import cn.dujc.coreapp.R;
@@ -54,15 +55,30 @@ public class ExpendListActivity extends BaseListActivity {
             }
             data.text = "text" + index + "  size is " + innerSize;
             mList.add(data);
-            mList.addAll(data.list);
         }
         notifyDataSetChanged(false, false);
         getAdapter().expandAll();
     }
 
-    public static class DataOutter extends AbstractExpandableItem<DataInner> {
+    public static class DataOutter implements IExpandable<DataInner> {
         String text;
         List<DataInner> list = new ArrayList<>();
+        private boolean mExpanded = false;
+
+        @Override
+        public boolean isExpanded() {
+            return mExpanded;
+        }
+
+        @Override
+        public void setExpanded(boolean expanded) {
+            mExpanded = expanded;
+        }
+
+        @Override
+        public List<DataInner> getSubItems() {
+            return list;
+        }
 
         @Override
         public int getLevel() {
@@ -93,6 +109,16 @@ public class ExpendListActivity extends BaseListActivity {
         protected void convert(BaseViewHolder helper, Object item) {
             if (item instanceof DataOutter) {
                 helper.setText(R.id.text1, ((DataOutter) item).text);
+                helper.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (((DataOutter) item).isExpanded()) {
+                            collapse(helper.getAdapterPosition());
+                        } else {
+                            expand(helper.getAdapterPosition());
+                        }
+                    }
+                });
             } else if (item instanceof DataInner) {
                 helper.setText(R.id.text1, ((DataInner) item).text);
             }

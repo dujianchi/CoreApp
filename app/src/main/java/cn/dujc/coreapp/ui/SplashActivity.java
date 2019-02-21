@@ -37,7 +37,7 @@ public class SplashActivity extends BaseActivity {
         final ImageView imageView = new ImageView(mActivity);
         imageView.setAdjustViewBounds(true);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setImageResource(R.mipmap.my_wallet);
+        imageView.setImageResource(R.mipmap.splash);
         return imageView;
     }
 
