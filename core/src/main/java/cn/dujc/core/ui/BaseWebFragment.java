@@ -3,10 +3,7 @@ package cn.dujc.core.ui;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +24,7 @@ import cn.dujc.core.util.LogUtil;
 /**
  * Created by du on 2018/2/1.
  */
-public class BaseWebFragment extends BaseRefreshableFragment {
+public class BaseWebFragment extends BaseFragment {
 
     public static BaseWebFragment newInstance(String title, String url) {
         Bundle args = new Bundle();
@@ -62,7 +59,6 @@ public class BaseWebFragment extends BaseRefreshableFragment {
         }
         mActivity.setTitle("");//防止没有title时没有点击事件2017年3月21日 00:03:20
         init();
-        setupRefresh();
     }
 
     @Override
@@ -127,12 +123,6 @@ public class BaseWebFragment extends BaseRefreshableFragment {
         return R.layout.core_layout_base_web;
     }
 
-    @Override
-    public void onRefresh() {
-        if (mWebView != null) mWebView.reload();
-        refreshDone();
-    }
-
     //反射来清理webview的引用
     public void setConfigCallback(WindowManager windowManager) {
         try {
@@ -147,7 +137,7 @@ public class BaseWebFragment extends BaseRefreshableFragment {
             field = field.getType().getDeclaredField("mWindowManager");
             field.setAccessible(true);
             field.set(configCallback, windowManager);
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -158,7 +148,7 @@ public class BaseWebFragment extends BaseRefreshableFragment {
         }
 
         mWebView = new WebView(mActivity.getApplicationContext());
-        ((LinearLayout)findViewById(R.id.core_ll_webview_parent))
+        ((LinearLayout) findViewById(R.id.core_ll_webview_parent))
                 .addView(mWebView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mProgressBar = (ProgressBar) findViewById(R.id.core_pb_progressbar);
 
@@ -172,15 +162,6 @@ public class BaseWebFragment extends BaseRefreshableFragment {
         mWebView.setWebChromeClient(getWebChromeClient());
 
         loadAtFirst();
-    }
-
-    protected void setupRefresh() {
-        getSwipeRefreshLayout().setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
-            @Override
-            public boolean canChildScrollUp(@NonNull SwipeRefreshLayout parent, @Nullable View child) {
-                return mWebView != null && mWebView.getScrollY() > 0;
-            }
-        });
     }
 
     protected void initWebViewSettings() {

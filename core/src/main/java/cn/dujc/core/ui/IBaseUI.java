@@ -1,5 +1,6 @@
 package cn.dujc.core.ui;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,7 +11,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -134,10 +134,10 @@ public interface IBaseUI {
 
         IStarter with(String key, Parcelable param);
 
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         IStarter with(String key, Size param);
 
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         IStarter with(String key, SizeF param);
 
         IStarter with(String key, Parcelable[] param);
@@ -469,14 +469,14 @@ public interface IBaseUI {
             return this;
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public IStarter with(String key, Size param) {
             mBundle.putSize(key, param);
             return this;
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public IStarter with(String key, SizeF param) {
             mBundle.putSizeF(key, param);

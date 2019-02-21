@@ -8,7 +8,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
 import android.support.v4.app.Fragment;
@@ -28,7 +27,6 @@ import cn.dujc.core.ui.IBaseUI;
 public class AppSettingsDialog implements Parcelable {
     public static final int DEFAULT_SETTINGS_REQ_CODE = 16061;
 
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static final Creator<AppSettingsDialog> CREATOR = new Creator<AppSettingsDialog>() {
         @Override
         public AppSettingsDialog createFromParcel(Parcel in) {

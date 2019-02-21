@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
-import android.support.v4.view.ViewCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -166,7 +165,11 @@ public class TitleCompat {
     public TitleCompat setFakeStatusBarColor(Drawable drawable) {
         if (mFakeStatusBarView != null) {
             setFakeStatusBarVisibility(true);
-            ViewCompat.setBackground(mFakeStatusBarView, drawable);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                mFakeStatusBarView.setBackground(drawable);
+            } else {
+                mFakeStatusBarView.setBackgroundDrawable(drawable);
+            }
         }
         return this;
     }
