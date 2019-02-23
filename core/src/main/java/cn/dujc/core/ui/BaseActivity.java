@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -190,7 +191,14 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
         setTitleMenuText(menuText, 0, onClickListener);
     }
 
-    public void setTitleMenuText(CharSequence menuText, int position, @Nullable View.OnClickListener onClickListener) {
+    /**
+     * 设置菜单
+     *
+     * @param position 所在位置，最大支持4个，为-1时全部隐藏
+     *                 ，position传入0到3之间的值时，如果找到的控件类型为TextView
+     *                 ，且其所在父类的第index值大于等于position，则认为是要寻找的菜单控件
+     */
+    public void setTitleMenuText(CharSequence menuText, @IntRange(from = -1, to = 3) int position, @Nullable View.OnClickListener onClickListener) {
         if (mToolbar != null) {
             final View textMaybe = mToolbar.findViewById(R.id.core_toolbar_menu_id);
             if (textMaybe instanceof TextView) {
@@ -198,16 +206,20 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
                 ((TextView) textMaybe).setText(menuText);
                 if (onClickListener != null) textMaybe.setOnClickListener(onClickListener);
             } else if (textMaybe instanceof ViewGroup) {
-                final ViewGroup viewGroup = (ViewGroup) textMaybe;
-                for (int index = 0, count = viewGroup.getChildCount(); index < count; index++) {
-                    final View childAt = viewGroup.getChildAt(index);
-                    if (position == index && childAt instanceof TextView) {
-                        textMaybe.setVisibility(View.VISIBLE);
-                        childAt.setVisibility(View.VISIBLE);
-                        ((TextView) childAt).setText(menuText);
-                        if (onClickListener != null) textMaybe.setOnClickListener(onClickListener);
-                    } else if (position == 0) {
-                        childAt.setVisibility(View.GONE);
+                if (position == -1) {
+                    textMaybe.setVisibility(View.GONE);
+                } else {
+                    final ViewGroup viewGroup = (ViewGroup) textMaybe;
+                    for (int index = 0, count = viewGroup.getChildCount(); index < count; index++) {
+                        final View childAt = viewGroup.getChildAt(index);
+                        if (position <= index && childAt instanceof TextView) {
+                            textMaybe.setVisibility(View.VISIBLE);
+                            childAt.setVisibility(View.VISIBLE);
+                            ((TextView) childAt).setText(menuText);
+                            if (onClickListener != null)
+                                textMaybe.setOnClickListener(onClickListener);
+                            break;
+                        }
                     }
                 }
             }
@@ -218,7 +230,14 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
         setTitleMenuIcon(menuRes, 0, onClickListener);
     }
 
-    public void setTitleMenuIcon(@DrawableRes int menuRes, int position, @Nullable View.OnClickListener onClickListener) {
+    /**
+     * 设置菜单
+     *
+     * @param position 所在位置，最大支持4个，为-1时全部隐藏
+     *                 ，position传入0到3之间的值时，如果找到的控件类型为ImageView
+     *                 ，且其所在父类的第index值大于等于position，则认为是要寻找的菜单控件
+     */
+    public void setTitleMenuIcon(@DrawableRes int menuRes, @IntRange(from = -1, to = 3) int position, @Nullable View.OnClickListener onClickListener) {
         if (mToolbar != null) {
             final View imageMaybe = mToolbar.findViewById(R.id.core_toolbar_menu_id);
             if (imageMaybe instanceof ImageView) {
@@ -226,16 +245,20 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
                 ((ImageView) imageMaybe).setImageResource(menuRes);
                 if (onClickListener != null) imageMaybe.setOnClickListener(onClickListener);
             } else if (imageMaybe instanceof ViewGroup) {
-                final ViewGroup viewGroup = (ViewGroup) imageMaybe;
-                for (int index = 0, count = viewGroup.getChildCount(); index < count; index++) {
-                    final View childAt = viewGroup.getChildAt(index);
-                    if (position == index && childAt instanceof ImageView) {
-                        imageMaybe.setVisibility(View.VISIBLE);
-                        childAt.setVisibility(View.VISIBLE);
-                        ((ImageView) childAt).setImageResource(menuRes);
-                        if (onClickListener != null) imageMaybe.setOnClickListener(onClickListener);
-                    } else if (position == 0){
-                        childAt.setVisibility(View.GONE);
+                if (position == -1) {
+                    imageMaybe.setVisibility(View.GONE);
+                } else {
+                    final ViewGroup viewGroup = (ViewGroup) imageMaybe;
+                    for (int index = 0, count = viewGroup.getChildCount(); index < count; index++) {
+                        final View childAt = viewGroup.getChildAt(index);
+                        if (position <= index && childAt instanceof ImageView) {
+                            imageMaybe.setVisibility(View.VISIBLE);
+                            childAt.setVisibility(View.VISIBLE);
+                            ((ImageView) childAt).setImageResource(menuRes);
+                            if (onClickListener != null)
+                                imageMaybe.setOnClickListener(onClickListener);
+                            break;
+                        }
                     }
                 }
             }

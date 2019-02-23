@@ -3,6 +3,8 @@ package cn.dujc.coreapp.ui;
 import android.Manifest;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.List;
@@ -125,7 +127,7 @@ public class MainActivity extends BaseListActivity {
                     ToastUtil.showToast(mActivity, "int = " + i);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
-                    ToastUtil.showToast(mActivity, "error");
+                    ToastUtil.showToast(mActivity, "error", Gravity.CENTER, 0, Toast.LENGTH_LONG);
                 }
                 break;
             }
