@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>test</title>
+		<style type="text/css">
+			.app div{
+				margin-bottom: 20px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="app">
+			<div onclick="sendToken()">
+				获取登录Token
+			</div>
+	
+			APP调用js 的方法反馈在这里
+			<div class="result">
+	
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var result = document.querySelector(".result")
+		//获取登录Token
+		function sendToken() {
+			var u = navigator.userAgent;
+			var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+			var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+			if (isAndroid){
+				window.android.sendToken()
+			}else if(isiOS){
+				window.webkit.messageHandlers.sendToken.postMessage()
+			}
+		}
+
+		function receiveToken(data) {
+			result.innerHTML = data
+		}
+
+	</script>
+
+</html>
