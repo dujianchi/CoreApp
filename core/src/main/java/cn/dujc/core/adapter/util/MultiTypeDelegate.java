@@ -16,7 +16,7 @@ import java.util.List;
  * more information: https://github.com/CymChad/BaseRecyclerViewAdapterHelper/issues/968
  */
 
-public abstract class MultiTypeDelegate<T> {
+public abstract class MultiTypeDelegate<T> implements IMultiTypeDelegate<T> {
 
     public static final int TYPE_NOT_FOUND = -404;
     private static final int DEFAULT_VIEW_TYPE = -0xff;
@@ -30,6 +30,7 @@ public abstract class MultiTypeDelegate<T> {
     public MultiTypeDelegate() {
     }
 
+    @Override
     public final int getDefItemViewType(List<T> data, int position) {
         T item = data.get(position);
         return item != null ? getItemType(item) : DEFAULT_VIEW_TYPE;
@@ -43,6 +44,7 @@ public abstract class MultiTypeDelegate<T> {
      */
     protected abstract int getItemType(T t);
 
+    @Override
     public final int getLayoutId(int viewType) {
         return this.layouts.get(viewType, TYPE_NOT_FOUND);
     }
