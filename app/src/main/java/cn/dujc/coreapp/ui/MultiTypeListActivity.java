@@ -10,7 +10,7 @@ import java.util.Random;
 import cn.dujc.core.adapter.BaseAdapter;
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
-import cn.dujc.core.adapter.util.MultiTypeDelegate;
+import cn.dujc.core.adapter.util.TypeAsIdDelegate;
 import cn.dujc.core.ui.BaseListActivity;
 import cn.dujc.coreapp.R;
 
@@ -80,7 +80,7 @@ public class MultiTypeListActivity extends BaseListActivity {
 
         public MultiTypeAdapter(@Nullable List<Data> data) {
             super(data);
-            final MultiTypeDelegate<Data> delegate = new MultiTypeDelegate<Data>() {
+            /*final MultiTypeDelegate<Data> delegate = new MultiTypeDelegate<Data>() {
                 @Override
                 protected int getItemType(Data data) {
                     return data.type == 0 ? 0 : 1;
@@ -88,7 +88,20 @@ public class MultiTypeListActivity extends BaseListActivity {
             };
             delegate.registerItemType(0, R.layout.item_multi_0)
                     .registerItemType(1, R.layout.item_multi_1);
-            setMultiTypeDelegate(delegate);
+            setMultiTypeDelegate(delegate);*/
+            /*IMultiTypeDelegate<Data> delegate = new TypeAsIdDelegate<Data>() {
+                @Override
+                protected int getItemLayoutId(Data data) {
+                    return data.type == 0 ? R.layout.item_multi_0 : R.layout.item_multi_1;
+                }
+            };
+            setMultiTypeDelegate(delegate);*/
+            new TypeAsIdDelegate<Data>() {
+                @Override
+                protected int getItemLayoutId(Data data) {
+                    return data.type == 0 ? R.layout.item_multi_0 : R.layout.item_multi_1;
+                }
+            }.setup(this);
         }
 
         @Override

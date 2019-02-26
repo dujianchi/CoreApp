@@ -56,7 +56,7 @@ import cn.dujc.core.adapter.animation.SlideInRightAnimation;
 import cn.dujc.core.adapter.entity.IExpandable;
 import cn.dujc.core.adapter.loadmore.LoadMoreView;
 import cn.dujc.core.adapter.loadmore.SimpleLoadMoreView;
-import cn.dujc.core.adapter.util.MultiTypeDelegate;
+import cn.dujc.core.adapter.util.IMultiTypeDelegate;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -969,13 +969,13 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
         return getOnItemLongClickListener().onItemLongClick(BaseQuickAdapter.this, v, position);
     }
 
-    private MultiTypeDelegate<T> mMultiTypeDelegate;
+    private IMultiTypeDelegate<T> mMultiTypeDelegate;
 
-    public void setMultiTypeDelegate(MultiTypeDelegate<T> multiTypeDelegate) {
+    public void setMultiTypeDelegate(IMultiTypeDelegate<T> multiTypeDelegate) {
         mMultiTypeDelegate = multiTypeDelegate;
     }
 
-    public MultiTypeDelegate<T> getMultiTypeDelegate() {
+    public IMultiTypeDelegate<T> getMultiTypeDelegate() {
         return mMultiTypeDelegate;
     }
 
