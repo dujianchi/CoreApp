@@ -45,7 +45,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseUI.
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         mActivity = this;
         if (alwaysPortrait()) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//竖屏
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);//竖屏
         }
 
         if (fullScreen()) {
