@@ -205,9 +205,9 @@ public interface IBaseUI {
 
         void setSettingsDialog(IPermissionSettingsDialog settingsDialog);
 
-        void registerOddsPermissionOperator(IOddsPermissionOperator... permissionOperators);
+        void setOddsPermissionOperator(IOddsPermissionOperator permissionOperator);
 
-        void unregisterOddsPermissionOperator(IOddsPermissionOperator permissionOperator);
+        IOddsPermissionOperator getOddsPermissionOperator();
     }
 
     public static interface IPermissionSettingsDialog {
@@ -646,9 +646,9 @@ public interface IBaseUI {
 
     public static class IPermissionKeeperImpl implements IPermissionKeeper {
 
-        private final List<IOddsPermissionOperator> mPermissionOperators = new ArrayList<>();
         private final IContextCompat mContext;
         private final IPermissionKeeperCallback mCallback;
+        private IOddsPermissionOperator mPermissionOperator;
         private IPermissionSettingsDialog mSettingsDialog;
         private String[] mLastRequestedPermissions = null;
 
@@ -678,6 +678,19 @@ public interface IBaseUI {
             mLastRequestedPermissions = null;
             if (permissions == null) return;
             mLastRequestedPermissions = permissions;
+            // 以下为自定义的权限处理逻辑
+            if (mPermissionOperator != null
+                    && mPermissionOperator.useOddsPermissionOperate(mContext.context())
+            ) {//使用自定义权限操作
+                mPermissionOperator.requestPermissions(requestCode, title, message, permissions);
+                if (mPermissionOperator.doneHere(permissions)) {
+                    if (mCallback != null) {
+                        mCallback.onGranted(requestCode, Arrays.asList(permissions));
+                    }
+                    return;//是否需要就此结束
+                }
+            }
+            //以上结束自定义的权限逻辑，以下是正确、正常的权限处理逻辑
             if (hasPermission(permissions)) {
                 if (mCallback != null) mCallback.onGranted(requestCode, Arrays.asList(permissions));
             } else {
@@ -685,7 +698,8 @@ public interface IBaseUI {
                 for (String permission : permissions) {
                     showHint = showHint || mContext.shouldShowRequestPermissionRationale(permission);
                 }
-                if (showHint && mSettingsDialog != null) {
+                if (showHint && mSettingsDialog != null
+                        && (mPermissionOperator != null && mPermissionOperator.showConfirmDialog(permissions))) {
                     mSettingsDialog.showSettingsDialog(mContext, title, message);
                 } else {
                     mContext.requestPermissions(permissions, requestCode);
@@ -717,17 +731,13 @@ public interface IBaseUI {
         }
 
         @Override
-        public void registerOddsPermissionOperator(IOddsPermissionOperator... permissionOperators) {
-            if (permissionOperators != null && permissionOperators.length > 0) {
-                mPermissionOperators.addAll(Arrays.asList(permissionOperators));
-            }
+        public void setOddsPermissionOperator(IOddsPermissionOperator permissionOperator) {
+            mPermissionOperator = permissionOperator;
         }
 
         @Override
-        public void unregisterOddsPermissionOperator(IOddsPermissionOperator permissionOperator) {
-            if (permissionOperator != null) {
-                mPermissionOperators.remove(permissionOperator);
-            }
+        public IOddsPermissionOperator getOddsPermissionOperator() {
+            return mPermissionOperator;
         }
 
         private static boolean hasPermission(Context context, String... permissions) {

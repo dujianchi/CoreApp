@@ -1,6 +1,6 @@
 package cn.dujc.core.permission;
 
-import cn.dujc.core.ui.IBaseUI;
+import android.content.Context;
 
 /**
  * @author du
@@ -46,23 +46,24 @@ import cn.dujc.core.ui.IBaseUI;
  */
 public interface IOddsPermissionOperator {
 
-    boolean hasPermission(IBaseUI.IContextCompat context, String... permissions);
+    /**
+     * 是否采用特异机型的权限处理方案
+     */
+    boolean useOddsPermissionOperate(Context context);
 
-    boolean hasCalendar(IBaseUI.IContextCompat context);
+    /**
+     * 特异的申请权限方法，低水平的狗X的rom，都是在使用权限时才申请权限，所以权限判断和请求权限都在这一个方法里
+     */
+    boolean requestPermissions(int requestCode, String title, String message, String... permissions);
 
-    boolean hasCamera(IBaseUI.IContextCompat context);
+    /**
+     * 权限处理流程是否到此结束，此方法在{@link #requestPermissions(int, String, String, String...)}后调用
+     */
+    boolean doneHere(String... permissions);
 
-    boolean hasContacts(IBaseUI.IContextCompat context);
+    /**
+     * 是否显示默认流程的确认对话框
+     */
+    boolean showConfirmDialog(String... permissions);
 
-    boolean hasLocation(IBaseUI.IContextCompat context);
-
-    boolean hasMicrophone(IBaseUI.IContextCompat context);
-
-    boolean hasPhone(IBaseUI.IContextCompat context);
-
-    boolean hasSensors(IBaseUI.IContextCompat context);
-
-    boolean hasSMS(IBaseUI.IContextCompat context);
-
-    boolean hasStorage(IBaseUI.IContextCompat context);
 }
