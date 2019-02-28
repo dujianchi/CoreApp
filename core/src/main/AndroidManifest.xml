@@ -6,7 +6,19 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
+
     <application>
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="3.5" />
+
         <activity
             android:name=".permission.AppSettingsDialogHolderActivity"
             android:exported="false"
