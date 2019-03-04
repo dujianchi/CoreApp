@@ -164,13 +164,24 @@ public class ActivityStackUtil {
     }
 
     /**
+     * 关闭Activity，如果是Iterator遍历的，把remove掉Iterator，否则从Stack中remove掉
+     */
+    private void finish(Activity activity, Iterator iterator) {
+        if (activity != null && !activity.isFinishing()) {
+            activity.finish();
+        }
+        if (iterator != null) {
+            iterator.remove();
+        } else {
+            removeActivity(activity);
+        }
+    }
+
+    /**
      * 关闭指定activity
      */
     public synchronized void finishActivity(Activity activity) {
-        if (activity != null) {
-            if (!activity.isFinishing()) activity.finish();
-            removeActivity(activity);
-        }
+        finish(activity, null);
     }
 
     /**
@@ -184,8 +195,7 @@ public class ActivityStackUtil {
             Activity activity = iterator.next();
             for (Class<? extends Activity> clazz : classes) {
                 if (activity.getClass().equals(clazz)) {
-                    if (!activity.isFinishing()) activity.finish();
-                    iterator.remove();
+                    finish(activity, iterator);
                 }
             }
         }
@@ -201,8 +211,7 @@ public class ActivityStackUtil {
         while (iterator.hasNext()) {
             Activity activity = iterator.next();
             if (activity != lastSurvivalOfSpecies && activity.getClass().equals(exterminatedSpecies)) {
-                if (!activity.isFinishing()) activity.finish();
-                iterator.remove();
+                finish(activity, iterator);
             }
         }
     }
