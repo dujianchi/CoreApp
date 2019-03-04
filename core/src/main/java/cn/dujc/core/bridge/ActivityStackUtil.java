@@ -73,7 +73,7 @@ public class ActivityStackUtil {
      * @param flag     标志参数
      * @param value    参数
      */
-    private static void onEvent(Object receiver, int flag, Object value) {
+    private synchronized static void onEvent(Object receiver, int flag, Object value) {
         if (receiver instanceof IEvent) {
             ((IEvent) receiver).onMyEvent(flag, value);
         }
@@ -82,21 +82,21 @@ public class ActivityStackUtil {
     /**
      * 初始化方法，唯一的初始化方法
      */
-    public void initApp(Application app) {
+    public synchronized void initApp(Application app) {
         app.registerActivityLifecycleCallbacks(mLifecycleCallbacks);
     }
 
     /**
      * 反注册方法，基本上用不到这个方法……
      */
-    public void unBind(Application app) {
+    public synchronized void unBind(Application app) {
         app.unregisterActivityLifecycleCallbacks(mLifecycleCallbacks);
     }
 
     /**
      * 添加activity。这个方法无需在外界中访问
      */
-    private void addActivity(Activity activity) {
+    private synchronized void addActivity(Activity activity) {
         if (activity != null && !activity.isFinishing()) {
             mActivities.add(activity);
         }
@@ -105,14 +105,14 @@ public class ActivityStackUtil {
     /**
      * 获取activity栈
      */
-    public Stack<Activity> getActivities() {
+    public synchronized Stack<Activity> getActivities() {
         return mActivities;
     }
 
     /**
      * 当前注册到管理栈的activity数量
      */
-    public int foregroundCount() {
+    public synchronized int foregroundCount() {
         return mActivities.size();
     }
 
@@ -120,7 +120,7 @@ public class ActivityStackUtil {
      * 当前管理栈顶部的activity
      */
     @Nullable
-    public Activity topActivity() {
+    public synchronized Activity topActivity() {
         final Activity activity;
         if (!ActivityStackUtil.getInstance().getActivities().isEmpty()
                 && (activity = ActivityStackUtil.getInstance().getActivities().peek()) != null
@@ -159,14 +159,14 @@ public class ActivityStackUtil {
      * @deprecated 如果脑袋不清楚，最好不要调用此方法
      */
     @Deprecated
-    public void clearActivities() {
+    public synchronized void clearActivities() {
         mActivities.clear();
     }
 
     /**
      * 关闭指定activity
      */
-    public void finishActivity(Activity activity) {
+    public synchronized void finishActivity(Activity activity) {
         if (activity != null) {
             if (!activity.isFinishing()) activity.finish();
             removeActivity(activity);
@@ -177,14 +177,15 @@ public class ActivityStackUtil {
      * 关闭指定activity
      */
     @SafeVarargs
-    public final void finishActivity(Class<? extends Activity>... classes) {
+    public synchronized final void finishActivity(Class<? extends Activity>... classes) {
         if (classes == null || classes.length == 0) return;
         final Iterator<Activity> iterator = mActivities.iterator();
         while (iterator.hasNext()) {
             Activity activity = iterator.next();
             for (Class<? extends Activity> clazz : classes) {
                 if (activity.getClass().equals(clazz)) {
-                    finishActivity(activity);
+                    if (!activity.isFinishing()) activity.finish();
+                    iterator.remove();
                 }
             }
         }
@@ -193,14 +194,15 @@ public class ActivityStackUtil {
     /**
      * 关闭相同的类，但保留当前。用于关闭多开的Activity
      */
-    public final void finishSameButThis(Activity lastSurvivalOfSpecies) {
+    public synchronized final void finishSameButThis(Activity lastSurvivalOfSpecies) {
         if (lastSurvivalOfSpecies == null) return;
         final Class<? extends Activity> exterminatedSpecies = lastSurvivalOfSpecies.getClass();
         final Iterator<Activity> iterator = mActivities.iterator();
         while (iterator.hasNext()) {
             Activity activity = iterator.next();
             if (activity != lastSurvivalOfSpecies && activity.getClass().equals(exterminatedSpecies)) {
-                finishActivity(activity);
+                if (!activity.isFinishing()) activity.finish();
+                iterator.remove();
             }
         }
     }
@@ -208,7 +210,7 @@ public class ActivityStackUtil {
     /**
      * 关闭全部activity
      */
-    public void closeAllActivity() {
+    public synchronized void closeAllActivity() {
         closeAllExcept((Activity) null);
     }
 
@@ -218,7 +220,7 @@ public class ActivityStackUtil {
      * @param classes Activity.class
      */
     @SafeVarargs
-    public final void closeAllExcept(Class<? extends Activity>... classes) {
+    public synchronized final void closeAllExcept(Class<? extends Activity>... classes) {
         if (classes == null || classes.length == 0) return;
         final Iterator<Activity> iterator = mActivities.iterator();
         while (iterator.hasNext()) {
@@ -241,7 +243,7 @@ public class ActivityStackUtil {
      *
      * @param activity activity.this
      */
-    public void closeAllExcept(Activity activity) {
+    public synchronized void closeAllExcept(Activity activity) {
         final Iterator<Activity> iterator = mActivities.iterator();
         while (iterator.hasNext()) {
             Activity next = iterator.next();
@@ -257,7 +259,7 @@ public class ActivityStackUtil {
     /**
      * 从管理栈中移除指定activity。并不一定会关闭activity，只是移出管理栈
      */
-    private void removeActivity(Activity activity) {
+    private synchronized void removeActivity(Activity activity) {
         mActivities.remove(activity);
         //removeFragments(activity);
     }
@@ -269,7 +271,7 @@ public class ActivityStackUtil {
      * @param value    携带参数
      * @param receiver 接受对象，0b10给Activity，0b01给Fragment
      */
-    public void sendEvent(int flag, Object value, byte receiver) {
+    public synchronized void sendEvent(int flag, Object value, byte receiver) {
         for (Activity activity : mActivities) {
             if ((receiver & ACTIVITY) == ACTIVITY) {
                 onEvent(activity, flag, value);
