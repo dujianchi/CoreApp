@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.WindowManager;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -54,7 +55,7 @@ public class BaseWebFragment extends BaseFragment {
 
     @Override
     public void initBasic(Bundle savedInstanceState) {
-        if (Build.VERSION.SDK_INT >= 11) {
+        if (Build.VERSION.SDK_INT >= 11 && hardwareAccelerated()) {
             mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
         }
         mActivity.setTitle("");//防止没有title时没有点击事件2017年3月21日 00:03:20
@@ -137,7 +138,7 @@ public class BaseWebFragment extends BaseFragment {
             field = field.getType().getDeclaredField("mWindowManager");
             field.setAccessible(true);
             field.set(configCallback, windowManager);
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -148,7 +149,7 @@ public class BaseWebFragment extends BaseFragment {
         }
 
         mWebView = new WebView(mActivity.getApplicationContext());
-        ((LinearLayout)findViewById(R.id.core_ll_webview_parent))
+        ((LinearLayout) findViewById(R.id.core_ll_webview_parent))
                 .addView(mWebView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mProgressBar = (ProgressBar) findViewById(R.id.core_pb_progressbar);
 
@@ -162,6 +163,39 @@ public class BaseWebFragment extends BaseFragment {
         mWebView.setWebChromeClient(getWebChromeClient());
 
         loadAtFirst();
+    }
+
+    /**
+     * 是否让Activity采用WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
+     */
+    protected boolean hardwareAccelerated() {
+        return true;
+    }
+
+    protected boolean _shouldOverrideUrlLoading(WebView view, String url) {
+        return false;
+    }
+
+    protected boolean _shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+        return false;
+    }
+
+    protected boolean _onPageStarted(WebView view, String url, Bitmap favicon) {
+        return false;
+    }
+
+    protected boolean _onPageFinished(WebView view, String url) {
+        return false;
+    }
+
+    protected boolean _onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+        return false;
+    }
+
+    protected void _onReceivedTitle(WebView view, String title) {
+        if (TextUtils.isEmpty(mTitle)) {//传到当前fragment的title为空时，使用webview获得的title
+            mActivity.setTitle(title);
+        }
     }
 
     protected void initWebViewSettings() {
@@ -193,24 +227,30 @@ public class BaseWebFragment extends BaseFragment {
         return new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return super.shouldOverrideUrlLoading(view, url);
+                return _shouldOverrideUrlLoading(view, url) || super.shouldOverrideUrlLoading(view, url);
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                return _shouldOverrideUrlLoading(view, request) || super.shouldOverrideUrlLoading(view, request);
             }
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
+                if (!_onPageStarted(view, url, favicon)) super.onPageStarted(view, url, favicon);
                 mProgressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
+                if (!_onPageFinished(view, url)) super.onPageFinished(view, url);
                 mProgressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                super.onReceivedError(view, errorCode, description, failingUrl);
+                if (!_onReceivedError(view, errorCode, description, failingUrl))
+                    super.onReceivedError(view, errorCode, description, failingUrl);
                 mProgressBar.setVisibility(View.GONE);
             }
         };
@@ -222,9 +262,7 @@ public class BaseWebFragment extends BaseFragment {
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 super.onReceivedTitle(view, title);
-                if (TextUtils.isEmpty(mTitle)) {
-                    mActivity.setTitle(title);
-                }
+                _onReceivedTitle(view, title);
             }
 
             @Override
@@ -256,8 +294,23 @@ public class BaseWebFragment extends BaseFragment {
     public final void loadUrl(String url, boolean clear) {
         LogUtil.d("load url = " + url);
         if (mWebView != null) {
-            if (clear) mWebView.clearHistory();
+            if (clear) clearHistory();
             mWebView.loadUrl(mUrl = url);
+        }
+    }
+
+    public final void clearHistory() {
+        if (mWebView != null) mWebView.clearHistory();
+    }
+
+    public final void loadData(String data) {
+        loadData(data, "text/html; charset=utf-8", "utf-8");
+    }
+
+    public final void loadData(String data, String mimeType, String encoding) {
+        LogUtil.d("load data = " + data);
+        if (mWebView != null) {
+            mWebView.loadData(data, mimeType, encoding);
         }
     }
 
