@@ -26,6 +26,10 @@ import cn.dujc.core.util.LogUtil;
  */
 public class BaseWebFragment extends BaseFragment {
 
+    public static BaseWebFragment newInstance(String title, String url) {
+        return newInstance(title, url, null);
+    }
+
     public static BaseWebFragment newInstance(String title, String url, String data) {
         Bundle args = new Bundle();
         args.putString(EXTRA_TITLE, title);
