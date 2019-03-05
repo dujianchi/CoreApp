@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.WindowManager;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -176,10 +175,6 @@ public class BaseWebFragment extends BaseFragment {
         return false;
     }
 
-    protected boolean _shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-        return false;
-    }
-
     protected boolean _onPageStarted(WebView view, String url, Bitmap favicon) {
         return false;
     }
@@ -228,11 +223,6 @@ public class BaseWebFragment extends BaseFragment {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 return _shouldOverrideUrlLoading(view, url) || super.shouldOverrideUrlLoading(view, url);
-            }
-
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                return _shouldOverrideUrlLoading(view, request) || super.shouldOverrideUrlLoading(view, request);
             }
 
             @Override
