@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.WindowManager;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -27,29 +26,33 @@ import cn.dujc.core.util.LogUtil;
  */
 public class BaseWebFragment extends BaseFragment {
 
-    public static BaseWebFragment newInstance(String title, String url) {
+    public static BaseWebFragment newInstance(String title, String url, String data) {
         Bundle args = new Bundle();
-        args.putString(TITLE_INTENT, title);
-        args.putString(URL_INTENT, url);
+        args.putString(EXTRA_TITLE, title);
+        args.putString(EXTRA_URL, url);
+        args.putString(EXTRA_DATA, data);
         BaseWebFragment fragment = new BaseWebFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    private static final String TITLE_INTENT = "TITLE_INTENT";
-    private static final String URL_INTENT = "URL_INTENT";
+    public static final String EXTRA_TITLE = "EXTRA_TITLE";
+    public static final String EXTRA_URL = "EXTRA_URL";
+    public static final String EXTRA_DATA = "EXTRA_DATA";
 
     private ProgressBar mProgressBar;
     private WebView mWebView;
     private String mUrl;
+    private String mData;
     private String mTitle;
 
     @Override
     public void setArguments(Bundle args) {
         super.setArguments(args);
         if (args != null) {
-            mUrl = args.getString(URL_INTENT);
-            mTitle = args.getString(TITLE_INTENT);
+            mUrl = args.getString(EXTRA_URL);
+            mData = args.getString(EXTRA_DATA);
+            mTitle = args.getString(EXTRA_TITLE);
         }
     }
 
@@ -176,10 +179,6 @@ public class BaseWebFragment extends BaseFragment {
         return false;
     }
 
-    protected boolean _shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-        return false;
-    }
-
     protected boolean _onPageStarted(WebView view, String url, Bitmap favicon) {
         return false;
     }
@@ -231,11 +230,6 @@ public class BaseWebFragment extends BaseFragment {
             }
 
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                return _shouldOverrideUrlLoading(view, request) || super.shouldOverrideUrlLoading(view, request);
-            }
-
-            @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 if (!_onPageStarted(view, url, favicon)) super.onPageStarted(view, url, favicon);
                 mProgressBar.setVisibility(View.VISIBLE);
@@ -276,7 +270,8 @@ public class BaseWebFragment extends BaseFragment {
     }
 
     protected void loadAtFirst() {
-        loadUrl(mUrl);
+        if (TextUtils.isEmpty(mUrl)) loadData(mData);
+        else loadUrl(mUrl);
     }
 
     public final boolean onBackPressed() {
