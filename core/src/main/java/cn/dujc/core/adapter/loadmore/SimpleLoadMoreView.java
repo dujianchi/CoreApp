@@ -6,7 +6,7 @@ import cn.dujc.core.R;
  * Created by BlingBling on 2016/10/11.
  */
 
-public final class SimpleLoadMoreView extends LoadMoreView {
+public class SimpleLoadMoreView extends LoadMoreView {
 
     @Override
     public int getLayoutId() {
