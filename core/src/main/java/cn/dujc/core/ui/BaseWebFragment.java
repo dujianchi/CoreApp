@@ -99,7 +99,7 @@ public class BaseWebFragment extends BaseFragment {
             mWebView.stopLoading();
             // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
             mWebView.getSettings().setJavaScriptEnabled(false);
-            //mWebView.clearHistory();
+            //mWebView._clearHistory();
             mWebView.clearView();
             //mWebView.removeAllViews();
 
@@ -293,12 +293,12 @@ public class BaseWebFragment extends BaseFragment {
     public final void loadUrl(String url, boolean clear) {
         LogUtil.d("load url = " + url);
         if (mWebView != null) {
-            if (clear) clearHistory();
+            if (clear) _clearHistory();
             mWebView.loadUrl(mUrl = url);
         }
     }
 
-    public final void clearHistory() {
+    public final void _clearHistory() {
         if (mWebView != null) mWebView.clearHistory();
     }
 
