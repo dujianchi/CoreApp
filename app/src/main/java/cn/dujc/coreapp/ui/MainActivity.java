@@ -13,6 +13,7 @@ import cn.dujc.core.adapter.BaseAdapter;
 import cn.dujc.core.adapter.BaseQuickAdapter;
 import cn.dujc.core.adapter.BaseViewHolder;
 import cn.dujc.core.ui.BaseListActivity;
+import cn.dujc.core.ui.BaseWebFragment;
 import cn.dujc.core.util.ToastUtil;
 import cn.dujc.coreapp.R;
 
@@ -39,12 +40,13 @@ public class MainActivity extends BaseListActivity {
             , "title menu 1"
             , "title menu 2"
             , "dialog"
-            , "", "", "", "", "", "", "");
+            , ""
+            , "Section", "", "", "", "", "");
 
     private boolean mRefreshEnable = true;
     private boolean mMoreEnable = true;
     private DialogF mDialog;
-//    private DialogP mDialog;
+    //    private DialogP mDialog;
     private Dialog2 mDialog2;
 
     @Nullable
@@ -110,7 +112,9 @@ public class MainActivity extends BaseListActivity {
                 break;
             }
             case 10: {
-                starter().go(WebActvity.class);
+                //starter().go(WebActvity.class);
+                starter().with(BaseWebFragment.EXTRA_URL, "https://m.baidu.com")
+                        .goFragment(BaseWebFragment.class);
                 break;
             }
             case 11: {
@@ -148,6 +152,10 @@ public class MainActivity extends BaseListActivity {
                     mDialog2 = new Dialog2(mActivity);
                 }
                 if (!mDialog2.isShowing()) mDialog2.show();
+                break;
+            }
+            case 18: {
+                starter().go(SectionActivity.class);
                 break;
             }
             //case xx: {setTitleMenuText("bbbb", 1, onClickListener);break;}
