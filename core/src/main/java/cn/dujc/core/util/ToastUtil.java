@@ -40,20 +40,16 @@ public class ToastUtil {
         showToast(context, text, DEFAULT_GRAVITY, getDefaultYOffset(context), DEFAULT_DURATION);
     }
 
-    public static void showToast(Context context, Object... objects) {
-        showToast(context, DEFAULT_GRAVITY, getDefaultYOffset(context), objects);
+    public static void showToastObjectsDefault(Context context, Object... objects) {
+        showToastObjects(context, DEFAULT_GRAVITY, getDefaultYOffset(context), objects);
     }
 
-    public static void showToast(Context context, int gravity, int yOffset, Object... objects) {
+    public static void showToastObjects(Context context, int gravity, int yOffset, Object... objects) {
         showToast(context, StringUtil.concat(objects), gravity, yOffset, DEFAULT_DURATION);
     }
 
-    public static void showToastFormatted(Context context, String format, Object... args) {
+    public static void showToastFormattedDefault(Context context, String format, Object... args) {
         showToastFormatted(context, DEFAULT_GRAVITY, getDefaultYOffset(context), DEFAULT_DURATION, format, args);
-    }
-
-    public static void showToastFormatted(Context context, int gravity, int yOffset, String format, Object... args) {
-        showToastFormatted(context, gravity, yOffset, DEFAULT_DURATION, StringUtil.format(format, args));
     }
 
     public static void showToastFormatted(Context context, int gravity, int yOffset, int duration, String format, Object... args) {

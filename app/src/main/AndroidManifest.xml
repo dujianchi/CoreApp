@@ -30,6 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.SectionActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

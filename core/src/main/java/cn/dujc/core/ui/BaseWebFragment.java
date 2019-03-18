@@ -51,20 +51,13 @@ public class BaseWebFragment extends BaseFragment {
     private String mTitle;
 
     @Override
-    public void setArguments(Bundle args) {
-        super.setArguments(args);
-        if (args != null) {
-            mUrl = args.getString(EXTRA_URL);
-            mData = args.getString(EXTRA_DATA);
-            mTitle = args.getString(EXTRA_TITLE);
-        }
-    }
-
-    @Override
     public void initBasic(Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT >= 11 && hardwareAccelerated()) {
             mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
         }
+        mUrl = extras().get(EXTRA_URL, "");
+        mData = extras().get(EXTRA_DATA, "");
+        mTitle = extras().get(EXTRA_TITLE, "");
         mActivity.setTitle("");//防止没有title时没有点击事件2017年3月21日 00:03:20
         init();
     }
@@ -99,7 +92,7 @@ public class BaseWebFragment extends BaseFragment {
             mWebView.stopLoading();
             // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
             mWebView.getSettings().setJavaScriptEnabled(false);
-            //mWebView.clearHistory();
+            //mWebView._clearHistory();
             mWebView.clearView();
             //mWebView.removeAllViews();
 
@@ -293,12 +286,12 @@ public class BaseWebFragment extends BaseFragment {
     public final void loadUrl(String url, boolean clear) {
         LogUtil.d("load url = " + url);
         if (mWebView != null) {
-            if (clear) clearHistory();
+            if (clear) _clearHistory();
             mWebView.loadUrl(mUrl = url);
         }
     }
 
-    public final void clearHistory() {
+    public final void _clearHistory() {
         if (mWebView != null) mWebView.clearHistory();
     }
 
