@@ -176,6 +176,10 @@ public interface IBaseUI {
 
         IStarter with(String key, Bundle param);
 
+        /**
+         * 这个方案，会将大数据以key为文件名，直接保存到cache文件夹，所以不同的大数据，key应该不同，否则会被覆盖。
+         * 同时这个key，只有再次被使用到才会重新覆盖，否则一次保存，处处使用
+         */
         IStarter withLargeData(String key, Serializable param);
     }
 

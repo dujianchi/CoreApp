@@ -25,27 +25,29 @@ public final class SerializableTransfer {
 
     public void save(Serializable serializable) {
         if (serializable == null || mFile == null) return;
-        mFile.deleteOnExit();
-        FileOutputStream fos = null;
-        ObjectOutputStream oos = null;
-        try {
-            fos = new FileOutputStream(mFile);
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject(serializable);
-            oos.flush();
-            oos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (oos != null) try {
+        synchronized (mFile.getAbsolutePath()) {
+            mFile.deleteOnExit();
+            FileOutputStream fos = null;
+            ObjectOutputStream oos = null;
+            try {
+                fos = new FileOutputStream(mFile);
+                oos = new ObjectOutputStream(fos);
+                oos.writeObject(serializable);
+                oos.flush();
                 oos.close();
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-            if (fos != null) try {
-                fos.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } finally {
+                if (oos != null) try {
+                    oos.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (fos != null) try {
+                    fos.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -53,28 +55,30 @@ public final class SerializableTransfer {
     @Nullable
     public Object read() {
         if (mFile == null || !mFile.exists()) return null;
-        Object result = null;
-        FileInputStream fis = null;
-        ObjectInputStream ois = null;
-        try {
-            fis = new FileInputStream(mFile);
-            ois = new ObjectInputStream(fis);
-            result = ois.readObject();
-            ois.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (ois != null) try {
+        synchronized (mFile.getAbsolutePath()) {
+            Object result = null;
+            FileInputStream fis = null;
+            ObjectInputStream ois = null;
+            try {
+                fis = new FileInputStream(mFile);
+                ois = new ObjectInputStream(fis);
+                result = ois.readObject();
                 ois.close();
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                if (ois != null) try {
+                    ois.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (fis != null) try {
+                    fis.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            if (fis != null) try {
-                fis.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            return result;
         }
-        return result;
     }
 }
