@@ -27,7 +27,11 @@ public class ReturnActivity extends BaseActivity {
     @Override
     public void initBasic(Bundle savedInstanceState) {
         mData = findViewById(R.id.et_data);
-        mData.setText(extras().get(KEY));
+        System.out.println("-- 开始接受值  " + System.currentTimeMillis());
+        String text = extras().getLargeData(KEY, "");
+        System.out.println("-- 接受到值  " + System.currentTimeMillis() + "  " + text);
+        mData.setText(text);
+        System.out.println("-- 显示到文本框  " + System.currentTimeMillis());
         findViewById(R.id.btn_return).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

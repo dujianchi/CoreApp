@@ -91,7 +91,12 @@ public class MainActivity extends BaseListActivity {
                 break;
             }
             case 6: {
-                starter().with(ReturnActivity.KEY, "From MainActivity").go(ReturnActivity.class);
+                byte[] bytes = new byte[1024*1024*3];
+                System.out.println("-- 开始生成字符串  " + System.currentTimeMillis());
+                String string = Arrays.toString(bytes);
+                System.out.println("-- 生成字符串  " + System.currentTimeMillis() + "  " + string);
+                starter().withLargeData(ReturnActivity.KEY, Arrays.toString(bytes)).go(ReturnActivity.class);
+                System.out.println("-- 完成传值  " + System.currentTimeMillis());
                 break;
             }
             case 7: {

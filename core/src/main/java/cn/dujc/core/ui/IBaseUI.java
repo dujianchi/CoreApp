@@ -24,6 +24,7 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +34,7 @@ import java.util.Map;
 import cn.dujc.core.permission.AppSettingsDialog;
 import cn.dujc.core.permission.IOddsPermissionOperator;
 import cn.dujc.core.util.LogUtil;
+import cn.dujc.core.util.SerializableTransfer;
 
 /**
  * 基本的UI类方法，包括activity和fragment
@@ -173,6 +175,8 @@ public interface IBaseUI {
         IStarter with(String key, CharSequence[] param);
 
         IStarter with(String key, Bundle param);
+
+        IStarter withLargeData(String key, Serializable param);
     }
 
     public static interface IParams {
@@ -189,6 +193,8 @@ public interface IBaseUI {
          * 如果需要获取基本类型，最好需要给默认值{@link #get(String, Object)}
          */
         public <T> T get(String key);
+
+        public <T> T getLargeData(String key, T defaultValues);
     }
 
     public static interface IPermissionKeeper {
@@ -584,13 +590,25 @@ public interface IBaseUI {
             mBundle.putBundle(key, param);
             return this;
         }
+
+        @Override
+        public IStarter withLargeData(String key, Serializable param) {
+            File data = new File(mContext.context().getCacheDir(), key);
+            if (!data.getParentFile().exists()) data.getParentFile().mkdirs();
+            else if (data.exists()) data.delete();
+            new SerializableTransfer(data).save(param);
+            return this;
+        }
+
     }
 
     public static class BaseParamsImpl implements IParams {
 
         final Bundle mBundle;
+        final IContextCompat mContext;
 
-        BaseParamsImpl(Bundle bundle) {
+        BaseParamsImpl(IContextCompat context, Bundle bundle) {
+            mContext = context;
             mBundle = bundle == null ? new Bundle() : bundle;
         }
 
@@ -628,17 +646,33 @@ public interface IBaseUI {
         public <T> T get(String key) {
             return get(key, null, null);
         }
+
+        @Override
+        public <T> T getLargeData(String key, T defaultValues) {
+            T result = defaultValues;
+            File data = new File(mContext.context().getCacheDir(), key);
+            if (data.exists()) {
+                try {
+                    result = (T) new SerializableTransfer(data).read();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return result;
+        }
     }
 
     public static class ActivityParamsImpl extends BaseParamsImpl {
         ActivityParamsImpl(Activity activity) {
-            super(activity != null && activity.getIntent() != null ? activity.getIntent().getExtras() : null);
+            super(new IContextCompatActivityImpl(activity)
+                    , activity != null && activity.getIntent() != null ? activity.getIntent().getExtras() : null);
         }
     }
 
-    public static class FragmentParamsImpl extends ActivityParamsImpl {
+    public static class FragmentParamsImpl extends BaseParamsImpl {
         FragmentParamsImpl(Fragment fragment) {
-            super(fragment != null ? fragment.getActivity() : null);
+            super(new IContextCompatFragmentImpl(fragment)
+                    , fragment != null && fragment.getActivity() != null && fragment.getActivity().getIntent() != null ? fragment.getActivity().getIntent().getExtras() : null);
             if (fragment != null && fragment.getArguments() != null)
                 mBundle.putAll(fragment.getArguments());
         }
