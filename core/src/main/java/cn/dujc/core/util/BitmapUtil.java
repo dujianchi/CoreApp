@@ -94,12 +94,25 @@ public class BitmapUtil {
     /**
      * 保存bitmap到指定路径
      */
+    public static String saveBitmapToFile(Bitmap bitmap, File file) {
+        return saveBitmapToFile(bitmap, file, Bitmap.CompressFormat.JPEG, 100, true);
+    }
+
+    /**
+     * 保存bitmap到指定路径
+     */
     public static String saveBitmapToFile(Bitmap bitmap, String file, Bitmap.CompressFormat format, int quality, boolean recycle) {
-        File newFile = new File(file);
-        if (newFile.exists())
-            newFile.delete();
+        return saveBitmapToFile(bitmap, new File(file), format, quality, recycle);
+    }
+
+    /**
+     * 保存bitmap到指定路径
+     */
+    public static String saveBitmapToFile(Bitmap bitmap, File file, Bitmap.CompressFormat format, int quality, boolean recycle) {
+        if (file.exists())
+            file.delete();
         try {
-            FileOutputStream outputStream = new FileOutputStream(newFile);
+            FileOutputStream outputStream = new FileOutputStream(file);
             if (bitmap != null)
                 bitmap.compress(format, quality, outputStream);
             outputStream.flush();
@@ -111,7 +124,7 @@ public class BitmapUtil {
         }
         if (recycle && bitmap != null)//此处不能回收bitmap，否则后面会不能用
             bitmap.recycle();
-        return newFile.getPath();
+        return file.getPath();
     }
 
     /**
@@ -119,8 +132,16 @@ public class BitmapUtil {
      * 从路径中解析
      */
     public static Bitmap decodeSmallerFromFile(String path, int shortEdge, int longEdge) {
-        LogUtil.d("---------------   path =     " + path);
-        if (path == null) {
+        return decodeSmallerFromFile(new File(path), shortEdge, longEdge);
+    }
+
+    /**
+     * 图片处理
+     * 从路径中解析
+     */
+    public static Bitmap decodeSmallerFromFile(File file, int shortEdge, int longEdge) {
+        LogUtil.d("---------------   path =     " + file);
+        if (file == null) {
             LogUtil.e("decode bitmap error, course path is null");
             return null;
         }
@@ -131,11 +152,9 @@ public class BitmapUtil {
         FileInputStream is = null;
         Bitmap bitmap = null;
         try {
-            is = new FileInputStream(path);
+            is = new FileInputStream(file);
             bitmap = BitmapFactory.decodeFileDescriptor(is.getFD(), null, newOpts);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -148,14 +167,14 @@ public class BitmapUtil {
         newOpts.inJustDecodeBounds = false;
 
         //缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
-        if (shortEdge > 0){
+        if (shortEdge > 0) {
             int edge = Math.min(newOpts.outWidth, newOpts.outHeight);
-            if (edge > shortEdge){
+            if (edge > shortEdge) {
                 newOpts.inSampleSize = (int) (edge * 1f / shortEdge + 0.5f);
             }
-        }else if (longEdge > 0){
+        } else if (longEdge > 0) {
             int edge = Math.max(newOpts.outWidth, newOpts.outHeight);
-            if (edge > longEdge){
+            if (edge > longEdge) {
                 newOpts.inSampleSize = (int) (edge * 1f / longEdge + 0.5f);
             }
         }
@@ -165,10 +184,6 @@ public class BitmapUtil {
         try {
             bitmap = BitmapFactory.decodeFileDescriptor(is.getFD(), null, newOpts);  //bitmap = BitmapFactory.decodeFile(path, newOpts);
             is.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -201,7 +216,7 @@ public class BitmapUtil {
                     degree = 270;
                     break;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             degree = 0;
         }
