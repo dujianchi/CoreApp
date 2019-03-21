@@ -67,7 +67,7 @@ public class BitmapUtil {
         final int sizeInByte = getBitmapSizeInByte(src);
         final int byteForKb = sizeInKb * 1024;
         LogUtil.d("------   zoom before is " + sizeInByte);
-        if (sizeInByte > byteForKb) {
+        if (sizeInByte > byteForKb) {//若图片大小大于目的大小，则压缩大小97%，压缩质量85%
             float zoom = (float) Math.sqrt(byteForKb * 1.0 / sizeInByte);
             if (zoom >= 0.97) zoom = 0.97F;
             LogUtil.d("------   zoom level is " + zoom);
@@ -129,7 +129,7 @@ public class BitmapUtil {
 
     /**
      * 图片处理
-     * 从路径中解析
+     * 从路径中解析bitmap并压缩图片大小，优先判断短边，当图片最短边大于shortEdge则缩小图片，否则当最长边大于longEdge则压缩图片，再否则就不压大小
      */
     public static Bitmap decodeSmallerFromFile(String path, int shortEdge, int longEdge) {
         return decodeSmallerFromFile(new File(path), shortEdge, longEdge);
@@ -137,7 +137,7 @@ public class BitmapUtil {
 
     /**
      * 图片处理
-     * 从路径中解析
+     * 从路径中解析bitmap并压缩图片大小，优先判断短边，当图片最短边大于shortEdge则缩小图片，否则当最长边大于longEdge则压缩图片，再否则就不压大小
      */
     public static Bitmap decodeSmallerFromFile(File file, int shortEdge, int longEdge) {
         LogUtil.d("---------------   path =     " + file);
