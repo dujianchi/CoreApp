@@ -40,13 +40,14 @@ public class MainActivity extends BaseListActivity {
             , "title menu 1"
             , "title menu 2"
             , "dialog"
-            , ""
+            , "edittext"
+            , "textview"
             , "Section", "", "", "", "", "");
 
     private boolean mRefreshEnable = true;
     private boolean mMoreEnable = true;
     private DialogF mDialog;
-    //    private DialogP mDialog;
+//    private DialogP mDialog;
     private Dialog2 mDialog2;
 
     @Nullable
@@ -159,7 +160,15 @@ public class MainActivity extends BaseListActivity {
                 if (!mDialog2.isShowing()) mDialog2.show();
                 break;
             }
+            case 17: {
+                starter().go(EditTextActivity.class);
+                break;
+            }
             case 18: {
+                starter().go(TextActivity.class);
+                break;
+            }
+            case 19: {
                 starter().go(SectionActivity.class);
                 break;
             }
